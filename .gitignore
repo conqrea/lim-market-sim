@@ -1,0 +1,19 @@
+# Python 가상환경
+venv/
+.venv/
+
+# Python 캐시 파일
+__pycache__/
+*.pyc
+
+# API 키 파일
+.env
+
+# (선택사항) 시뮬레이션 결과물
+# (결과도 GitHub에 올리고 싶다면 아래 2줄을 지우세요)
+results/
+*.csv
+*.png
+
+# OS 자동 생성 파일
+.DS_Store
