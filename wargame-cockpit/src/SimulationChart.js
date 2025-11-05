@@ -1,96 +1,90 @@
+// wargame-cockpit/src/SimulationChart.js
+
 import React from 'react';
-import styled from '@emotion/styled';
-import { 
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  AreaChart, Area
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
 } from 'recharts';
 
-const ChartWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-top: 20px;
-`;
+const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#00C49F'];
 
-const ChartBox = styled.div`
-  background: #f9f9f9;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  padding: 15px;
-`;
+const SimulationChart = ({ title, data, yLabel, lines }) => {
+  
+  // 숫자를 천 단위 콤마(,)로 포맷팅 (예: 누적 이익, 가격, 원가)
+  const formatNumber = (tick) => {
+    if (tick >= 1000000) {
+      return `${(tick / 1000000).toFixed(1)}M`;
+    }
+    if (tick >= 1000) {
+      return `${(tick / 1000).toFixed(0)}K`;
+    }
+    return tick.toLocaleString();
+  };
 
-const ChartTitle = styled.h3`
-  text-align: center;
-  margin-top: 0;
-`;
+  // 1.0 -> 100% (점유율 포맷팅)
+  const formatPercent = (tick) => {
+    if (tick <= 1.0 && tick >= 0.0) {
+        return `${(tick * 100).toFixed(0)}%`;
+    }
+    return tick.toLocaleString();
+  };
+  
+  // 0-100점 (품질, 브랜드 포맷팅)
+  const formatScore = (tick) => {
+    return `${tick.toFixed(0)}점`;
+  };
 
-const SimulationChart = ({ data }) => {
+  // [수정] Y축 레이블(yLabel)에 따라 적절한 포맷터 함수를 동적으로 선택
+  let yAxisFormatter = formatNumber;
+  if (yLabel.includes("점유율")) {
+    yAxisFormatter = formatPercent;
+  } else if (yLabel.includes("품질") || yLabel.includes("브랜드")) {
+    yAxisFormatter = formatScore;
+  }
+
   return (
-    <ChartWrapper>
-      {/* 1. 누적 이익 차트 (AreaChart) */}
-      <ChartBox>
-        <ChartTitle>누적 이익 (Accumulated Profit)</ChartTitle>
-        <ResponsiveContainer width="100%" height={300}>
-          <AreaChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="turn" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Area type="monotone" dataKey="Apple_accumulated_profit"  stroke="#007bff" fill="#007bff" fillOpacity={0.3} />
-            <Area type="monotone" dataKey="Samsung_accumulated_profit" stroke="#28a745" fill="#28a745" fillOpacity={0.3} />
-          </AreaChart>
-        </ResponsiveContainer>
-      </ChartBox>
-
-      {/* 2. 시장 점유율 차트 (LineChart) */}
-      <ChartBox>
-        <ChartTitle>시장 점유율 (Market Share)</ChartTitle>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="turn" />
-            <YAxis domain={[0, 1]} tickFormatter={(val) => `${(val * 100).toFixed(0)}%`} />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="Apple_market_share" stroke="#007bff" strokeWidth={2} />
-            <Line type="monotone" dataKey="Samsung_market_share" stroke="#28a745" strokeWidth={2} />
-          </LineChart>
-        </ResponsiveContainer>
-      </ChartBox>
-
-      {/* 3. 가격 전략 차트 (LineChart) */}
-      <ChartBox>
-        <ChartTitle>가격 (Price)</ChartTitle>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="turn" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="Apple_price" stroke="#007bff" strokeWidth={2} />
-            <Line type="monotone" dataKey="Samsung_price" stroke="#28a745" strokeWidth={2} />
-          </LineChart>
-        </ResponsiveContainer>
-      </ChartBox>
-
-      {/* 4. 마케팅 지출 차트 (LineChart) */}
-      <ChartBox>
-        <ChartTitle>마케팅 비용 (Marketing Spend)</ChartTitle>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="turn" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="Apple_marketing_spend" stroke="#007bff" strokeWidth={2} />
-            <Line type="monotone" dataKey="Samsung_marketing_spend" stroke="#28a745" strokeWidth={2} />
-          </LineChart>
-        </ResponsiveContainer>
-      </ChartBox>
-    </ChartWrapper>
+    <div style={{ border: '1px solid #ddd', padding: '15px', borderRadius: '8px', backgroundColor: '#f9f9f9' }}>
+      <h4 style={{ textAlign: 'center', marginTop: 0 }}>{title}</h4>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart
+          data={data}
+          margin={{
+            top: 5,
+            right: 20,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="turn" label={{ value: '턴(Turn)', position: 'insideBottom', offset: -5 }} />
+          <YAxis 
+            tickFormatter={yAxisFormatter} 
+            label={{ value: yLabel, angle: -90, position: 'insideLeft', offset: -10 }}
+            domain={yLabel.includes("점유율") ? [0, 1] : ['auto', 'auto']} // 점유율 차트 Y축을 0-100%로 고정
+          />
+          <Tooltip formatter={yAxisFormatter} />
+          <Legend />
+          {lines.map((line, index) => (
+            <Line
+              key={line.dataKey}
+              type="monotone"
+              dataKey={line.dataKey}
+              name={line.name}
+              stroke={line.color || COLORS[index % COLORS.length]}
+              strokeWidth={2}
+              dot={false}
+              activeDot={{ r: 6 }}
+            />
+          ))}
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
 

@@ -1,4 +1,4 @@
-# reporter.py
+# reporter.py (R&D 그래프 추가)
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -10,65 +10,91 @@ def generate_report(csv_filepath="simulation_results.csv"):
     """
     print(f"\n--- '{csv_filepath}' 파일을 바탕으로 리포트 생성 시작 ---")
 
-    # 결과 폴더가 없으면 생성
     if not os.path.exists("results"):
         os.makedirs("results")
 
     try:
-        # 1. CSV 파일 읽기
         df = pd.read_csv(csv_filepath)
     except FileNotFoundError:
         print(f"오류: '{csv_filepath}' 파일을 찾을 수 없습니다. main.py를 먼저 실행하세요.")
         return
+    except pd.errors.EmptyDataError:
+        print(f"오류: '{csv_filepath}' 파일이 비어있습니다.")
+        return
 
-    # 회사 이름들을 동적으로 찾아내기 (예: 'Apple_price' -> 'Apple')
-    company_names = sorted(list(set([col.split('_')[0] for col in df.columns if '_' in col])))
-    
+    company_names = sorted(list(set([col.split('_')[0] for col in df.columns if '_' in col and 'accumulated' not in col])))
+    # [R&D 수정] 'Others'가 그래프에 너무 많이 나와서 AI 회사만 필터링 (선택적)
+    ai_company_names = [name for name in company_names if name != 'Others']
+    if not ai_company_names: # AI 회사가 없는 경우 (tuner 등)
+        ai_company_names = company_names
+
     # --- 그래프 생성 (Matplotlib 사용) ---
-    # 전체 그래프의 크기를 설정합니다.
-    plt.figure(figsize=(18, 10))
+    # [R&D 수정] 그래프 6개를 위한 크기 및 레이아웃 변경
+    plt.figure(figsize=(24, 10)) 
     
-    # 폰트 설정 (한글 깨짐 방지 - 윈도우)
     plt.rcParams['font.family'] = 'Malgun Gothic'
-    plt.rcParams['axes.unicode_minus'] = False # 마이너스 부호 깨짐 방지
+    plt.rcParams['axes.unicode_minus'] = False 
 
-    # 1. 시장 점유율 변화 그래프
-    plt.subplot(2, 2, 1) # 2x2 격자의 1번째 위치
-    for name in company_names:
-        plt.plot(df['turn'], df[f'{name}_market_share'], marker='o', linestyle='-', label=name)
-    plt.title('턴별 시장 점유율 변화', fontsize=16)
+    # 1. 누적 이익 그래프
+    plt.subplot(2, 3, 1) # 2x3 격자의 1번째
+    for name in ai_company_names:
+        if f'{name}_accumulated_profit' in df.columns:
+            plt.plot(df['turn'], df[f'{name}_accumulated_profit'], marker='o', linestyle='-', label=name)
+    plt.title('턴별 누적 이익 (Accumulated Profit)', fontsize=16)
     plt.xlabel('턴(Turn)')
-    plt.ylabel('시장 점유율 (Market Share)')
+    plt.ylabel('누적 이익')
     plt.grid(True)
     plt.legend()
 
-    # 2. 가격 변화 그래프
-    plt.subplot(2, 2, 2) # 2x2 격자의 2번째 위치
+    # 2. 시장 점유율 그래프
+    plt.subplot(2, 3, 2) # 2x3 격자의 2번째
+    for name in company_names: # 점유율은 'Others'도 포함
+        plt.plot(df['turn'], df[f'{name}_market_share'], marker='o', linestyle='-', label=name)
+    plt.title('턴별 시장 점유율 (Market Share)', fontsize=16)
+    plt.xlabel('턴(Turn)')
+    plt.ylabel('시장 점유율')
+    plt.grid(True)
+    plt.legend()
+
+    # 3. 가격 변화 그래프
+    plt.subplot(2, 3, 3) # 2x3 격자의 3번째
     for name in company_names:
         plt.plot(df['turn'], df[f'{name}_price'], marker='o', linestyle='-', label=name)
-    plt.title('턴별 가격 변화', fontsize=16)
+    plt.title('턴별 가격 변화 (Price)', fontsize=16)
     plt.xlabel('턴(Turn)')
-    plt.ylabel('가격 (Price)')
-    plt.grid(True)
-    plt.legend()
-
-    # 3. 이익 변화 그래프
-    plt.subplot(2, 2, 3) # 2x2 격자의 3번째 위치
-    for name in company_names:
-        plt.plot(df['turn'], df[f'{name}_profit'], marker='o', linestyle='-', label=name)
-    plt.title('턴별 이익 변화', fontsize=16)
-    plt.xlabel('턴(Turn)')
-    plt.ylabel('이익 (Profit)')
+    plt.ylabel('가격')
     plt.grid(True)
     plt.legend()
     
-    # 4. 마케팅 비용 변화 그래프
-    plt.subplot(2, 2, 4) # 2x2 격자의 4번째 위치
+    # 4. 마케팅 비용 그래프
+    plt.subplot(2, 3, 4) # 2x3 격자의 4번째
     for name in company_names:
         plt.plot(df['turn'], df[f'{name}_marketing_spend'], marker='o', linestyle='-', label=name)
-    plt.title('턴별 마케팅 비용 변화', fontsize=16)
+    plt.title('턴별 마케팅 비용 (Marketing Spend)', fontsize=16)
     plt.xlabel('턴(Turn)')
-    plt.ylabel('마케팅 비용 (Marketing Spend)')
+    plt.ylabel('마케팅 비용')
+    plt.grid(True)
+    plt.legend()
+
+    # 5. [R&D 수정] R&D 비용 그래프 (신규)
+    plt.subplot(2, 3, 5) # 2x3 격자의 5번째
+    for name in company_names:
+        if f'{name}_rd_spend' in df.columns:
+            plt.plot(df['turn'], df[f'{name}_rd_spend'], marker='o', linestyle='-', label=name)
+    plt.title('턴별 R&D 비용 (R&D Spend)', fontsize=16)
+    plt.xlabel('턴(Turn)')
+    plt.ylabel('R&D 비용')
+    plt.grid(True)
+    plt.legend()
+
+    # 6. [R&D 수정] 단위 원가 그래프 (신규)
+    plt.subplot(2, 3, 6) # 2x3 격자의 6번째
+    for name in company_names:
+        if f'{name}_unit_cost' in df.columns:
+            plt.plot(df['turn'], df[f'{name}_unit_cost'], marker='o', linestyle='-', label=name)
+    plt.title('턴별 단위 원가 변화 (Unit Cost)', fontsize=16)
+    plt.xlabel('턴(Turn)')
+    plt.ylabel('단위 원가')
     plt.grid(True)
     plt.legend()
 
@@ -78,9 +104,8 @@ def generate_report(csv_filepath="simulation_results.csv"):
     plt.savefig(report_path)
     
     print(f"리포트가 성공적으로 '{report_path}' 경로에 이미지 파일로 저장되었습니다.")
-    # plt.show() # 로컬에서 바로 그래프를 보고 싶을 때 주석 해제
+    # plt.show()
 
 # --- 이 파일 단독으로 테스트하기 위한 코드 ---
 if __name__ == '__main__':
-    # 이 스크립트를 직접 실행하면, 이미 존재하는 CSV 파일로 리포트를 생성합니다.
     generate_report()

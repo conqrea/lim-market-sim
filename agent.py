@@ -1,5 +1,3 @@
-# agent.py ('Others' 인지, R&D 제거, 최종본)
-
 import json
 import random
 import os
@@ -9,44 +7,48 @@ import re
 
 load_dotenv()
 
-# (call_mock_llm_api, extract_and_load_json 함수는 기존과 동일)
+# (Mock API 함수)
 def call_mock_llm_api(prompt: str) -> str:
-    print("--- (Mock API 호출됨, 비용 0원) ---")
-    price = random.randint(8000, 12000)
-    marketing_spend = random.randint(300000, 700000)
-    decision = {"price": price, "marketing_spend": marketing_spend}
-    return json.dumps(decision)
+    """LLM API를 모방하는 목(Mock) 함수입니다."""
+    print("--- [MOCK] LLM API 호출됨 ---")
+    response = {
+        "reasoning": "Mock API 응답: R&D(혁신/효율)와 마케팅(브랜드/판촉)에 예산을 배분했습니다.",
+        "price": 10000 + random.randint(-500, 500),
+        "marketing_brand_spend": 1000000,
+        "marketing_promo_spend": 500000,
+        "rd_innovation_spend": 2000000,
+        "rd_efficiency_spend": 1000000
+    }
+    return json.dumps(response)
 
-def extract_and_load_json(text: str):
-    json_pattern = re.compile(r'(\{.*\})|(\[.*\])', re.DOTALL)
-    match = json_pattern.search(text)
+# (JSON 추출 함수)
+def extract_and_load_json(text: str) -> dict:
+    """LLM 응답 텍스트에서 JSON 블록을 추출하여 파싱합니다."""
+    match = re.search(r'```json\s*([\s\S]*?)\s*```', text)
     if match:
-        json_string = match.group(0).strip()
-        try:
-            data = json.loads(json_string)
-            return data
-        except json.JSONDecodeError as e:
-            print(f"오류: 추출된 텍스트는 유효한 JSON이 아닙니다. ({e})")
-            print(f"추출된 텍스트: {repr(json_string[:50])}...")
-            return None
+        json_str = match.group(1)
     else:
-        print("오류: 입력 문자열에서 JSON 구조를 찾지 못했습니다 ({} 또는 []).")
-        return None
+        json_str = text
+    
+    try:
+        return json.loads(json_str)
+    except json.JSONDecodeError as e:
+        print(f"JSON 파싱 오류: {e}")
+        print(f"원본 텍스트: {text[:200]}...") 
+        if "{" not in text:
+            return None
+        return None 
 
-# (AIAgent 클래스)
 class AIAgent:
-    def __init__(self, name: str, persona: str, use_mock: bool = True):
+    def __init__(self, name: str, persona: str, use_mock: bool = False):
         self.name = name
         self.persona = persona
         self.use_mock = use_mock
-        self.model_name = 'gemini-2.5-pro' 
+        self.model_name = 'gemini-2.5-pro'
 
         if not self.use_mock and not os.getenv("GOOGLE_API_KEY") and not os.getenv("GEMINI_API_KEY"):
              raise ValueError("GOOGLE_API_KEY 또는 GEMINI_API_KEY 환경 변수가 설정되지 않았습니다.")
 
-        print(f"AI 에이전트 '{self.name}' 생성 완료. Mock 모드: {self.use_mock}")
-
-    # (get_gemini_response_async 함수는 기존과 동일)
     async def get_gemini_response_async(self, prompt: str) -> str:
         try:
             print(f"--- (실제 Gemini API 비동기 호출 시작: {self.name}) ---")
@@ -58,95 +60,155 @@ class AIAgent:
             return response.text
         except Exception as e:
             print(f"!!! Gemini API 비동기 호출 중 오류 발생 ({self.name}): {e} !!!")
-            return '{"price": 10000, "marketing_spend": 100000}'
+            return {
+                "reasoning": f"API 호출 오류: {e}",
+                "price": 10000,
+                "marketing_spend": 100000,
+                "rd_spend": 100000
+            }
 
-    # [핵심 수정] decide_action 함수
     async def decide_action(self, market_state: dict) -> dict:
-        """시장 상황을 보고 다음 행동을 비동기적으로 결정합니다."""
+        """[신규 엔진 적용] 무형 자산, 자산 감가상각, R&D 도박, 하이브리드 예산 규칙에 따라 행동을 결정합니다."""
         
-        event_info = ""
-        if market_state.get("active_events"):
-            event_info = f"""
-            # !! 중요: 현재 발동 중인 시장 이벤트 !!
-            {json.dumps(market_state["active_events"], indent=2)}
+        opponent_name = market_state.get("opponent_name", "경쟁사")
+
+        # --- 1. 분기 보고서 정보 포맷팅 ---
+        quarterly_report_info = ""
+        report = market_state.get("quarterly_report")
+        if report:
+            quarterly_report_info = f"""
+            # [A. 지난 분기({report['turn_range'][0]}~{report['turn_range'][1]}턴) 재무제표 (공개 정보)]
+            {json.dumps(report['data'], indent=2)}
+            """
+        else:
+            quarterly_report_info = """
+            # [A. 지난 분기 재무제표]
+            # (이번 턴에는 분기 보고서가 없습니다. '전쟁 안개' 상태입니다.)
             """
 
+        # --- 2. 턴별 요약 정보 포맷팅 ---
         comparison_info = ""
         if market_state.get("last_turn_comparison"):
             comp = market_state["last_turn_comparison"]
             comparison_info = f"""
-            # [A. 지난 턴 성과 (단기)]
+            # [B. 지난 턴 나의 성과 (단기)]
             * 나의 이익: {comp['my_profit']:,.0f}
-            * (주요경쟁사) 이익: {comp['opponent_profit']:,.0f}
             """
-
+        
         summary_info = ""
         if market_state.get("historical_summary"):
             summary = market_state["historical_summary"]
             summary_info = f"""
-            # [B. 최근 {summary['window_size']}턴 평균 성과 (중기 추세)]
-            * 나의 평균 이익: {summary['my_avg_profit_5turn']:,.0f}
-            * 나의 평균 점유율: {summary['my_avg_share_5turn']:.2%}
-            * (시장 평균) 'Others'의 평균 점유율: {summary['others_avg_share_5turn']:.2%}
+            # [C. 최근 {summary['window_size']}턴 나의 평균 이익 (중기 추세)]
+            * 나의 평균 이익: {summary['my_avg_profit_4turn']:,.0f}
             """
 
+        # --- 3. 예산 제약 조건 포맷팅 (하이브리드 예산) ---
         constraint_info = ""
         my_company_data = market_state.get("companies", {}).get(self.name, {})
         my_accumulated_profit = my_company_data.get("accumulated_profit", 0)
         
-        max_marketing_budget = max(1000000, min(my_accumulated_profit * 0.1, 20000000))
-        if my_accumulated_profit <= 0:
-            max_marketing_budget = 1000000
-
+        max_marketing_budget = my_company_data.get('max_marketing_budget', 1000000)
+        max_rd_budget = my_company_data.get('max_rd_budget', 500000)
+            
         constraint_info = f"""
-        # [C. 기업 생존 및 예산 제약 (현실)]
-        * 현재 총 누적 이익(자본): {my_accumulated_profit:,.0f} 원
-        * 이번 턴 최대 마케팅 예산: {max_marketing_budget:,.0f} 원
-        * **'marketing_spend' 값은 이 예산을 절대 초과할 수 없습니다.**
+        # [D. 기업 생존 및 예산 제약 (현실)]
+        * (참고) 현재 총 누적 이익(자본): {my_accumulated_profit:,.0f} 원
+        
+        **[중요: 하이브리드 예산 한도]**
+        * **1. 최대 R&D 예산 (전략): {max_rd_budget:,.0f} 원**
+            * (이 예산은 매 턴 '총 누적 이익(자본)'에 비례하여 갱신됩니다.)
+        * **2. 최대 마케팅 예산 (운영): {max_marketing_budget:,.0f} 원**
+            * (이 예산은 4턴(1분기)마다 '지난 분기 이익'을 바탕으로 갱신됩니다.)
+
+        * **'rd_...' 지출 총합은 '최대 R&D 예산'을 초과할 수 없습니다.**
+        * **'marketing_...' 지출 총합은 '최대 마케팅 예산'을 초과할 수 없습니다.**
         * **파산(누적 이익 < 0)은 CEO로서 최악의 실패입니다.**
         """
 
+        # --- 4. 현재 시장 상황 (전쟁 안개 적용) ---
+        state_for_prompt = market_state.copy()
+        state_for_prompt.pop("last_turn_comparison", None)
+        state_for_prompt.pop("historical_summary", None)
+        state_for_prompt.pop("quarterly_report", None)
+        
+        if "companies" in state_for_prompt:
+            for name in list(state_for_prompt["companies"].keys()):
+                if name != self.name:
+                    state_for_prompt["companies"][name].pop("max_marketing_budget", None)
+                    state_for_prompt["companies"][name].pop("max_rd_budget", None)
+                    state_for_prompt["companies"][name].pop("unit_cost", None)
+                    state_for_prompt["companies"][name].pop("accumulated_profit", None)
+                    state_for_prompt["companies"][name].pop("product_quality", None)
+                    state_for_prompt["companies"][name].pop("brand_awareness", None)
+                    state_for_prompt["companies"][name].pop("market_share", None)
+                else:
+                    state_for_prompt["companies"][name].pop("market_share", None)
+        
+        market_snapshot = json.dumps(state_for_prompt, indent=2)
+
+        # --- 5. 최종 프롬프트 생성 ---
         prompt = f"""
         # [1. 당신의 최종 목표 (가장 중요)]
         당신의 유일하고 궁극적인 목표는 시뮬레이션 종료 시 **'누적 이익(accumulated_profit)'을 극대화**하는 것입니다.
 
         # [2. 당신의 전략적 성향 (페르소나)]
-        당신은 이 목표를 달성하기 위해 다음과 같은 성향을 가진 CEO입니다.
         **{self.persona}**
-        * 이 페르소나는 당신의 '스타일'이며, 최종 목표(누적 이익)를 훼손하면서까지 맹목적으로 따라서는 안 됩니다.
 
-        # [3. 현재 시장 상황]
-        # [수정] 이제 'Others'가 포함된 3개 회사의 정보가 제공됩니다.
-        # 'Others'는 시장 평균가를 따르는 규칙 기반의 더미 경쟁자입니다.
-        {json.dumps(market_state, indent=2)}
-        {event_info} 
-        
-        # [4. 성과 분석 리포트]
+        # [3. 현재 시장 상황 (실시간 공개 정보)]
+        {market_snapshot}
+
+        # [4. 성과 분석 리포트 (지연/내부 정보)]
+        {quarterly_report_info}
         {comparison_info}  
         {summary_info}    
         {constraint_info} 
 
-        # [5. 당신의 임무]
-        당신의 경쟁자는 'Samsung'(주요 AI 경쟁자)과 'Others'(시장 평균)입니다.
-        [1. 최종 목표]를 달성하기 위해, [2. 페르소나] 스타일을 참고하여,
-        [3. 시장 상황]과 [4. 성과 리포트]를 종합적으로 분석하십시오.
+        # [5. 당신의 임무: 새로운 물리 법칙]
+        당신의 **유일한 AI 경쟁자는 '{opponent_name}'**입니다. 'Others'는 시장 배경입니다.
+        당신은 **'전쟁 안개'** 속에 있습니다.
         
-        **[현실적인 CEO의 조언]**
-        * **제로섬 게임이 아님:** 이제 당신의 점유율은 'Others'로부터 뺏어올 수도, 'Others'에게 뺏길 수도 있습니다.
-        * **균형:** 이익과 점유율 중 하나를 완전히 포기하지 마십시오.
-        * **마케팅:** 'Others'와의 경쟁에서 밀리지 않으려면(점유율 방어), '보수적' CEO도 최소한의 방어적 마케팅은 집행해야 합니다.
+        **[현실적인 CEO의 조언: 새로운 시장 법칙]**
         
-        [C. 예산 제약 조건]의 한계 내에서 합리적인 결정을 내리십시오.
+        * **법칙 1: 자산 감가상각 (Asset Decay)**
+            * 당신의 핵심 자산인 '제품 품질(product_quality)'과 '브랜드 인지도(brand_awareness)'는 **매 턴 하락(Decay)**합니다. (config의 decay_rate 참조)
+            * 지출을 0으로 설정하는 것은 '현상 유지'가 아니라 '시장 도태'를 의미합니다.
+            * 당신은 '하락'을 막기 위한 **최소한의 '유지비'**를 R&D와 마케팅에 지출해야 합니다.
+
+        * **법칙 2: R&D 도박 (R&D Gamble)**
+            * R&D 예산은 두 가지 '도박'에 사용됩니다.
+            * **`rd_innovation_spend`**: '제품 품질'을 높이기 위한 '혁신' 베팅입니다. (config의 prob/cost/impact 참조)
+            * **`rd_efficiency_spend`**: '원가(unit_cost)'를 낮추기 위한 '효율' 베팅입니다. (config의 prob/cost/impact 참조)
+            * R&D 지출은 '보장된 성공'이 아니며, 확률에 따라 실패할 수 있습니다.
+
+        * **법칙 3: 마케팅 투자 (Marketing Investment)**
+            * 마케팅 예산은 두 가지로 사용됩니다.
+            * **`marketing_brand_spend`**: '브랜드 인지도' 자산을 쌓는 장기 투자입니다. (수확 체감 적용됨)
+            * **`marketing_promo_spend`**: 이번 턴에만 가격을 할인하는 '단기 판촉' 비용입니다.
+
+        * **법칙 4: 시장 점유율 (가치 점수)**
+            * 당신의 시장 점유율은 `(제품 품질 x 50%) + (브랜드 인지도 x 30%) + (가격 경쟁력 x 20%)`의 비율로 계산되는 **'가치 점수(Value Score)'**에 의해 결정됩니다.
+
+        * **법칙 5: 하이브리드 예산 (전략적 선택)**
+            * [D]의 예산 규칙을 확인하십시오.
+            * **R&D 예산(총자본 기반)**은 단기 손실을 봐도 유지될 수 있지만, **마케팅 예산(분기 이익 기반)**은 단기 손실을 보면 삭감될 위험이 있습니다.
+        
+        [D]의 예산 제약 조건의 한계 내에서, [2. 페르소나]에 맞춰 4가지 지출 항목에 예산을 현명하게 배분하십시오.
 
         # [6. 응답 형식]
-        반드시 2가지 키를 포함한 JSON 형식으로 응답해야 합니다.
+        반드시 5가지 키를 포함한 JSON 형식으로 응답해야 합니다.
+        (총합이 [D]의 예산 한도를 넘지 않도록 주의하십시오.)
         {{
-            "reasoning": "<1~2줄의 간결한 의사결정 이유. *가격, 마케팅*을 어떻게 균형 잡았는지 설명.>",
+            "reasoning": "<1~2줄의 간결한 의사결정 이유. [D]의 예산 한도 내에서 4가지 지출 항목에 예산을 배분.>",
             "price": <가격 (정수)>,
-            "marketing_spend": <마케팅 비용 (정수)>
+            "marketing_brand_spend": <브랜드 인지도 투자 비용 (정수)>,
+            "marketing_promo_spend": <단기 판촉 비용 (정수)>,
+            "rd_innovation_spend": <품질 혁신 R&D 베팅 비용 (정수)>,
+            "rd_efficiency_spend": <원가 절감 R&D 베팅 비용 (정수)>
         }}
         """
         
+        # --- 7. API 호출 및 파싱 ---
         if self.use_mock:
             response_text = call_mock_llm_api(prompt)
         else:
@@ -154,10 +216,23 @@ class AIAgent:
 
         try:
             decision = extract_and_load_json(response_text)
+            
             if decision is None:
+                print(f"오류: AI 응답에서 JSON을 추출하지 못했습니다. 응답: {response_text[:100]}...")
+                if "{" not in response_text:
+                    return {"reasoning": response_text, "price": 10000, "marketing_brand_spend": 100000, "marketing_promo_spend": 0, "rd_innovation_spend": 100000, "rd_efficiency_spend": 0}
                 raise json.JSONDecodeError("JSON 파싱 함수가 None을 반환", response_text, 0)
             
+            # [수정] AI가 구버전으로 응답했을 경우를 대비한 호환성 처리
+            if "marketing_spend" in decision:
+                decision["marketing_brand_spend"] = int(decision.get("marketing_spend", 0))
+                decision["marketing_promo_spend"] = 0
+            if "rd_spend" in decision:
+                decision["rd_innovation_spend"] = int(decision.get("rd_spend", 0))
+                decision["rd_efficiency_spend"] = 0
+
             return decision
-        except json.JSONDecodeError:
-            print("오류: LLM 응답이 유효한 JSON이 아닙니다. 응답:", response_text)
-            return {"price": 10000, "marketing_spend": 100000}
+        
+        except json.JSONDecodeError as e:
+            print(f"오류: LLM 응답이 유효한 JSON이 아닙니다. (에러: {e}) 응답: {response_text[:100]}...")
+            return {"reasoning": "JSON 파싱 오류. 기본값으로 결정.", "price": 10000, "marketing_brand_spend": 100000, "marketing_promo_spend": 0, "rd_innovation_spend": 100000, "rd_efficiency_spend": 0}
