@@ -42,7 +42,7 @@ export const injectEvent = async (simId, eventData) => {
 };
 
 // 4. '여러 턴' 진행 API (기존과 동일)
-export const runMultipleTurns = async (simId, turnCount) => {
+/*export const runMultipleTurns = async (simId, turnCount) => {
   try {
     const response = await axios.post(
       `${API_BASE_URL}/simulations/${simId}/run_turns?turns_to_run=${turnCount}`
@@ -50,6 +50,32 @@ export const runMultipleTurns = async (simId, turnCount) => {
     return response.data; // { turns_ran, results_history, ... } 반환
   } catch (error) {
     console.error("Error running multiple turns:", error);
+    throw error;
+  }
+};*/
+
+// [신규] 1. AI에게 전략적 선택지를 요청
+export const getDecisionChoices = async (simId) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/simulations/${simId}/get_choices`);
+    return response.data; // { "GM": [...], "Sony": [...] } 반환
+  } catch (error) {
+    console.error("Error getting agent choices:", error);
+    throw error;
+  }
+};
+
+// [신규] 2. 사용자가 선택한 결정을 서버로 전송하여 턴 실행
+export const executeTurn = async (simId, decisions) => {
+  try {
+    // decisions = { "GM": {price: ..., reasoning: ...}, "Sony": {...} }
+    const response = await axios.post(
+      `${API_BASE_URL}/simulations/${simId}/execute_turn`,
+      { decisions } // { "decisions": { "GM": ... } } 형태로 래핑하여 전송
+    );
+    return response.data; // { turn, turn_results, ... } 반환
+  } catch (error) {
+    console.error("Error executing turn:", error);
     throw error;
   }
 };

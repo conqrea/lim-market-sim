@@ -196,43 +196,88 @@ class AIAgent:
         [D]의 예산 제약 조건의 한계 내에서, [2. 페르소나]에 맞춰 4가지 지출 항목에 예산을 현명하게 배분하십시오.
 
         # [6. 응답 형식]
-        반드시 5가지 키를 포함한 JSON 형식으로 응답해야 합니다.
-        (총합이 [D]의 예산 한도를 넘지 않도록 주의하십시오.)
-        {{
-            "reasoning": "<1~2줄의 간결한 의사결정 이유. [D]의 예산 한도 내에서 4가지 지출 항목에 예산을 배분.>",
-            "price": <가격 (정수)>,
-            "marketing_brand_spend": <브랜드 인지도 투자 비용 (정수)>,
-            "marketing_promo_spend": <단기 판촉 비용 (정수)>,
-            "rd_innovation_spend": <품질 혁신 R&D 베팅 비용 (정수)>,
-            "rd_efficiency_spend": <원가 절감 R&D 베팅 비용 (정수)>
-        }}
+        반드시 3가지의 논리적인 전략적 선택지를 포함한 JSON 배열 형식으로 응답해야 합니다.
+        각 선택지는 'reasoning', 'probability', 'decision' 키를 포함해야 합니다.
+        'probability'의 총합은 1.0이어야 합니다.
+        예시는 다음과 같습니다.
+        [
+            {{
+                "reasoning": "가장 공격적인 R&D 투자로 기술 격차를 극대화합니다. 단기 손실을 감수합니다.",
+                "probability": 0.6,
+                "decision": {{
+                "price": 20000,
+                "marketing_brand_spend": 1000000,
+                "marketing_promo_spend": 0,
+                "rd_innovation_spend": 8000000,
+                "rd_efficiency_spend": 4000000
+                }}
+            }},
+            {{
+                "reasoning": "경쟁사의 브랜드를 견제하며 균형 잡힌 투자를 집행하는 '현상 유지' 전략입니다.",
+                "probability": 0.3,
+                "decision": {{
+                "price": 22000,
+                "marketing_brand_spend": 4000000,
+                "marketing_promo_spend": 1000000,
+                "rd_innovation_spend": 4000000,
+                "rd_efficiency_spend": 2000000
+                }}
+            }},
+            {{
+                "reasoning": "모든 지출을 중단하고 현금 확보에 주력하는 극단적인 '방어' 전략입니다.",
+                "probability": 0.1,
+                "decision": {{
+                "price": 24000,
+                "marketing_brand_spend": 0,
+                "marketing_promo_spend": 0,
+                "rd_innovation_spend": 0,
+                "rd_efficiency_spend": 0
+                }}
+            }}
+        ]
         """
         
         # --- 7. API 호출 및 파싱 ---
         if self.use_mock:
-            response_text = call_mock_llm_api(prompt)
+            # (Mock API도 배열을 반환하도록 수정해야 함)
+            response_text = call_mock_llm_api(prompt) 
         else:
             response_text = await self.get_gemini_response_async(prompt)
 
         try:
-            decision = extract_and_load_json(response_text)
-            
-            if decision is None:
-                print(f"오류: AI 응답에서 JSON을 추출하지 못했습니다. 응답: {response_text[:100]}...")
-                if "{" not in response_text:
-                    return {"reasoning": response_text, "price": 10000, "marketing_brand_spend": 100000, "marketing_promo_spend": 0, "rd_innovation_spend": 100000, "rd_efficiency_spend": 0}
-                raise json.JSONDecodeError("JSON 파싱 함수가 None을 반환", response_text, 0)
-            
-            # [수정] AI가 구버전으로 응답했을 경우를 대비한 호환성 처리
-            if "marketing_spend" in decision:
-                decision["marketing_brand_spend"] = int(decision.get("marketing_spend", 0))
-                decision["marketing_promo_spend"] = 0
-            if "rd_spend" in decision:
-                decision["rd_innovation_spend"] = int(decision.get("rd_spend", 0))
-                decision["rd_efficiency_spend"] = 0
+            # extract_and_load_json은 이제 JSON '배열(list)'을 반환합니다.
+            choices_list = extract_and_load_json(response_text)
 
-            return decision
-        
+            if choices_list is None or not isinstance(choices_list, list):
+                print(f"오류: AI 응답이 JSON 배열이 아닙니다. 응답: {response_text[:100]}...")
+                raise json.JSONDecodeError("JSON 파싱 함수가 list를 반환하지 않음", response_text, 0)
+
+            # [수정] 각 선택지(choice) 내부의 decision 객체를 검사하여 호환성 처리
+            for choice in choices_list:
+                decision = choice.get("decision", {})
+                if "marketing_spend" in decision:
+                    decision["marketing_brand_spend"] = int(decision.get("marketing_spend", 0))
+                    decision["marketing_promo_spend"] = 0
+                if "rd_spend" in decision:
+                    decision["rd_innovation_spend"] = int(decision.get("rd_spend", 0))
+                    decision["rd_efficiency_spend"] = 0
+                choice["decision"] = decision # 갱신된 decision을 다시 할당
+
+            return choices_list # 단일 decision이 아닌 '선택지 목록(list)'을 반환
+
         except json.JSONDecodeError as e:
-            print(f"오류: LLM 응답이 유효한 JSON이 아닙니다. (에러: {e}) 응답: {response_text[:100]}...")
-            return {"reasoning": "JSON 파싱 오류. 기본값으로 결정.", "price": 10000, "marketing_brand_spend": 100000, "marketing_promo_spend": 0, "rd_innovation_spend": 100000, "rd_efficiency_spend": 0}
+            print(f"오류: LLM 응답이 유효한 JSON 배열이 아닙니다. (에러: {e}) 응답: {response_text[:100]}...")
+            # (에러 발생 시, 기본 선택지 1개를 포함한 '배열'을 반환)
+            return [
+                {
+                    "reasoning": "JSON 파싱 오류. 기본값으로 결정.",
+                    "probability": 1.0,
+                    "decision": {
+                        "price": 10000,
+                        "marketing_brand_spend": 100000,
+                        "marketing_promo_spend": 0,
+                        "rd_innovation_spend": 100000,
+                        "rd_efficiency_spend": 0
+                    }
+                }
+            ]

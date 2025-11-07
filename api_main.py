@@ -75,6 +75,19 @@ class EventInject(BaseModel):
     effect_type: str = Field(..., example="unit_cost_multiplier") # 'quality_shock', 'brand_shock' 등
     impact_value: float = Field(..., example=1.2)
     duration: int = Field(3, gt=0)
+
+class AgentFinalDecision(BaseModel):
+    price: int
+    marketing_brand_spend: int
+    marketing_promo_spend: int
+    rd_innovation_spend: int
+    rd_efficiency_spend: int
+    reasoning: str # AI의 reasoning도 함께 받아서 로그용으로 저장
+
+class ExecuteTurnRequest(BaseModel):
+    # 예: { "GM": AgentFinalDecision(...), "Sony": AgentFinalDecision(...) }
+    decisions: Dict[str, AgentFinalDecision]
+
 # --- (Pydantic 모델 끝) ---
 
 
@@ -254,83 +267,70 @@ def _validate_and_clean_ai_decisions(
 
     return ai_decisions_cleaned, ai_reasoning
 
-
-@app.post("/simulations/{sim_id}/next_turn")
-async def run_next_turn(sim_id: str):
+@app.post("/simulations/{sim_id}/get_choices")
+async def get_agent_choices(sim_id: str):
     if sim_id not in active_simulations:
         raise HTTPException(status_code=404, detail="시뮬레이션을 찾을 수 없습니다.")
-    
+
     sim_data = active_simulations[sim_id]
     market: MarketSimulator = sim_data["market"]
     agents: List[AIAgent] = sim_data["agents"] 
     sim_config = market.config
-    
+
     if market.turn >= sim_config.get("total_turns", 30):
         raise HTTPException(status_code=400, detail="시뮬레이션이 이미 종료되었습니다.")
 
     tasks = []
     for agent in agents:
         agent_state = _get_agent_specific_state(market, agent, agents)
-        tasks.append(agent.decide_action(agent_state))
-    
-    ai_decisions_raw_list = await asyncio.gather(*tasks)
-    ai_decisions_raw = {agent.name: decision for agent, decision in zip(agents, ai_decisions_raw_list)}
-    
-    ai_decisions_cleaned, ai_reasoning = _validate_and_clean_ai_decisions(ai_decisions_raw, market)
-    
+        tasks.append(agent.decide_action(agent_state)) # agent.py는 이제 '선택지 목록'을 반환
+
+    # choices_list_per_agent = [ [...], [...] ]
+    choices_list_per_agent = await asyncio.gather(*tasks)
+
+    # 프론트엔드가 쓰기 편하게 { "AgentName": [...] } 딕셔너리로 변환
+    agent_choices_map = {
+        agent.name: choices 
+        for agent, choices in zip(agents, choices_list_per_agent)
+    }
+
+    # 아직 턴을 실행하지 않고, '선택지'만 반환
+    return agent_choices_map
+
+@app.post("/simulations/{sim_id}/execute_turn")
+async def execute_turn(sim_id: str, request: ExecuteTurnRequest):
+    if sim_id not in active_simulations:
+        raise HTTPException(status_code=404, detail="시뮬레이션을 찾을 수 없습니다.")
+
+    sim_data = active_simulations[sim_id]
+    market: MarketSimulator = sim_data["market"]
+
+    # 프론트엔드가 '선택지'에서 'decision' 객체만 뽑아서 보냈다고 가정
+    # { "GM": {"price": ...}, "Sony": {"price": ...} }
+    decisions_to_validate = {
+        name: decision.model_dump() for name, decision in request.decisions.items()
+    }
+
+    # 기존 검증 함수 재활용
+    ai_decisions_cleaned, ai_reasoning = _validate_and_clean_ai_decisions(
+        decisions_to_validate, market
+    )
+
+    # 턴 실행!
     next_state = market.process_turn(ai_decisions_cleaned)
     turn_results = market.history[-1] if market.history else {}
-    
+
+    # AI 로그도 reasoning을 포함하여 반환
+    reasoning_log = {
+        name: decision.reasoning for name, decision in request.decisions.items()
+    }
+
     return {
         "turn": market.turn,
         "turn_results": turn_results,
-        "ai_reasoning": ai_reasoning,
+        "ai_reasoning": reasoning_log, # 사용자가 선택한 전략의 reasoning
         "next_state": next_state
     }
-
-
-@app.post("/simulations/{sim_id}/run_turns")
-async def run_multiple_turns(sim_id: str, turns_to_run: int = 1):
-    if sim_id not in active_simulations:
-        raise HTTPException(status_code=404, detail="시뮬레이션을 찾을 수 없습니다.")
-    
-    sim_data = active_simulations[sim_id]
-    market: MarketSimulator = sim_data["market"]
-    agents: List[AIAgent] = sim_data["agents"] 
-    sim_config = market.config
-    
-    results_history = []
-    reasoning_history = []
-    turns_ran = 0
-
-    for _ in range(turns_to_run):
-        if market.turn >= sim_config.get("total_turns", 30):
-            break
-            
-        tasks = []
-        for agent in agents:
-            agent_state = _get_agent_specific_state(market, agent, agents)
-            tasks.append(agent.decide_action(agent_state))
-        
-        ai_decisions_raw_list = await asyncio.gather(*tasks)
-        ai_decisions_raw = {agent.name: decision for agent, decision in zip(agents, ai_decisions_raw_list)}
-        
-        ai_decisions_cleaned, ai_reasoning = _validate_and_clean_ai_decisions(ai_decisions_raw, market)
-        
-        next_state = market.process_turn(ai_decisions_cleaned)
-        
-        results_history.append(market.history[-1])
-        reasoning_history.append({"turn": market.turn, "reasoning": ai_reasoning})
-        turns_ran += 1
-
-    return {
-        "turns_ran": turns_ran,
-        "final_turn": market.turn,
-        "results_history": results_history,
-        "reasoning_history": reasoning_history,
-        "final_state": market.get_market_state()
-    }
-
 
 @app.post("/simulations/{sim_id}/inject_event")
 async def inject_event_into_simulation(sim_id: str, event: EventInject):

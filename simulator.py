@@ -287,12 +287,21 @@ class MarketSimulator:
                 current_turn_results[f"{name}_accumulated_profit"] = self.companies[name]['accumulated_profit']
                 current_turn_results[f"{name}_product_quality"] = self.companies[name]['product_quality']
                 current_turn_results[f"{name}_brand_awareness"] = self.companies[name]['brand_awareness']
+                current_turn_results[f"{name}_marketing_brand_spend"] = 0
+                current_turn_results[f"{name}_marketing_promo_spend"] = 0
+                current_turn_results[f"{name}_rd_innovation_spend"] = 0
+                current_turn_results[f"{name}_rd_efficiency_spend"] = 0
                 continue 
 
             price = all_decisions[name]['price']
             # (총 지출액 기록)
             marketing_spend = active_decisions[name].get('marketing_spend', 0)
             rd_spend = active_decisions[name].get('rd_spend', 0)
+
+            mkt_brand = all_decisions[name].get('marketing_brand_spend', 0)
+            mkt_promo = all_decisions[name].get('marketing_promo_spend', 0)
+            rd_inno = all_decisions[name].get('rd_innovation_spend', 0)
+            rd_eff = all_decisions[name].get('rd_efficiency_spend', 0)
             
             sales_volume = self.config['market_size'] * share
             revenue = sales_volume * price
@@ -317,6 +326,10 @@ class MarketSimulator:
             current_turn_results[f"{name}_accumulated_profit"] = self.companies[name]['accumulated_profit']
             current_turn_results[f"{name}_product_quality"] = self.companies[name]['product_quality']
             current_turn_results[f"{name}_brand_awareness"] = self.companies[name]['brand_awareness']
+            current_turn_results[f"{name}_marketing_brand_spend"] = mkt_brand
+            current_turn_results[f"{name}_marketing_promo_spend"] = mkt_promo
+            current_turn_results[f"{name}_rd_innovation_spend"] = rd_inno
+            current_turn_results[f"{name}_rd_efficiency_spend"] = rd_eff
 
         self.history.append(current_turn_results)
 

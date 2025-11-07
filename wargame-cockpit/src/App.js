@@ -12,7 +12,7 @@ const COMPANY_COLORS = {
   Samsung: '#ffc658',
 };
 
-const QUARTERLY_REPORT_INTERVAL = 4;
+// [수정] QUARTERLY_REPORT_INTERVAL (L15) 삭제됨 (사용되지 않음)
 
 // [신규] GM vs Toyota 시나리오를 위한 기본 설정값
 const defaultGlobalConfig = {
@@ -80,32 +80,52 @@ function App() {
   const [globalConfig, setGlobalConfig] = useState(defaultGlobalConfig);
   const [companiesConfig, setCompaniesConfig] = useState(defaultCompaniesConfig);
 
+  const [choiceOptions, setChoiceOptions] = useState(null);
+  const [selectedDecisions, setSelectedDecisions] = useState({});
+  const [isWaitingForChoice, setIsWaitingForChoice] = useState(false);
+
   // 차트 라인 생성
-  const getChartLines = (dataKeySuffix) => {
-    return companyNames.map((name) => ({
-      name: name,
-      dataKey: `${name}${dataKeySuffix}`,
-      color: COMPANY_COLORS[name] || '#ff7300'
-    }));
+  // [수정] 1: 함수 시그니처를 (dataKeySuffix) -> (names)로 변경
+  const getChartLines = (names) => { 
+    const lines = {
+      accumulated_profit: [],
+      market_share: [],
+      price: [],
+
+      // [신규] 마케팅 상세
+      marketing_brand_spend: [],
+      marketing_promo_spend: [],
+
+      // [신규] R&D 상세
+      rd_innovation_spend: [],
+      rd_efficiency_spend: [],
+
+      unit_cost: [],
+      product_quality: [],
+      brand_awareness: [],
+    };
+
+    // [수정] 2: state (companyNames) 대신 파라미터 (names)를 사용
+    names.forEach((name, index) => { 
+      const color = COMPANY_COLORS[name] || '#000';
+      lines.accumulated_profit.push({ dataKey: `${name}_accumulated_profit`, stroke: color });
+      lines.market_share.push({ dataKey: `${name}_market_share`, stroke: color });
+      lines.price.push({ dataKey: `${name}_price`, stroke: color });
+
+      // [신규] 상세 변수 추가
+      lines.marketing_brand_spend.push({ dataKey: `${name}_marketing_brand_spend`, stroke: color });
+      lines.marketing_promo_spend.push({ dataKey: `${name}_marketing_promo_spend`, stroke: color });
+      lines.rd_innovation_spend.push({ dataKey: `${name}_rd_innovation_spend`, stroke: color });
+      lines.rd_efficiency_spend.push({ dataKey: `${name}_rd_efficiency_spend`, stroke: color });
+
+      lines.unit_cost.push({ dataKey: `${name}_unit_cost`, stroke: color });
+      lines.product_quality.push({ dataKey: `${name}_product_quality`, stroke: color });
+      lines.brand_awareness.push({ dataKey: `${name}_brand_awareness`, stroke: color });
+    });
+    return lines;
   };
   
-  // 'Others'를 포함한 모든 경쟁사 라인 생성
-  const getAllCompetitorLines = (dataKeySuffix) => {
-    if (history.length === 0) return [];
-    
-    const allNames = new Set();
-    Object.keys(history[0]).forEach(key => {
-      if (key !== 'turn' && key.includes('_')) {
-        allNames.add(key.split('_')[0]);
-      }
-    });
-    
-    return Array.from(allNames).map((name, index) => ({
-      name: name,
-      dataKey: `${name}${dataKeySuffix}`,
-      color: COMPANY_COLORS[name] || (['#8884d8', '#82ca9d', '#ffc658', '#ff7300'][index % 4])
-    }));
-  };
+  // [수정] 3: 'getAllCompetitorLines' (L160-L177) 함수 전체 삭제 (사용되지 않음)
   
   // 설정값 변경 핸들러
   const handleGlobalConfigChange = (e) => {
@@ -159,27 +179,71 @@ function App() {
   };
 
   // 턴 실행 핸들러
-  const handleRunTurns = async (turns) => {
+  // [수정] '다음 1턴' 버튼이 이 함수를 호출
+  const handleGetChoices = async () => {
     if (!simulationId || isLoading) return;
 
     setIsLoading(true);
     setError(null);
-
     try {
-      const data = await api.runMultipleTurns(simulationId, turns);
-      
-      setHistory(prevHistory => [...prevHistory, ...data.results_history]);
-      setCurrentTurn(data.final_state.turn);
-      
-      setAiReasoning(prev => [...prev, ...data.reasoning_history.map(r => ({
-        turn: r.turn,
-        reasons: Object.entries(r.reasoning).map(([name, reason]) => `[${name}]: ${reason}`)
-      }))]);
-
+      // 1. API를 호출해 선택지를 받아옴
+      const choices = await api.getDecisionChoices(simulationId);
+      setChoiceOptions(choices); // { "GM": [...], "Sony": [...] }
+      setIsWaitingForChoice(true); // 선택 대기 모드 활성화
+      setSelectedDecisions({}); // 이전 선택 초기화
     } catch (err) {
-      setError(`턴 ${turns}회 진행 실패: ` + err.message);
+      setError(`선택지 요청 실패: ` + err.message);
     }
     setIsLoading(false);
+  };
+
+  const handleExecuteTurn = async () => {
+    if (!simulationId || isLoading || !isWaitingForChoice) return;
+
+    setIsLoading(true);
+    setError(null);
+    try {
+      // 1. 선택된 결정들을 { "GM": {...}, "Sony": {...} } 형태로 모음
+      const decisionsToExecute = {};
+      companyNames.forEach(name => {
+        if (selectedDecisions[name]) {
+          // 'decision' 객체와 'reasoning'을 함께 넘김
+          decisionsToExecute[name] = {
+            ...selectedDecisions[name].decision,
+            reasoning: selectedDecisions[name].reasoning
+          };
+        }
+      });
+
+      // 2. API로 전송하여 턴 실행
+      const data = await api.executeTurn(simulationId, decisionsToExecute);
+
+      // 3. (기존 runMultipleTurns의 성공 로직과 동일)
+      setHistory(prevHistory => [...prevHistory, data.turn_results]);
+      setCurrentTurn(data.turn);
+
+      setAiReasoning(prev => [...prev, {
+        turn: data.turn,
+        reasons: Object.entries(data.ai_reasoning).map(([name, reason]) => `[${name}]: ${reason}`)
+      }]);
+
+      // 4. 선택 모드 종료 및 초기화
+      setIsWaitingForChoice(false);
+      setChoiceOptions(null);
+      setSelectedDecisions({});
+
+    } catch (err) {
+      setError(`턴 실행 실패: ` + err.message);
+    }
+    setIsLoading(false);
+  };
+
+  // [신규] 사용자가 특정 AI의 특정 선택지를 클릭할 때 호출됨
+  const handleSelectChoice = (agentName, choice) => {
+    setSelectedDecisions(prev => ({
+      ...prev,
+      [agentName]: choice // choice = { reasoning, probability, decision }
+    }));
   };
   
   // [수정] CSV 다운로드 핸들러 추가
@@ -285,10 +349,13 @@ function App() {
     </div>
   );
 
+  // [수정] 4: 함수를 호출할 때 정의된 파라미터(companyNames)를 전달
+  const chartLines = getChartLines(companyNames);
+
   return (
     <div style={{ fontFamily: 'sans-serif', padding: '20px', maxWidth: '1600px', margin: 'auto' }}>
       <h1 style={{ textAlign: 'center', color: '#333' }}>🤖 AI 전략 워게임 시뮬레이터 (v2: Dynamic Asset Model)</h1>
-      
+
       {/* 설정/제어 버튼 */}
       <button onClick={() => setShowConfig(prev => !prev)} style={{ marginBottom: '10px' }}>
         {showConfig ? '▼ 설정창 닫기' : '► 설정창 열기'}
@@ -298,29 +365,60 @@ function App() {
       {showConfig && renderConfigUI()}
 
       {/* 2. 실행 제어 UI */}
-      {!showConfig && simulationId && (
+      {!showConfig && simulationId && !isWaitingForChoice && (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', padding: '10px', border: '1px solid #ccc', borderRadius: '8px' }}>
-          <button onClick={() => handleRunTurns(1)} disabled={isLoading || currentTurn >= totalTurns}>
-            다음 1턴 (Turn: {currentTurn}/{totalTurns})
-          </button>
-          <button onClick={() => handleRunTurns(QUARTERLY_REPORT_INTERVAL)} disabled={isLoading || currentTurn >= totalTurns}>
-            다음 1분기 ({QUARTERLY_REPORT_INTERVAL}턴)
-          </button>
-          <button onClick={() => handleRunTurns(totalTurns - currentTurn)} disabled={isLoading || currentTurn >= totalTurns}>
-            전체 실행
+          <button onClick={handleGetChoices} disabled={isLoading || currentTurn >= totalTurns}>
+            다음 1턴 결정 보기 (Turn: {currentTurn}/{totalTurns})
           </button>
           
           {/* [수정] CSV 다운로드 버튼 추가 */}
           <button 
             onClick={handleDownloadCSV} 
             disabled={history.length === 0 || isLoading}
-            style={{ backgroundColor: '#28a745', color: 'white', marginLeft: 'auto' }}
-          >
+            style={{ backgroundColor: '#28a745', color: 'white', marginLeft: 'auto' }}>
             결과 다운로드 (CSV)
           </button>
 
           {isLoading && <div style={{ color: 'blue' }}>(시뮬레이션 진행 중...)</div>}
           {error && <div style={{ color: 'red' }}>[오류] {error}</div>}
+        </div>
+      )}
+
+      {/* [신규] 2.5. 결정 선택 UI */}
+      {isWaitingForChoice && choiceOptions && (
+        <div style={{ marginTop: '20px', padding: '10px', border: '1px solid #007bff', borderRadius: '8px' }}>
+          <h3 style={{ textAlign: 'center' }}>결정 대기 중: {currentTurn + 1}턴 </h3>
+          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${companyNames.length}, 1fr)`, gap: '10px' }}>
+              {companyNames.map(name => (
+              <div key={name} style={{ border: '1px solid #ccc', padding: '10px' }}>
+                <h4 style={{ color: COMPANY_COLORS[name] || '#000' }}>{name}의 전략</h4>
+                {choiceOptions[name] && choiceOptions[name].map((choice, index) => {
+                  const isSelected = selectedDecisions[name] === choice;
+                  return (
+                    <button 
+                      key={index}
+                      onClick={() => handleSelectChoice(name, choice)}
+                      style={{ 
+                        display: 'block', width: '100%', marginBottom: '5px', 
+                        backgroundColor: isSelected ? '#007bff' : '#f0f0f0',
+                        color: isSelected ? 'white' : 'black',
+                        border: '1px solid #ccc', padding: '8px', textAlign: 'left'
+                      }}>
+                      <strong>전략 {index + 1} (확률: {(choice.probability * 100).toFixed(0)}%)</strong>
+                      <p style={{ fontSize: '0.9em', margin: '4px 0' }}>{choice.reasoning}</p>
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
+
+          </div>
+          <button 
+            onClick={handleExecuteTurn} 
+            disabled={isLoading || Object.keys(selectedDecisions).length < companyNames.length}
+            style={{ width: '100%', padding: '15px', fontSize: '1.2em', backgroundColor: 'green', color: 'white', marginTop: '10px' }}>
+            선택 완료 및 {currentTurn + 1}턴 실행
+          </button>
         </div>
       )}
 
@@ -344,52 +442,22 @@ function App() {
       {/* 4. 차트 그리드 (새로운 자산 변수 표시) */}
       <div style={{ 
         display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+        gridTemplateColumns: 'repeat(5, 1fr)',
         gap: '20px', 
         marginTop: '20px' 
       }}>
-        {/* 1. [신규] 제품 품질 */}
-        <SimulationChart
-          title="제품 품질 (Product Quality)"
-          data={history}
-          yLabel="제품 품질 (점)"
-          lines={getAllCompetitorLines('_product_quality')}
-        />
-        {/* 2. [신규] 브랜드 인지도 */}
-        <SimulationChart
-          title="브랜드 인지도 (Brand Awareness)"
-          data={history}
-          yLabel="브랜드 인지도 (점)"
-          lines={getAllCompetitorLines('_brand_awareness')}
-        />
-        {/* 3. 시장 점유율 */}
-        <SimulationChart
-          title="시장 점유율 (Market Share)"
-          data={history}
-          yLabel="시장 점유율 (%)"
-          lines={getAllCompetitorLines('_market_share')}
-        />
-        {/* 4. 누적 이익 */}
-        <SimulationChart
-          title="누적 이익 (Accumulated Profit)"
-          data={history}
-          yLabel="누적 이익"
-          lines={getChartLines('_accumulated_profit')}
-        />
-        {/* 5. 가격 */}
-        <SimulationChart
-          title="가격 (Price)"
-          data={history}
-          yLabel="가격"
-          lines={getAllCompetitorLines('_price')}
-        />
-        {/* 6. 단위 원가 */}
-        <SimulationChart
-          title="단위 원가 (Unit Cost)"
-          data={history}
-          yLabel="단위 원가"
-          lines={getAllCompetitorLines('_unit_cost')}
-        />
+          {/* 1. [신규] 제품 품질 */}
+          <SimulationChart data={history} lines={chartLines.accumulated_profit} title="누적 이익" />
+          <SimulationChart data={history} lines={chartLines.market_share} title="시장 점유율" format={(v) => `${(v * 100).toFixed(1)}%`} />
+          <SimulationChart data={history} lines={chartLines.price} title="제품 가격" />
+          <SimulationChart data={history} lines={chartLines.marketing_brand_spend} title="마케팅 (브랜드) 지출" />
+          <SimulationChart data={history} lines={chartLines.marketing_promo_spend} title="마케팅 (판촉) 지출" />
+          <SimulationChart data={history} lines={chartLines.rd_innovation_spend} title="R&D (품질 혁신) 지출" />
+          <SimulationChart data={history} lines={chartLines.rd_efficiency_spend} title="R&D (원가 절감) 지출" />
+
+          <SimulationChart data={history} lines={chartLines.unit_cost} title="단위 원가" />
+          <SimulationChart data={history} lines={chartLines.product_quality} title="제품 품질" />
+          <SimulationChart data={history} lines={chartLines.brand_awareness} title="브랜드 인지도" />
       </div>
     </div>
   );
