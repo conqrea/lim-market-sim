@@ -1,6 +1,6 @@
 // wargame-cockpit/src/App.js
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import SimulationChart from './SimulationChart';
 import * as api from './apiService'; // apiService 임포트
 
@@ -11,8 +11,6 @@ const COMPANY_COLORS = {
   Apple: '#aaaaaa',
   Samsung: '#ffc658',
 };
-
-// [수정] QUARTERLY_REPORT_INTERVAL (L15) 삭제됨 (사용되지 않음)
 
 // [신규] GM vs Toyota 시나리오를 위한 기본 설정값
 const defaultGlobalConfig = {
@@ -83,49 +81,40 @@ function App() {
   const [choiceOptions, setChoiceOptions] = useState(null);
   const [selectedDecisions, setSelectedDecisions] = useState({});
   const [isWaitingForChoice, setIsWaitingForChoice] = useState(false);
+  const [isAutoRun, setIsAutoRun] = useState(false);
+  const [isLooping, setIsLooping] = useState(false);
+  
 
   // 차트 라인 생성
-  // [수정] 1: 함수 시그니처를 (dataKeySuffix) -> (names)로 변경
   const getChartLines = (names) => { 
     const lines = {
       accumulated_profit: [],
       market_share: [],
       price: [],
-
-      // [신규] 마케팅 상세
       marketing_brand_spend: [],
       marketing_promo_spend: [],
-
-      // [신규] R&D 상세
       rd_innovation_spend: [],
       rd_efficiency_spend: [],
-
       unit_cost: [],
       product_quality: [],
       brand_awareness: [],
     };
 
-    // [수정] 2: state (companyNames) 대신 파라미터 (names)를 사용
     names.forEach((name, index) => { 
       const color = COMPANY_COLORS[name] || '#000';
       lines.accumulated_profit.push({ dataKey: `${name}_accumulated_profit`, stroke: color });
       lines.market_share.push({ dataKey: `${name}_market_share`, stroke: color });
       lines.price.push({ dataKey: `${name}_price`, stroke: color });
-
-      // [신규] 상세 변수 추가
       lines.marketing_brand_spend.push({ dataKey: `${name}_marketing_brand_spend`, stroke: color });
       lines.marketing_promo_spend.push({ dataKey: `${name}_marketing_promo_spend`, stroke: color });
       lines.rd_innovation_spend.push({ dataKey: `${name}_rd_innovation_spend`, stroke: color });
       lines.rd_efficiency_spend.push({ dataKey: `${name}_rd_efficiency_spend`, stroke: color });
-
       lines.unit_cost.push({ dataKey: `${name}_unit_cost`, stroke: color });
       lines.product_quality.push({ dataKey: `${name}_product_quality`, stroke: color });
       lines.brand_awareness.push({ dataKey: `${name}_brand_awareness`, stroke: color });
     });
     return lines;
   };
-  
-  // [수정] 3: 'getAllCompetitorLines' (L160-L177) 함수 전체 삭제 (사용되지 않음)
   
   // 설정값 변경 핸들러
   const handleGlobalConfigChange = (e) => {
@@ -178,12 +167,11 @@ function App() {
     setIsLoading(false);
   };
 
-  // 턴 실행 핸들러
-  // [수정] '다음 1턴' 버튼이 이 함수를 호출
-  const handleGetChoices = async () => {
-    if (!simulationId || isLoading) return;
 
-    setIsLoading(true);
+  // [수정 1] handleGetChoices (isLoading 로직 제거)
+  const handleGetChoices = useCallback(async () => {
+    if (!simulationId) return; // (이전 수정에서 isWaitingForChoice 가드는 제거됨)
+    
     setError(null);
     try {
       // 1. API를 호출해 선택지를 받아옴
@@ -193,21 +181,28 @@ function App() {
       setSelectedDecisions({}); // 이전 선택 초기화
     } catch (err) {
       setError(`선택지 요청 실패: ` + err.message);
+      setIsAutoRun(false);
+      setIsLooping(false);
+      setIsLoading(false); 
+      throw err; // [수정] 에러를 호출부로 전파
     }
-    setIsLoading(false);
-  };
 
-  const handleExecuteTurn = async () => {
+  }, [simulationId]); // (이전 수정에서 isWaitingForChoice 의존성 제거됨)
+
+  // [수정 2] handleExecuteTurn (isLoading을 여기서 모두 관리)
+  const handleExecuteTurn = useCallback(async () => {
+    // 1. 가드 클로즈
     if (!simulationId || isLoading || !isWaitingForChoice) return;
 
+    // 2. 턴 실행은 항상 로딩 상태
     setIsLoading(true);
     setError(null);
+
     try {
-      // 1. 선택된 결정들을 { "GM": {...}, "Sony": {...} } 형태로 모음
+      // 3. API 전송 데이터 준비
       const decisionsToExecute = {};
       companyNames.forEach(name => {
         if (selectedDecisions[name]) {
-          // 'decision' 객체와 'reasoning'을 함께 넘김
           decisionsToExecute[name] = {
             ...selectedDecisions[name].decision,
             reasoning: selectedDecisions[name].reasoning
@@ -215,28 +210,105 @@ function App() {
         }
       });
 
-      // 2. API로 전송하여 턴 실행
+      // 4. API로 전송하여 턴 실행
       const data = await api.executeTurn(simulationId, decisionsToExecute);
 
-      // 3. (기존 runMultipleTurns의 성공 로직과 동일)
+      // 5. 턴 결과 업데이트
       setHistory(prevHistory => [...prevHistory, data.turn_results]);
       setCurrentTurn(data.turn);
-
       setAiReasoning(prev => [...prev, {
         turn: data.turn,
         reasons: Object.entries(data.ai_reasoning).map(([name, reason]) => `[${name}]: ${reason}`)
       }]);
 
-      // 4. 선택 모드 종료 및 초기화
+      // 6. 선택 모드 종료 및 초기화
       setIsWaitingForChoice(false);
       setChoiceOptions(null);
       setSelectedDecisions({});
 
+      // 7. 다음 턴 상태 확인
+      const nextTurn = data.turn;
+      const total = totalTurns;
+      const isLastTurn = nextTurn >= total;
+
+      const shouldContinueLoop = isLooping && !isLastTurn;
+
+      // 8. '루프 모드'이면서 마지막 턴이 아닌 경우: 다음 선택지 로드
+      if (shouldContinueLoop) {
+        if (isLooping) console.log(`Looping: Turn ${nextTurn} complete. Fetching choices...`);
+        
+        await handleGetChoices(); 
+        
+        // [핵심 수정] 
+        // 다음 턴 선택지를 받아왔으므로, 사용자 입력을 위해 '로딩' 해제
+        setIsLoading(false); 
+
+      } 
+      // 9. '단일 턴 실행'이었거나 마지막 턴인 경우: 루프 중지
+      else {
+        if (isLooping && isLastTurn) {
+          console.log("Looping: All turns complete. Stopping loop.");
+        }
+        // [수정] 루프가 멈추는 모든 경우
+        setIsLooping(false); 
+        setIsLoading(false); // [수정] 로딩을 여기서 해제
+      }
+
+      // 10. [핵심 수정] (이전 수정의 'else' 블록으로 모두 이동됨)
+      // setIsLoading(false); // (이 라인 삭제)
+
     } catch (err) {
       setError(`턴 실행 실패: ` + err.message);
+      setIsAutoRun(false);
+      setIsLooping(false);
+      setIsLoading(false); // 에러 시에도 로딩 해제
     }
-    setIsLoading(false);
+
+  }, [
+    simulationId, isLoading, isWaitingForChoice, companyNames, 
+    selectedDecisions, totalTurns, handleGetChoices, isLooping
+  ]);
+
+  // [신규] '다음 1턴' 버튼 클릭 시
+  const handleGetOneTurnChoices = async () => {
+      if (isLoading || isLooping) return; // 중복 클릭 방지
+
+      setIsLoading(true); // <-- 로딩 시작
+      try {
+          await handleGetChoices();
+          // 성공 시, choice UI가 뜸
+      } catch (err) {
+          // handleGetChoices가 이미 에러 처리 및 로딩/루프 중단
+          console.error("1턴 선택지 로딩 실패:", err);
+      }
+      setIsLoading(false); // <-- 로딩 종료 (선택지 UI가 뜰 때)
   };
+
+  const handleRunAllTurns = useCallback(async () => {
+    // 1. 가드 클로즈
+    if (isLoading || currentTurn >= totalTurns || isLooping) return;
+    
+    console.log("--- [Looping] '남은 턴 모두 실행' 시작 ---");
+    
+    // 2. 루프 및 로딩 상태 설정
+    setIsLooping(true);
+    setIsLoading(true); // <--- 로딩 시작
+
+    try {
+      // 3. await을 사용하여 첫 턴의 선택지를 확실히 받아옴
+      await handleGetChoices(); 
+      
+      // 4. [핵심 수정] 
+      setIsLoading(false);
+      
+    } catch (err) {
+      // 5. 에러 발생 시 모든 상태 초기화
+      setError("첫 턴 선택지 로딩 중 오류: " + err.message);
+      setIsLooping(false);
+      setIsLoading(false);
+    }
+  
+  }, [isLoading, currentTurn, totalTurns, isLooping, /* isAutoRun 제거됨 */ handleGetChoices]);
 
   // [신규] 사용자가 특정 AI의 특정 선택지를 클릭할 때 호출됨
   const handleSelectChoice = (agentName, choice) => {
@@ -245,8 +317,73 @@ function App() {
       [agentName]: choice // choice = { reasoning, probability, decision }
     }));
   };
+
+  // [신규] 자동 실행 훅 1: 선택지가 도착하면 최고 확률을 '선택'
+  useEffect(() => {
+    // 자동 실행 모드가 아니거나, 선택 대기 상태가 아니거나, 선택지가 없으면 중단
+    if (!isAutoRun || !isWaitingForChoice || !choiceOptions || isLoading) {
+      return;
+    }
+
+    console.log("Auto-run: Choices detected, selecting best probability.");
+
+    const selectedForState = {};
+    let allAgentsHaveChoices = true;
+
+    companyNames.forEach(name => {
+      const choices = choiceOptions[name];
+      if (!choices || choices.length === 0) {
+        allAgentsHaveChoices = false;
+        return;
+      }
+      // 확률(probability)이 가장 높은 선택지를 찾습니다.
+      const bestChoice = choices.reduce((max, current) =>
+        current.probability > max.probability ? current : max, choices[0]);
+      
+      selectedForState[name] = bestChoice;
+    });
+
+    if (allAgentsHaveChoices) {
+      // 찾은 선택지를 state에 저장 (이것이 훅 2를 트리거함)
+      setSelectedDecisions(selectedForState);
+    } else {
+      console.error("Auto-run: No choices for an agent. Stopping.");
+      setIsAutoRun(false); // 문제가 생기면 자동 실행 중지
+    }
+  }, [
+    isAutoRun, isWaitingForChoice, isLoading, choiceOptions,
+    companyNames
+  ]); // 의존성 배열
+
+  // [신규] 자동 실행 훅 2: 모든 선택이 완료되면 '실행'
+  useEffect(() => {
+    // 1. 이 훅은 '모두 실행' (isLooping: true) 모드에서만 자동으로 턴을 실행합니다.
+    // 2. '1턴 보기' (!isLooping) 모드에서는 (자동/수동)선택만 하고 멈춘 뒤,
+    //    항상 사용자가 "턴 실행" 버튼을 수동으로 눌러야 합니다.
+    // 3. '모두 실행' 모드라도 로딩 중이거나, 선택 대기 상태가 아니거나,
+    //    모든 회사의 선택이 완료되지 않으면 실행하지 않습니다.
+    if (!isLooping || isLoading || !isWaitingForChoice ||
+        Object.keys(selectedDecisions).length < companyNames.length) {
+      return;
+    }
+    
+    // State 2 (수동 선택 -> 자동 실행) 또는 State 4 (자동 선택 -> 자동 실행)
+    // '모두 실행' 모드이고 모든 선택이 완료되었으므로 턴을 실행합니다.
+    console.log("Looping: Selections confirmed. Executing turn.");
+    handleExecuteTurn();
+
+  }, [
+    // [수정] isAutoRun 의존성 제거: 
+    // 이 훅은 isAutoRun 여부와 관계없이 isLooping과 selectedDecisions에만 의존
+    isLooping, 
+    isWaitingForChoice,  
+    selectedDecisions, 
+    isLoading, 
+    companyNames, 
+    handleExecuteTurn
+  ]); // 의존성 배열
   
-  // [수정] CSV 다운로드 핸들러 추가
+  // CSV 다운로드 핸들러
   const handleDownloadCSV = () => {
     if (history.length === 0) {
       alert("다운로드할 데이터가 없습니다.");
@@ -349,7 +486,6 @@ function App() {
     </div>
   );
 
-  // [수정] 4: 함수를 호출할 때 정의된 파라미터(companyNames)를 전달
   const chartLines = getChartLines(companyNames);
 
   return (
@@ -366,25 +502,66 @@ function App() {
 
       {/* 2. 실행 제어 UI */}
       {!showConfig && simulationId && !isWaitingForChoice && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', padding: '10px', border: '1px solid #ccc', borderRadius: '8px' }}>
-          <button onClick={handleGetChoices} disabled={isLoading || currentTurn >= totalTurns}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', padding: '10px', border: '1px solid #ccc', borderRadius: '8px', alignItems: 'center' }}>
+          <button 
+            onClick={handleGetOneTurnChoices} 
+            disabled={isLoading || (isAutoRun && isLooping)}
+            style={{ 
+              backgroundColor: (isLoading || (isAutoRun && isLooping)) ? '#ccc' : '#007bff', 
+              color: 'white', border: 'none', padding: '8px 12px', borderRadius: '4px' 
+            }}
+          >
             다음 1턴 결정 보기 (Turn: {currentTurn}/{totalTurns})
           </button>
+
+          <button 
+            onClick={handleRunAllTurns}
+            disabled={isLoading || (isAutoRun && isLooping)}
+            style={{ 
+              backgroundColor: (isLoading || (isAutoRun && isLooping)) ? '#ccc' : '#28a745', 
+              color: 'white', border: 'none', padding: '8px 12px', borderRadius: '4px' 
+            }}
+          >
+            🚀 남은 턴 모두 실행
+          </button>
+
+          <div style={{ marginLeft: '10px', display: 'flex', alignItems: 'center' }}>
+            <input
+              type="checkbox"
+              id="autoRunCheck"
+              checked={isAutoRun}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                setIsAutoRun(checked);
+                // 체크를 해제하면 '자동 반복'도 함께 중지
+                if (!checked) {
+                  setIsLooping(false);
+                }
+              }}
+              disabled={isLoading}
+              style={{ marginRight: '5px' }}
+            />
+            <label htmlFor="autoRunCheck" style={{ cursor: 'pointer', userSelect: 'none' }}>
+              {isLooping ? (isAutoRun ? '■ (최고 확률) 자동 반복 중...' : '■ (수동 선택) 자동 반복 중...') : '최고 확률 자동 선택'}
+            </label>
+          </div>
           
-          {/* [수정] CSV 다운로드 버튼 추가 */}
           <button 
             onClick={handleDownloadCSV} 
             disabled={history.length === 0 || isLoading}
-            style={{ backgroundColor: '#28a745', color: 'white', marginLeft: 'auto' }}>
+            style={{ 
+              backgroundColor: (history.length === 0 || isLoading) ? '#ccc' : '#17a2b8', 
+              color: 'white', marginLeft: 'auto', border: 'none', padding: '8px 12px', borderRadius: '4px' 
+            }}>
             결과 다운로드 (CSV)
           </button>
 
-          {isLoading && <div style={{ color: 'blue' }}>(시뮬레이션 진행 중...)</div>}
-          {error && <div style={{ color: 'red' }}>[오류] {error}</div>}
+          {isLoading && <div style={{ color: 'blue', marginLeft: '10px' }}>(시뮬레이션 진행 중...)</div>}
+          {error && <div style={{ color: 'red', marginLeft: '10px' }}>[오류] {error}</div>}
         </div>
       )}
 
-      {/* [신규] 2.5. 결정 선택 UI */}
+      {/* 2.5. 결정 선택 UI */}
       {isWaitingForChoice && choiceOptions && (
         <div style={{ marginTop: '20px', padding: '10px', border: '1px solid #007bff', borderRadius: '8px' }}>
           <h3 style={{ textAlign: 'center' }}>결정 대기 중: {currentTurn + 1}턴 </h3>
@@ -402,7 +579,8 @@ function App() {
                         display: 'block', width: '100%', marginBottom: '5px', 
                         backgroundColor: isSelected ? '#007bff' : '#f0f0f0',
                         color: isSelected ? 'white' : 'black',
-                        border: '1px solid #ccc', padding: '8px', textAlign: 'left'
+                        border: '1px solid #ccc', padding: '8px', textAlign: 'left',
+                        cursor: 'pointer'
                       }}>
                       <strong>전략 {index + 1} (확률: {(choice.probability * 100).toFixed(0)}%)</strong>
                       <p style={{ fontSize: '0.9em', margin: '4px 0' }}>{choice.reasoning}</p>
@@ -416,7 +594,11 @@ function App() {
           <button 
             onClick={handleExecuteTurn} 
             disabled={isLoading || Object.keys(selectedDecisions).length < companyNames.length}
-            style={{ width: '100%', padding: '15px', fontSize: '1.2em', backgroundColor: 'green', color: 'white', marginTop: '10px' }}>
+            style={{ 
+              width: '100%', padding: '15px', fontSize: '1.2em', 
+              backgroundColor: (isLoading || Object.keys(selectedDecisions).length < companyNames.length) ? '#ccc' : '#28a745', 
+              color: 'white', marginTop: '10px', border: 'none', borderRadius: '4px', cursor: 'pointer' 
+            }}>
             선택 완료 및 {currentTurn + 1}턴 실행
           </button>
         </div>
@@ -439,22 +621,20 @@ function App() {
         </div>
       )}
 
-      {/* 4. 차트 그리드 (새로운 자산 변수 표시) */}
+      {/* 4. 차트 그리드 */}
       <div style={{ 
         display: 'grid', 
-        gridTemplateColumns: 'repeat(5, 1fr)',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
         gap: '20px', 
         marginTop: '20px' 
       }}>
-          {/* 1. [신규] 제품 품질 */}
           <SimulationChart data={history} lines={chartLines.accumulated_profit} title="누적 이익" />
           <SimulationChart data={history} lines={chartLines.market_share} title="시장 점유율" format={(v) => `${(v * 100).toFixed(1)}%`} />
           <SimulationChart data={history} lines={chartLines.price} title="제품 가격" />
           <SimulationChart data={history} lines={chartLines.marketing_brand_spend} title="마케팅 (브랜드) 지출" />
           <SimulationChart data={history} lines={chartLines.marketing_promo_spend} title="마케팅 (판촉) 지출" />
           <SimulationChart data={history} lines={chartLines.rd_innovation_spend} title="R&D (품질 혁신) 지출" />
-          <SimulationChart data={history} lines={chartLines.rd_efficiency_spend} title="R&D (원가 절감) 지출" />
-
+          <SimulationChart data={history} lines={chartLines.rd_efficiency_spend} title="R&D (원가 절감) 지D출" />
           <SimulationChart data={history} lines={chartLines.unit_cost} title="단위 원가" />
           <SimulationChart data={history} lines={chartLines.product_quality} title="제품 품질" />
           <SimulationChart data={history} lines={chartLines.brand_awareness} title="브랜드 인지도" />
