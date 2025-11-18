@@ -167,8 +167,8 @@ class MarketSimulator:
             price_competitiveness = (avg_price / max(effective_price, 1)) * 50 
             
             # [수정] 가치 점수 공식 (가중치)
-            quality_weight = 0.5
-            brand_weight = 0.3
+            quality_weight = 0.4
+            brand_weight = 0.4
             price_weight = 0.2
             
             value = (quality * quality_weight) + \

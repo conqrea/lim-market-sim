@@ -634,7 +634,7 @@ function App() {
           <SimulationChart data={history} lines={chartLines.marketing_brand_spend} title="마케팅 (브랜드) 지출" />
           <SimulationChart data={history} lines={chartLines.marketing_promo_spend} title="마케팅 (판촉) 지출" />
           <SimulationChart data={history} lines={chartLines.rd_innovation_spend} title="R&D (품질 혁신) 지출" />
-          <SimulationChart data={history} lines={chartLines.rd_efficiency_spend} title="R&D (원가 절감) 지D출" />
+          <SimulationChart data={history} lines={chartLines.rd_efficiency_spend} title="R&D (원가 절감) 지출" />
           <SimulationChart data={history} lines={chartLines.unit_cost} title="단위 원가" />
           <SimulationChart data={history} lines={chartLines.product_quality} title="제품 품질" />
           <SimulationChart data={history} lines={chartLines.brand_awareness} title="브랜드 인지도" />
