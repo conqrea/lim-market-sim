@@ -1,63 +1,224 @@
-# main.py
+from fastapi import FastAPI, HTTPException, Body
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import List, Dict, Optional, Any
+import uuid
+import random
+import json
+import os
 
-import pandas as pd
-from reporter import generate_report
-from simulator import MarketSimulator
-from agent import AIAgent
-import asyncio # 비동기 실행을 위해 asyncio 임포트
+app = FastAPI()
 
-# main 함수를 비동기(async) 함수로 정의합니다.
-async def main():
-    # --- 1. 시뮬레이션 전체 설정 (기존과 동일) ---
-    TOTAL_TURNS = 30
-    COMPANY_NAMES = ["Apple", "Samsung"]
+# --- [설정] CORS (React 프론트엔드 접속 허용) ---
+origins = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+]
 
-    sim_config = {
-        'price_sensitivity': 2.0,
-        'max_marketing_boost': 1.5,
-        'marketing_midpoint': 5000000,
-        'marketing_steepness': 0.0000015,
-        'market_size': 10000,
-        'unit_costs': {'Apple': 8500, 'Samsung': 9000},
-        'initial_capital': 25000000,
-    }
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-    personas = {
-        "Apple": "당신은 시장 점유율 확보를 최우선으로 하는 공격적인 CEO입니다. 단기 이익 손실을 감수하더라도 경쟁사보다 낮은 가격과 높은 마케팅 비용으로 시장을 지배해야 합니다.",
-        "Samsung": "당신은 안정적인 이익률 유지를 최우선으로 하는 보수적인 CEO입니다. 불필요한 가격 경쟁을 피하고, 비용을 효율적으로 사용하여 수익성을 극대화해야 합니다."
-    }
+# --- [메모리 DB] 시뮬레이션 상태 저장소 ---
+simulations = {}
+presets_db = [] # 프리셋 저장소 (메모리)
+
+# 초기 프리셋 데이터 로드 (예시)
+if not presets_db:
+    presets_db.append({
+        "filename": "golden_balance",
+        "name": "Golden Balance (Phone War)",
+        "description": "A balanced market for high-end smartphones. Profit-focused AI.",
+        "config": {
+             "total_turns": 20,
+             "market_size": 50000,
+             "initial_capital": 1000000000,
+             "physics": {
+                 "price_sensitivity": 3.5,
+                 "marketing_efficiency": 2.5,
+                 "weight_quality": 0.5,
+                 "weight_brand": 0.3,
+                 "weight_price": 0.2
+             }
+        }
+    })
+
+# --- [Pydantic 모델] 데이터 검증용 ---
+class PhysicsConfig(BaseModel):
+    weight_quality: float = 0.5
+    weight_brand: float = 0.3
+    weight_price: float = 0.2
+    price_sensitivity: float = 3.5
+    marketing_efficiency: float = 2.5
+    others_overall_competitiveness: float = 0.8
+
+class CompanyConfig(BaseModel):
+    name: str
+    persona: str
+    initial_unit_cost: float
+    initial_market_share: float
+    initial_product_quality: float
+    initial_brand_awareness: float
+
+class GlobalConfig(BaseModel):
+    total_turns: int = 20
+    market_size: float = 50000
+    initial_capital: float = 1000000000
     
-    # --- 2. 시뮬레이션 환경 및 에이전트 생성 (기존과 동일) ---
-    market = MarketSimulator(COMPANY_NAMES, sim_config)
-    agents = [AIAgent(name=name, persona=personas[name], use_mock=False) for name in COMPANY_NAMES]
+    gdp_growth_rate: float = 0.02
+    inflation_rate: float = 0.005
     
-    # --- 3. 시뮬레이션 실행 (메인 루프) ---
-    for turn in range(1, TOTAL_TURNS + 1):
-        print(f"\n{'='*20} Turn {turn}/{TOTAL_TURNS} 시작 {'='*20}")
-        market_state = market.get_market_state()
+    rd_innovation_threshold: float = 30000000.0
+    rd_innovation_impact: float = 15.0
+    rd_efficiency_threshold: float = 50000000.0
+    rd_efficiency_impact: float = 0.05
+    
+    marketing_cost_base: float = 3000000.0
+    marketing_cost_multiplier: float = 1.5
+    
+    quality_decay_rate: float = 0.05
+    brand_decay_rate: float = 0.1
+    
+    physics: PhysicsConfig
+    companies: List[CompanyConfig]
+    preset_name: Optional[str] = None
 
-        # [핵심 변경]
-        # 1. 두 AI의 결정 함수를 '작업 목록'으로 만듭니다. (아직 실행은 안 함)
-        tasks = [agent.decide_action(market_state) for agent in agents]
-        
-        # 2. asyncio.gather가 두 AI의 작업을 '동시에' 실행하고 결과가 모두 올 때까지 기다립니다.
-        decisions_list = await asyncio.gather(*tasks)
-        
-        # 3. 결과를 시뮬레이터가 이해하는 형태로 변환합니다.
-        decisions = {agent.name: decision for agent, decision in zip(agents, decisions_list)}
-        
-        print(f"AI들의 결정: {decisions}")
-        market.process_turn(decisions)
-        
-    print(f"\n{'='*20} 시뮬레이션 종료 {'='*20}")
+class DecisionInput(BaseModel):
+    price: float
+    marketing_brand_spend: float
+    marketing_promo_spend: float
+    rd_innovation_spend: float
+    rd_efficiency_spend: float
 
-    # --- 4 & 5. 결과 저장 및 리포트 생성 (기존과 동일) ---
-    history_df = market.get_history_df()
-    history_df.to_csv("simulation_results.csv", index=False)
-    generate_report("simulation_results.csv")
-    print(f"\n시뮬레이션 결과가 'simulation_results.csv' 파일로 저장되었습니다.")
+class TurnDecisionWrapper(BaseModel):
+    price: float
+    marketing_brand_spend: float
+    marketing_promo_spend: float
+    rd_innovation_spend: float
+    rd_efficiency_spend: float
+    reasoning: Optional[str] = ""
 
+class PresetData(BaseModel):
+    filename: str
+    preset_name: str
+    description: str
+    config: Dict[str, Any]
 
-# 비동기 main 함수를 실행하는 공식적인 방법입니다.
-if __name__ == "__main__":
-    asyncio.run(main())
+# --- [핵심 로직] 시뮬레이션 엔진 클래스 (간소화 버전) ---
+class SimulationEngine:
+    def __init__(self, config: GlobalConfig):
+        self.id = str(uuid.uuid4())
+        self.config = config
+        self.turn = 0
+        self.history = []
+        
+        # 회사 초기화
+        self.agents = {}
+        for comp in config.companies:
+            self.agents[comp.name] = {
+                "name": comp.name,
+                "cash": config.initial_capital,
+                "unit_cost": comp.initial_unit_cost,
+                "market_share": comp.initial_market_share,
+                "product_quality": comp.initial_product_quality,
+                "brand_awareness": comp.initial_brand_awareness,
+                "accumulated_profit": 0.0,
+                "accumulated_rd_innovation_point": 0.0,
+                "accumulated_rd_efficiency_point": 0.0
+            }
+            
+        # Others(기타 경쟁자) 초기화
+        self.others = {
+            "price": 15000.0, # 기본값
+            "product_quality": 60.0,
+            "brand_awareness": 50.0,
+            "market_share": max(0, 1.0 - sum(c.initial_market_share for c in config.companies))
+        }
+
+    def get_decision_options(self):
+        # AI가 선택할 수 있는 3가지 전략 생성
+        choices = {}
+        for name, agent in self.agents.items():
+            agent_choices = []
+            
+            # 전략 1: 현상 유지 (Safe)
+            agent_choices.append({
+                "decision": {
+                    "price": agent['unit_cost'] * 1.3, # 30% 마진
+                    "marketing_brand_spend": self.config.marketing_cost_base,
+                    "marketing_promo_spend": 0,
+                    "rd_innovation_spend": 0,
+                    "rd_efficiency_spend": 0
+                },
+                "probability": 0.2,
+                "reasoning": "안정적으로 현재 상태를 유지하며 현금을 확보합니다."
+            })
+            
+            # 전략 2: 공격적 투자 (Growth)
+            agent_choices.append({
+                "decision": {
+                    "price": agent['unit_cost'] * 1.1, # 10% 마진 (박리다매)
+                    "marketing_brand_spend": self.config.marketing_cost_base * 2,
+                    "marketing_promo_spend": self.config.marketing_cost_base,
+                    "rd_innovation_spend": self.config.rd_innovation_threshold * 0.1, # 조금씩 투자
+                    "rd_efficiency_spend": 0
+                },
+                "probability": 0.5,
+                "reasoning": "시장 점유율 확대를 위해 가격을 낮추고 마케팅을 강화합니다."
+            })
+            
+            # 전략 3: 기술 혁신 올인 (Innovation)
+            agent_choices.append({
+                "decision": {
+                    "price": agent['unit_cost'] * 1.5, # 고가 정책
+                    "marketing_brand_spend": 0,
+                    "marketing_promo_spend": 0,
+                    "rd_innovation_spend": self.config.rd_innovation_threshold * 0.5, # 과감한 투자
+                    "rd_efficiency_spend": 0
+                },
+                "probability": 0.3,
+                "reasoning": "단기 이익을 포기하고 R&D에 집중하여 차세대 제품을 준비합니다."
+            })
+            
+            choices[name] = agent_choices
+        return choices
+
+    def step(self, decisions: Dict[str, TurnDecisionWrapper]):
+        self.turn += 1
+        
+        turn_result = {"turn": self.turn}
+        ai_reasoning = {}
+        
+        # 1. 의사결정 반영 (비용 지출)
+        for name, decision in decisions.items():
+            agent = self.agents[name]
+            total_spend = (decision.marketing_brand_spend + decision.marketing_promo_spend + 
+                           decision.rd_innovation_spend + decision.rd_efficiency_spend)
+            
+            agent['cash'] -= total_spend
+            
+            # R&D 누적
+            agent['accumulated_rd_innovation_point'] += decision.rd_innovation_spend
+            agent['accumulated_rd_efficiency_point'] += decision.rd_efficiency_spend
+            
+            # 혁신 성공 판정
+            if agent['accumulated_rd_innovation_point'] >= self.config.rd_innovation_threshold:
+                agent['product_quality'] += self.config.rd_innovation_impact
+                agent['accumulated_rd_innovation_point'] = 0 # 초기화 (또는 차감)
+                
+            # 원가 절감 판정
+            if agent['accumulated_rd_efficiency_point'] >= self.config.rd_efficiency_threshold:
+                agent['unit_cost'] *= (1.0 - self.config.rd_efficiency_impact)
+                agent['accumulated_rd_efficiency_point'] = 0
+                
+            # 마케팅 효과 (브랜드 상승)
+            mkt_effect = (decision.marketing_brand_spend / self.config.marketing_cost_base) * self.config.physics.marketing_efficiency
+            agent['brand_awareness'] += mkt_effect
+            
+            # 추론 저장
+            if decision.reasoning:
+                ai_reasoning[name] =

@@ -1,0 +1,134 @@
+{
+  "scenario_name": "Real-World Smartphone War (2010-2013 Quarterly)",
+  "description": "Actual quarterly market share data sourced from Gartner & IDC reports.",
+  "turns_data": [
+    {
+      "turn": 1, "year_quarter": "2010 Q1",
+      "companies": {
+        "Nokia":   { "inputs": { "price": 15000, "initial_quality": 50.0, "initial_brand": 80.0 }, "outputs": { "actual_market_share": 0.388, "actual_profit_margin": 0.04 } },
+        "Samsung": { "inputs": { "price": 18000, "initial_quality": 60.0, "initial_brand": 40.0 }, "outputs": { "actual_market_share": 0.043, "actual_profit_margin": 0.08 } },
+        "Apple":   { "inputs": { "price": 45000, "initial_quality": 90.0, "initial_brand": 85.0 }, "outputs": { "actual_market_share": 0.161, "actual_profit_margin": 0.30 } }
+      }
+    },
+    {
+      "turn": 2, "year_quarter": "2010 Q2",
+      "companies": {
+        "Nokia":   { "inputs": { "price": 14500 }, "outputs": { "actual_market_share": 0.342 } },
+        "Samsung": { "inputs": { "price": 18500 }, "outputs": { "actual_market_share": 0.056 } },
+        "Apple":   { "inputs": { "price": 45000 }, "outputs": { "actual_market_share": 0.142 } }
+      }
+    },
+    {
+      "turn": 3, "year_quarter": "2010 Q3",
+      "companies": {
+        "Nokia":   { "inputs": { "price": 14000 }, "outputs": { "actual_market_share": 0.282 } },
+        "Samsung": { "inputs": { "price": 19000 }, "outputs": { "actual_market_share": 0.071 } },
+        "Apple":   { "inputs": { "price": 45000 }, "outputs": { "actual_market_share": 0.167 } }
+      }
+    },
+    {
+      "turn": 4, "year_quarter": "2010 Q4",
+      "companies": {
+        "Nokia":   { "inputs": { "price": 13500 }, "outputs": { "actual_market_share": 0.271 } },
+        "Samsung": { "inputs": { "price": 20000 }, "outputs": { "actual_market_share": 0.096 } },
+        "Apple":   { "inputs": { "price": 46000 }, "outputs": { "actual_market_share": 0.158 } }
+      }
+    },
+    {
+      "turn": 5, "year_quarter": "2011 Q1",
+      "companies": {
+        "Nokia":   { "inputs": { "price": 13000 }, "outputs": { "actual_market_share": 0.251 } },
+        "Samsung": { "inputs": { "price": 21000 }, "outputs": { "actual_market_share": 0.129 } },
+        "Apple":   { "inputs": { "price": 47000 }, "outputs": { "actual_market_share": 0.168 } }
+      }
+    },
+    {
+      "turn": 6, "year_quarter": "2011 Q2",
+      "companies": {
+        "Nokia":   { "inputs": { "price": 12500 }, "outputs": { "actual_market_share": 0.221 } },
+        "Samsung": { "inputs": { "price": 21500 }, "outputs": { "actual_market_share": 0.162 } },
+        "Apple":   { "inputs": { "price": 47000 }, "outputs": { "actual_market_share": 0.182 } }
+      }
+    },
+    {
+      "turn": 7, "year_quarter": "2011 Q3",
+      "companies": {
+        "Nokia":   { "inputs": { "price": 12000 }, "outputs": { "actual_market_share": 0.160 } },
+        "Samsung": { "inputs": { "price": 22000 }, "outputs": { "actual_market_share": 0.187 } },
+        "Apple":   { "inputs": { "price": 48000 }, "outputs": { "actual_market_share": 0.150 } }
+      }
+    },
+    {
+      "turn": 8, "year_quarter": "2011 Q4",
+      "companies": {
+        "Nokia":   { "inputs": { "price": 11500 }, "outputs": { "actual_market_share": 0.124 } },
+        "Samsung": { "inputs": { "price": 22500 }, "outputs": { "actual_market_share": 0.228 } },
+        "Apple":   { "inputs": { "price": 50000 }, "outputs": { "actual_market_share": 0.230 } }
+      }
+    },
+    {
+      "turn": 9, "year_quarter": "2012 Q1",
+      "companies": {
+        "Nokia":   { "inputs": { "price": 11000 }, "outputs": { "actual_market_share": 0.082 } },
+        "Samsung": { "inputs": { "price": 23000 }, "outputs": { "actual_market_share": 0.291 } },
+        "Apple":   { "inputs": { "price": 52000 }, "outputs": { "actual_market_share": 0.242 } }
+      }
+    },
+    {
+      "turn": 10, "year_quarter": "2012 Q2",
+      "companies": {
+        "Nokia":   { "inputs": { "price": 10500 }, "outputs": { "actual_market_share": 0.066 } },
+        "Samsung": { "inputs": { "price": 23000 }, "outputs": { "actual_market_share": 0.326 } },
+        "Apple":   { "inputs": { "price": 52000 }, "outputs": { "actual_market_share": 0.169 } }
+      }
+    },
+    {
+      "turn": 11, "year_quarter": "2012 Q3",
+      "companies": {
+        "Nokia":   { "inputs": { "price": 10000 }, "outputs": { "actual_market_share": 0.043 } },
+        "Samsung": { "inputs": { "price": 23500 }, "outputs": { "actual_market_share": 0.313 } },
+        "Apple":   { "inputs": { "price": 53000 }, "outputs": { "actual_market_share": 0.149 } }
+      }
+    },
+    {
+      "turn": 12, "year_quarter": "2012 Q4",
+      "companies": {
+        "Nokia":   { "inputs": { "price": 9500 }, "outputs": { "actual_market_share": 0.038 } },
+        "Samsung": { "inputs": { "price": 23500 }, "outputs": { "actual_market_share": 0.290 } },
+        "Apple":   { "inputs": { "price": 54000 }, "outputs": { "actual_market_share": 0.214 } }
+      }
+    },
+    {
+      "turn": 13, "year_quarter": "2013 Q1",
+      "companies": {
+        "Nokia":   { "inputs": { "price": 9000 }, "outputs": { "actual_market_share": 0.032 } },
+        "Samsung": { "inputs": { "price": 24000 }, "outputs": { "actual_market_share": 0.327 } },
+        "Apple":   { "inputs": { "price": 55000 }, "outputs": { "actual_market_share": 0.173 } }
+      }
+    },
+    {
+      "turn": 14, "year_quarter": "2013 Q2",
+      "companies": {
+        "Nokia":   { "inputs": { "price": 8500 }, "outputs": { "actual_market_share": 0.031 } },
+        "Samsung": { "inputs": { "price": 24000 }, "outputs": { "actual_market_share": 0.304 } },
+        "Apple":   { "inputs": { "price": 55000 }, "outputs": { "actual_market_share": 0.131 } }
+      }
+    },
+    {
+      "turn": 15, "year_quarter": "2013 Q3",
+      "companies": {
+        "Nokia":   { "inputs": { "price": 8000 }, "outputs": { "actual_market_share": 0.034 } },
+        "Samsung": { "inputs": { "price": 24500 }, "outputs": { "actual_market_share": 0.321 } },
+        "Apple":   { "inputs": { "price": 56000 }, "outputs": { "actual_market_share": 0.121 } }
+      }
+    },
+    {
+      "turn": 16, "year_quarter": "2013 Q4",
+      "companies": {
+        "Nokia":   { "inputs": { "price": 7500 }, "outputs": { "actual_market_share": 0.030 } },
+        "Samsung": { "inputs": { "price": 24500 }, "outputs": { "actual_market_share": 0.288 } },
+        "Apple":   { "inputs": { "price": 57000 }, "outputs": { "actual_market_share": 0.176 } }
+      }
+    }
+  ]
+}

@@ -1,0 +1,318 @@
+{
+  "scenario_name": "Ride Sharing War",
+  "description": "Historical data benchmark",
+  "turns_data": [
+    {
+      "turn": 1,
+      "note": "Quarter 1",
+      "companies": {
+        "Uber": {
+          "inputs": {
+            "price": 20,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.8
+          }
+        },
+        "Lyft": {
+          "inputs": {
+            "price": 18,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.05
+          }
+        }
+      }
+    },
+    {
+      "turn": 2,
+      "note": "Quarter 2",
+      "companies": {
+        "Uber": {
+          "inputs": {
+            "price": 19,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.78
+          }
+        },
+        "Lyft": {
+          "inputs": {
+            "price": 17,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.08
+          }
+        }
+      }
+    },
+    {
+      "turn": 3,
+      "note": "Quarter 3",
+      "companies": {
+        "Uber": {
+          "inputs": {
+            "price": 18,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.76
+          }
+        },
+        "Lyft": {
+          "inputs": {
+            "price": 16,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.1
+          }
+        }
+      }
+    },
+    {
+      "turn": 4,
+      "note": "Quarter 4",
+      "companies": {
+        "Uber": {
+          "inputs": {
+            "price": 17,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.74
+          }
+        },
+        "Lyft": {
+          "inputs": {
+            "price": 15,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.12
+          }
+        }
+      }
+    },
+    {
+      "turn": 5,
+      "note": "Quarter 5",
+      "companies": {
+        "Uber": {
+          "inputs": {
+            "price": 16,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.72
+          }
+        },
+        "Lyft": {
+          "inputs": {
+            "price": 14,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.15
+          }
+        }
+      }
+    },
+    {
+      "turn": 6,
+      "note": "Quarter 6",
+      "companies": {
+        "Uber": {
+          "inputs": {
+            "price": 15,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.7
+          }
+        },
+        "Lyft": {
+          "inputs": {
+            "price": 13,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.18
+          }
+        }
+      }
+    },
+    {
+      "turn": 7,
+      "note": "Quarter 7",
+      "companies": {
+        "Uber": {
+          "inputs": {
+            "price": 14,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.68
+          }
+        },
+        "Lyft": {
+          "inputs": {
+            "price": 12,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.2
+          }
+        }
+      }
+    },
+    {
+      "turn": 8,
+      "note": "Quarter 8",
+      "companies": {
+        "Uber": {
+          "inputs": {
+            "price": 13,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.67
+          }
+        },
+        "Lyft": {
+          "inputs": {
+            "price": 11,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.22
+          }
+        }
+      }
+    },
+    {
+      "turn": 9,
+      "note": "Quarter 9",
+      "companies": {
+        "Uber": {
+          "inputs": {
+            "price": 12,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.66
+          }
+        },
+        "Lyft": {
+          "inputs": {
+            "price": 10,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.24
+          }
+        }
+      }
+    },
+    {
+      "turn": 10,
+      "note": "Quarter 10",
+      "companies": {
+        "Uber": {
+          "inputs": {
+            "price": 11,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.65
+          }
+        },
+        "Lyft": {
+          "inputs": {
+            "price": 10,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.25
+          }
+        }
+      }
+    },
+    {
+      "turn": 11,
+      "note": "Quarter 11",
+      "companies": {
+        "Uber": {
+          "inputs": {
+            "price": 10,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.65
+          }
+        },
+        "Lyft": {
+          "inputs": {
+            "price": 9,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.26
+          }
+        }
+      }
+    },
+    {
+      "turn": 12,
+      "note": "Quarter 12",
+      "companies": {
+        "Uber": {
+          "inputs": {
+            "price": 10,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.65
+          }
+        },
+        "Lyft": {
+          "inputs": {
+            "price": 9,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.27
+          }
+        }
+      }
+    }
+  ]
+}

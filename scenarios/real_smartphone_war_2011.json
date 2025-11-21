@@ -1,0 +1,118 @@
+{
+  "scenario_name": "The Great Smartphone War (2011-2014)",
+  "description": "Samsung's Rise (Galaxy S2/S3) -> Peak (S4) -> Stagnation vs Apple's Defense -> Counterattack (iPhone 6). (14 Quarters)",
+  "turns_data": [
+    {
+      "turn": 1, "note": "2011 Q3: Samsung becomes #1 (Galaxy S2 effect)",
+      "macro": { "gdp_growth": 0.005, "inflation": 0.003 },
+      "companies": {
+        "Samsung": { "inputs": { "price": 650, "marketing_spend_ratio": 0.08, "rd_spend_ratio": 0.06 }, "outputs": { "actual_market_share": 0.238 } },
+        "Apple": { "inputs": { "price": 850, "marketing_spend_ratio": 0.03, "rd_spend_ratio": 0.022 }, "outputs": { "actual_market_share": 0.146 } }
+      }
+    },
+    {
+      "turn": 2, "note": "2011 Q4: Apple iPhone 4S launch",
+      "macro": { "gdp_growth": 0.008, "inflation": 0.002 },
+      "companies": {
+        "Samsung": { "inputs": { "price": 620, "marketing_spend_ratio": 0.09, "rd_spend_ratio": 0.06 }, "outputs": { "actual_market_share": 0.228 } },
+        "Apple": { "inputs": { "price": 850, "marketing_spend_ratio": 0.04, "rd_spend_ratio": 0.025 }, "outputs": { "actual_market_share": 0.230 } }
+      }
+    },
+    {
+      "turn": 3, "note": "2012 Q1: Samsung Galaxy Note creates Phablet market",
+      "macro": { "gdp_growth": 0.004, "inflation": 0.003 },
+      "companies": {
+        "Samsung": { "inputs": { "price": 600, "marketing_spend_ratio": 0.07, "rd_spend_ratio": 0.07 }, "outputs": { "actual_market_share": 0.291 } },
+        "Apple": { "inputs": { "price": 800, "marketing_spend_ratio": 0.02, "rd_spend_ratio": 0.03 }, "outputs": { "actual_market_share": 0.242 } }
+      }
+    },
+    {
+      "turn": 4, "note": "2012 Q2: Samsung Galaxy S3 Launch (Global Hit)",
+      "macro": { "gdp_growth": 0.005, "inflation": 0.002 },
+      "companies": {
+        "Samsung": { "inputs": { "price": 650, "marketing_spend_ratio": 0.10, "rd_spend_ratio": 0.06 }, "outputs": { "actual_market_share": 0.326 } },
+        "Apple": { "inputs": { "price": 750, "marketing_spend_ratio": 0.02, "rd_spend_ratio": 0.03 }, "outputs": { "actual_market_share": 0.169 } }
+      }
+    },
+    {
+      "turn": 5, "note": "2012 Q3: Samsung Dominance continues",
+      "macro": { "gdp_growth": 0.005, "inflation": 0.002 },
+      "companies": {
+        "Samsung": { "inputs": { "price": 600, "marketing_spend_ratio": 0.09, "rd_spend_ratio": 0.06 }, "outputs": { "actual_market_share": 0.339 } },
+        "Apple": { "inputs": { "price": 750, "marketing_spend_ratio": 0.025, "rd_spend_ratio": 0.03 }, "outputs": { "actual_market_share": 0.156 } }
+      }
+    },
+    {
+      "turn": 6, "note": "2012 Q4: Apple iPhone 5 Launch",
+      "macro": { "gdp_growth": 0.006, "inflation": 0.002 },
+      "companies": {
+        "Samsung": { "inputs": { "price": 580, "marketing_spend_ratio": 0.11, "rd_spend_ratio": 0.06 }, "outputs": { "actual_market_share": 0.290 } },
+        "Apple": { "inputs": { "price": 800, "marketing_spend_ratio": 0.05, "rd_spend_ratio": 0.03 }, "outputs": { "actual_market_share": 0.218 } }
+      }
+    },
+    {
+      "turn": 7, "note": "2013 Q1: Samsung Peak Era starts",
+      "macro": { "gdp_growth": 0.004, "inflation": 0.003 },
+      "companies": {
+        "Samsung": { "inputs": { "price": 550, "marketing_spend_ratio": 0.08, "rd_spend_ratio": 0.07 }, "outputs": { "actual_market_share": 0.324 } },
+        "Apple": { "inputs": { "price": 750, "marketing_spend_ratio": 0.02, "rd_spend_ratio": 0.035 }, "outputs": { "actual_market_share": 0.173 } }
+      }
+    },
+    {
+      "turn": 8, "note": "2013 Q2: Galaxy S4 Launch (Marketing War)",
+      "macro": { "gdp_growth": 0.005, "inflation": 0.002 },
+      "companies": {
+        "Samsung": { "inputs": { "price": 620, "marketing_spend_ratio": 0.12, "rd_spend_ratio": 0.06 }, "outputs": { "actual_market_share": 0.323 } },
+        "Apple": { "inputs": { "price": 700, "marketing_spend_ratio": 0.02, "rd_spend_ratio": 0.035 }, "outputs": { "actual_market_share": 0.134 } }
+      }
+    },
+    {
+      "turn": 9, "note": "2013 Q3: Market saturation signs",
+      "macro": { "gdp_growth": 0.005, "inflation": 0.002 },
+      "companies": {
+        "Samsung": { "inputs": { "price": 580, "marketing_spend_ratio": 0.09, "rd_spend_ratio": 0.06 }, "outputs": { "actual_market_share": 0.321 } },
+        "Apple": { "inputs": { "price": 700, "marketing_spend_ratio": 0.03, "rd_spend_ratio": 0.035 }, "outputs": { "actual_market_share": 0.121 } }
+      }
+    },
+    {
+      "turn": 10, "note": "2013 Q4: iPhone 5S (Touch ID) Launch",
+      "macro": { "gdp_growth": 0.007, "inflation": 0.002 },
+      "companies": {
+        "Samsung": { "inputs": { "price": 550, "marketing_spend_ratio": 0.10, "rd_spend_ratio": 0.06 }, "outputs": { "actual_market_share": 0.288 } },
+        "Apple": { "inputs": { "price": 750, "marketing_spend_ratio": 0.05, "rd_spend_ratio": 0.04 }, "outputs": { "actual_market_share": 0.176 } }
+      }
+    },
+    {
+      "turn": 11, "note": "2014 Q1: Chinese brands rising, Samsung dropping",
+      "macro": { "gdp_growth": 0.004, "inflation": 0.002 },
+      "companies": {
+        "Samsung": { "inputs": { "price": 530, "marketing_spend_ratio": 0.07, "rd_spend_ratio": 0.07 }, "outputs": { "actual_market_share": 0.302 } },
+        "Apple": { "inputs": { "price": 700, "marketing_spend_ratio": 0.02, "rd_spend_ratio": 0.045 }, "outputs": { "actual_market_share": 0.155 } }
+      }
+    },
+    {
+      "turn": 12, "note": "2014 Q2: Galaxy S5 disappointment",
+      "macro": { "gdp_growth": 0.005, "inflation": 0.002 },
+      "companies": {
+        "Samsung": { "inputs": { "price": 600, "marketing_spend_ratio": 0.10, "rd_spend_ratio": 0.06 }, "outputs": { "actual_market_share": 0.248 } },
+        "Apple": { "inputs": { "price": 680, "marketing_spend_ratio": 0.02, "rd_spend_ratio": 0.045 }, "outputs": { "actual_market_share": 0.117 } }
+      }
+    },
+    {
+      "turn": 13, "note": "2014 Q3: Waiting for big screens",
+      "macro": { "gdp_growth": 0.005, "inflation": 0.002 },
+      "companies": {
+        "Samsung": { "inputs": { "price": 550, "marketing_spend_ratio": 0.08, "rd_spend_ratio": 0.06 }, "outputs": { "actual_market_share": 0.239 } },
+        "Apple": { "inputs": { "price": 680, "marketing_spend_ratio": 0.03, "rd_spend_ratio": 0.05 }, "outputs": { "actual_market_share": 0.120 } }
+      }
+    },
+    {
+      "turn": 14, "note": "2014 Q4: The Big Shift - iPhone 6/6 Plus (Apple nearly catches Samsung)",
+      "macro": { "gdp_growth": 0.008, "inflation": 0.002 },
+      "companies": {
+        "Samsung": { "inputs": { "price": 500, "marketing_spend_ratio": 0.10, "rd_spend_ratio": 0.06 }, "outputs": { "actual_market_share": 0.199 } },
+        "Apple": { "inputs": { "price": 800, "marketing_spend_ratio": 0.06, "rd_spend_ratio": 0.05 }, "outputs": { "actual_market_share": 0.197 } }
+      }
+    }
+  ]
+}

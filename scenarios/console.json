@@ -1,0 +1,294 @@
+{
+  "scenario_name": "Console Wars (2013-2016) - The 100 Dollar Mistake",
+  "description": "Sony PS4 vs Microsoft Xbox One. Impact of launch price pricing error.",
+  "turns_data": [
+    {
+      "turn": 1,
+      "year_quarter": "2013 Q4",
+      "companies": {
+        "Sony": {
+          "inputs": {
+            "price": 399,
+            "initial_quality": 85.0,
+            "initial_brand": 80.0
+          },
+          "outputs": {
+            "actual_market_share": 0.58,
+            "actual_profit_margin": 0.02
+          }
+        },
+        "Microsoft": {
+          "inputs": {
+            "price": 499,
+            "initial_quality": 75.0,
+            "initial_brand": 85.0
+          },
+          "outputs": {
+            "actual_market_share": 0.42,
+            "actual_profit_margin": 0.05
+          }
+        }
+      }
+    },
+    {
+      "turn": 2,
+      "year_quarter": "2014 Q1",
+      "companies": {
+        "Sony": {
+          "inputs": {
+            "price": 399
+          },
+          "outputs": {
+            "actual_market_share": 0.60
+          }
+        },
+        "Microsoft": {
+          "inputs": {
+            "price": 499
+          },
+          "outputs": {
+            "actual_market_share": 0.40
+          }
+        }
+      }
+    },
+    {
+      "turn": 3,
+      "year_quarter": "2014 Q2",
+      "companies": {
+        "Sony": {
+          "inputs": {
+            "price": 399
+          },
+          "outputs": {
+            "actual_market_share": 0.62
+          }
+        },
+        "Microsoft": {
+          "inputs": {
+            "price": 450
+          },
+          "outputs": {
+            "actual_market_share": 0.38
+          }
+        }
+      }
+    },
+    {
+      "turn": 4,
+      "year_quarter": "2014 Q3",
+      "companies": {
+        "Sony": {
+          "inputs": {
+            "price": 399
+          },
+          "outputs": {
+            "actual_market_share": 0.63
+          }
+        },
+        "Microsoft": {
+          "inputs": {
+            "price": 399
+          },
+          "outputs": {
+            "actual_market_share": 0.37
+          }
+        }
+      }
+    },
+    {
+      "turn": 5,
+      "year_quarter": "2014 Q4",
+      "companies": {
+        "Sony": {
+          "inputs": {
+            "price": 399
+          },
+          "outputs": {
+            "actual_market_share": 0.64
+          }
+        },
+        "Microsoft": {
+          "inputs": {
+            "price": 349
+          },
+          "outputs": {
+            "actual_market_share": 0.36
+          }
+        }
+      }
+    },
+    {
+      "turn": 6,
+      "year_quarter": "2015 Q1",
+      "companies": {
+        "Sony": {
+          "inputs": {
+            "price": 399
+          },
+          "outputs": {
+            "actual_market_share": 0.65
+          }
+        },
+        "Microsoft": {
+          "inputs": {
+            "price": 349
+          },
+          "outputs": {
+            "actual_market_share": 0.35
+          }
+        }
+      }
+    },
+    {
+      "turn": 7,
+      "year_quarter": "2015 Q2",
+      "companies": {
+        "Sony": {
+          "inputs": {
+            "price": 399
+          },
+          "outputs": {
+            "actual_market_share": 0.65
+          }
+        },
+        "Microsoft": {
+          "inputs": {
+            "price": 349
+          },
+          "outputs": {
+            "actual_market_share": 0.35
+          }
+        }
+      }
+    },
+    {
+      "turn": 8,
+      "year_quarter": "2015 Q3",
+      "companies": {
+        "Sony": {
+          "inputs": {
+            "price": 349
+          },
+          "outputs": {
+            "actual_market_share": 0.66
+          }
+        },
+        "Microsoft": {
+          "inputs": {
+            "price": 349
+          },
+          "outputs": {
+            "actual_market_share": 0.34
+          }
+        }
+      }
+    },
+    {
+      "turn": 9,
+      "year_quarter": "2015 Q4",
+      "companies": {
+        "Sony": {
+          "inputs": {
+            "price": 349
+          },
+          "outputs": {
+            "actual_market_share": 0.67
+          }
+        },
+        "Microsoft": {
+          "inputs": {
+            "price": 299
+          },
+          "outputs": {
+            "actual_market_share": 0.33
+          }
+        }
+      }
+    },
+    {
+      "turn": 10,
+      "year_quarter": "2016 Q1",
+      "companies": {
+        "Sony": {
+          "inputs": {
+            "price": 349
+          },
+          "outputs": {
+            "actual_market_share": 0.67
+          }
+        },
+        "Microsoft": {
+          "inputs": {
+            "price": 299
+          },
+          "outputs": {
+            "actual_market_share": 0.33
+          }
+        }
+      }
+    },
+    {
+      "turn": 11, "year_quarter": "2016 Q2",
+      "companies": {
+        "Sony": {
+          "inputs": {
+            "price": 299
+          },
+          "outputs": {
+            "actual_market_share": 0.68
+          }
+        },
+        "Microsoft": {
+          "inputs": {
+            "price": 299
+          },
+          "outputs": {
+            "actual_market_share": 0.32
+          }
+        }
+      }
+    },
+    {
+      "turn": 12, "year_quarter": "2016 Q3", "companies": {
+        "Sony": {
+          "inputs": {
+            "price": 299
+          },
+          "outputs": {
+            "actual_market_share": 0.68
+          }
+        },
+        "Microsoft": {
+          "inputs": {
+            "price": 299
+          },
+          "outputs": {
+            "actual_market_share": 0.32
+          }
+        }
+      }
+    },
+    {
+      "turn": 13, "year_quarter": "2016 Q4",
+      "companies": {
+        "Sony": {
+          "inputs": {
+            "price": 299
+          },
+          "outputs": {
+            "actual_market_share": 0.69
+          }
+        },
+        "Microsoft": {
+          "inputs": {
+            "price": 249
+          },
+          "outputs": {
+            "actual_market_share": 0.31
+          }
+        }
+      }
+    }
+  ]
+}

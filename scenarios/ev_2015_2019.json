@@ -1,0 +1,106 @@
+{
+  "scenario_name": "Global EV War (2015-2019) - Disruption Phase",
+  "description": "Real-world quarterly market share data sourced from IEA Global EV Outlook & Tesla 10-K.",
+  "turns_data": [
+    { "turn": 1, "year_quarter": "2015 Q1", "companies": {
+      "Tesla":   { "inputs": { "price": 85000, "initial_quality": 80.0, "initial_brand": 60.0 }, "outputs": { "actual_market_share": 0.090, "actual_profit_margin": -0.14 } },
+      "BYD":     { "inputs": { "price": 25000, "initial_quality": 45.0, "initial_brand": 40.0 }, "outputs": { "actual_market_share": 0.110, "actual_profit_margin": 0.02 } },
+      "Legacy":  { "inputs": { "price": 35000, "initial_quality": 40.0, "initial_brand": 85.0 }, "outputs": { "actual_market_share": 0.800, "actual_profit_margin": 0.05 } }
+    }},
+    { "turn": 2, "year_quarter": "2015 Q2", "companies": {
+      "Tesla":   { "inputs": { "price": 85000 }, "outputs": { "actual_market_share": 0.092 } },
+      "BYD":     { "inputs": { "price": 25000 }, "outputs": { "actual_market_share": 0.112 } },
+      "Legacy":  { "inputs": { "price": 35000 }, "outputs": { "actual_market_share": 0.796 } }
+    }},
+    { "turn": 3, "year_quarter": "2015 Q3", "companies": {
+      "Tesla":   { "inputs": { "price": 84000 }, "outputs": { "actual_market_share": 0.095 } },
+      "BYD":     { "inputs": { "price": 25500 }, "outputs": { "actual_market_share": 0.115 } },
+      "Legacy":  { "inputs": { "price": 35000 }, "outputs": { "actual_market_share": 0.790 } }
+    }},
+    { "turn": 4, "year_quarter": "2015 Q4", "companies": {
+      "Tesla":   { "inputs": { "price": 84000 }, "outputs": { "actual_market_share": 0.098 } },
+      "BYD":     { "inputs": { "price": 26000 }, "outputs": { "actual_market_share": 0.118 } },
+      "Legacy":  { "inputs": { "price": 34500 }, "outputs": { "actual_market_share": 0.784 } }
+    }},
+    { "turn": 5, "year_quarter": "2016 Q1", "companies": {
+      "Tesla":   { "inputs": { "price": 82000 }, "outputs": { "actual_market_share": 0.095 } },
+      "BYD":     { "inputs": { "price": 26000 }, "outputs": { "actual_market_share": 0.125 } },
+      "Legacy":  { "inputs": { "price": 34000 }, "outputs": { "actual_market_share": 0.780 } }
+    }},
+    { "turn": 6, "year_quarter": "2016 Q2", "companies": {
+      "Tesla":   { "inputs": { "price": 80000 }, "outputs": { "actual_market_share": 0.093 } },
+      "BYD":     { "inputs": { "price": 27000 }, "outputs": { "actual_market_share": 0.130 } },
+      "Legacy":  { "inputs": { "price": 34000 }, "outputs": { "actual_market_share": 0.777 } }
+    }},
+    { "turn": 7, "year_quarter": "2016 Q3", "companies": {
+      "Tesla":   { "inputs": { "price": 78000 }, "outputs": { "actual_market_share": 0.091 } },
+      "BYD":     { "inputs": { "price": 27500 }, "outputs": { "actual_market_share": 0.132 } },
+      "Legacy":  { "inputs": { "price": 33500 }, "outputs": { "actual_market_share": 0.777 } }
+    }},
+    { "turn": 8, "year_quarter": "2016 Q4", "companies": {
+      "Tesla":   { "inputs": { "price": 75000 }, "outputs": { "actual_market_share": 0.090 } },
+      "BYD":     { "inputs": { "price": 28000 }, "outputs": { "actual_market_share": 0.135 } },
+      "Legacy":  { "inputs": { "price": 33000 }, "outputs": { "actual_market_share": 0.775 } }
+    }},
+    { "turn": 9, "year_quarter": "2017 Q1", "companies": {
+      "Tesla":   { "inputs": { "price": 70000 }, "outputs": { "actual_market_share": 0.095 } },
+      "BYD":     { "inputs": { "price": 28000 }, "outputs": { "actual_market_share": 0.130 } },
+      "Legacy":  { "inputs": { "price": 33000 }, "outputs": { "actual_market_share": 0.775 } }
+    }},
+    { "turn": 10, "year_quarter": "2017 Q2", "companies": {
+      "Tesla":   { "inputs": { "price": 65000 }, "outputs": { "actual_market_share": 0.100 } },
+      "BYD":     { "inputs": { "price": 28500 }, "outputs": { "actual_market_share": 0.125 } },
+      "Legacy":  { "inputs": { "price": 33000 }, "outputs": { "actual_market_share": 0.775 } }
+    }},
+    { "turn": 11, "year_quarter": "2017 Q3", "companies": {
+      "Tesla":   { "inputs": { "price": 60000 }, "outputs": { "actual_market_share": 0.110 } },
+      "BYD":     { "inputs": { "price": 29000 }, "outputs": { "actual_market_share": 0.120 } },
+      "Legacy":  { "inputs": { "price": 33000 }, "outputs": { "actual_market_share": 0.770 } }
+    }},
+    { "turn": 12, "year_quarter": "2017 Q4", "companies": {
+      "Tesla":   { "inputs": { "price": 55000 }, "outputs": { "actual_market_share": 0.120 } },
+      "BYD":     { "inputs": { "price": 29000 }, "outputs": { "actual_market_share": 0.115 } },
+      "Legacy":  { "inputs": { "price": 33000 }, "outputs": { "actual_market_share": 0.765 } }
+    }},
+    { "turn": 13, "year_quarter": "2018 Q1", "companies": {
+      "Tesla":   { "inputs": { "price": 52000 }, "outputs": { "actual_market_share": 0.130 } },
+      "BYD":     { "inputs": { "price": 29500 }, "outputs": { "actual_market_share": 0.110 } },
+      "Legacy":  { "inputs": { "price": 33000 }, "outputs": { "actual_market_share": 0.760 } }
+    }},
+    { "turn": 14, "year_quarter": "2018 Q2", "companies": {
+      "Tesla":   { "inputs": { "price": 50000 }, "outputs": { "actual_market_share": 0.140 } },
+      "BYD":     { "inputs": { "price": 29500 }, "outputs": { "actual_market_share": 0.110 } },
+      "Legacy":  { "inputs": { "price": 33000 }, "outputs": { "actual_market_share": 0.750 } }
+    }},
+    { "turn": 15, "year_quarter": "2018 Q3", "companies": {
+      "Tesla":   { "inputs": { "price": 48000 }, "outputs": { "actual_market_share": 0.150 } },
+      "BYD":     { "inputs": { "price": 30000 }, "outputs": { "actual_market_share": 0.110 } },
+      "Legacy":  { "inputs": { "price": 33000 }, "outputs": { "actual_market_share": 0.740 } }
+    }},
+    { "turn": 16, "year_quarter": "2018 Q4", "companies": {
+      "Tesla":   { "inputs": { "price": 46000 }, "outputs": { "actual_market_share": 0.160 } },
+      "BYD":     { "inputs": { "price": 30000 }, "outputs": { "actual_market_share": 0.110 } },
+      "Legacy":  { "inputs": { "price": 33000 }, "outputs": { "actual_market_share": 0.730 } }
+    }},
+    { "turn": 17, "year_quarter": "2019 Q1", "companies": {
+      "Tesla":   { "inputs": { "price": 45000 }, "outputs": { "actual_market_share": 0.158 } },
+      "BYD":     { "inputs": { "price": 30500 }, "outputs": { "actual_market_share": 0.112 } },
+      "Legacy":  { "inputs": { "price": 33000 }, "outputs": { "actual_market_share": 0.730 } }
+    }},
+    { "turn": 18, "year_quarter": "2019 Q2", "companies": {
+      "Tesla":   { "inputs": { "price": 44000 }, "outputs": { "actual_market_share": 0.159 } },
+      "BYD":     { "inputs": { "price": 30500 }, "outputs": { "actual_market_share": 0.113 } },
+      "Legacy":  { "inputs": { "price": 33000 }, "outputs": { "actual_market_share": 0.728 } }
+    }},
+    { "turn": 19, "year_quarter": "2019 Q3", "companies": {
+      "Tesla":   { "inputs": { "price": 42000 }, "outputs": { "actual_market_share": 0.161 } },
+      "BYD":     { "inputs": { "price": 31000 }, "outputs": { "actual_market_share": 0.114 } },
+      "Legacy":  { "inputs": { "price": 33000 }, "outputs": { "actual_market_share": 0.725 } }
+    }},
+    { "turn": 20, "year_quarter": "2019 Q4", "companies": {
+      "Tesla":   { "inputs": { "price": 40000 }, "outputs": { "actual_market_share": 0.165, "actual_profit_margin": 0.01 } },
+      "BYD":     { "inputs": { "price": 31000 }, "outputs": { "actual_market_share": 0.115, "actual_profit_margin": 0.03 } },
+      "Legacy":  { "inputs": { "price": 33000 }, "outputs": { "actual_market_share": 0.720, "actual_profit_margin": 0.04 } }
+    }}
+  ]
+}

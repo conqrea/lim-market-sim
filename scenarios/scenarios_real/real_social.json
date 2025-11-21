@@ -1,0 +1,318 @@
+{
+  "scenario_name": "Social Media War",
+  "description": "Historical data benchmark",
+  "turns_data": [
+    {
+      "turn": 1,
+      "note": "Quarter 1",
+      "companies": {
+        "Facebook": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.1
+          }
+        },
+        "MySpace": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.4
+          }
+        }
+      }
+    },
+    {
+      "turn": 2,
+      "note": "Quarter 2",
+      "companies": {
+        "Facebook": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.15
+          }
+        },
+        "MySpace": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.38
+          }
+        }
+      }
+    },
+    {
+      "turn": 3,
+      "note": "Quarter 3",
+      "companies": {
+        "Facebook": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.2
+          }
+        },
+        "MySpace": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.35
+          }
+        }
+      }
+    },
+    {
+      "turn": 4,
+      "note": "Quarter 4",
+      "companies": {
+        "Facebook": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.3
+          }
+        },
+        "MySpace": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.3
+          }
+        }
+      }
+    },
+    {
+      "turn": 5,
+      "note": "Quarter 5",
+      "companies": {
+        "Facebook": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.4
+          }
+        },
+        "MySpace": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.25
+          }
+        }
+      }
+    },
+    {
+      "turn": 6,
+      "note": "Quarter 6",
+      "companies": {
+        "Facebook": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.5
+          }
+        },
+        "MySpace": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.2
+          }
+        }
+      }
+    },
+    {
+      "turn": 7,
+      "note": "Quarter 7",
+      "companies": {
+        "Facebook": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.6
+          }
+        },
+        "MySpace": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.15
+          }
+        }
+      }
+    },
+    {
+      "turn": 8,
+      "note": "Quarter 8",
+      "companies": {
+        "Facebook": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.7
+          }
+        },
+        "MySpace": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.1
+          }
+        }
+      }
+    },
+    {
+      "turn": 9,
+      "note": "Quarter 9",
+      "companies": {
+        "Facebook": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.8
+          }
+        },
+        "MySpace": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.05
+          }
+        }
+      }
+    },
+    {
+      "turn": 10,
+      "note": "Quarter 10",
+      "companies": {
+        "Facebook": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.85
+          }
+        },
+        "MySpace": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.03
+          }
+        }
+      }
+    },
+    {
+      "turn": 11,
+      "note": "Quarter 11",
+      "companies": {
+        "Facebook": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.9
+          }
+        },
+        "MySpace": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.02
+          }
+        }
+      }
+    },
+    {
+      "turn": 12,
+      "note": "Quarter 12",
+      "companies": {
+        "Facebook": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.95
+          }
+        },
+        "MySpace": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.01
+          }
+        }
+      }
+    }
+  ]
+}

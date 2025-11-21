@@ -1,81 +1,130 @@
-// wargame-cockpit/src/apiService.js
+// apiService.js
 
-import axios from 'axios';
+// 백엔드 주소 (FastAPI가 실행되는 주소)
+const API_BASE_URL = "http://localhost:8000"; 
 
-// FastAPI 서버 주소
-const API_BASE_URL = 'http://127.0.0.1:8000';
-
-/**
- * [수정] 새로운 SimulationConfig 객체를 받아 시뮬레이션을 생성합니다.
- * @param {object} config - api_main.py의 SimulationConfig와 일치하는 객체
- */
+// 1. 시뮬레이션 생성 (초기화)
 export const createSimulation = async (config) => {
+  // [수정됨] 경로: /simulation/create -> /simulations
+  const response = await fetch(`${API_BASE_URL}/simulations`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(config),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.detail || 'Failed to create simulation');
+  }
+  return await response.json();
+};
+
+// 2. 현재 턴의 선택지 조회
+export const getDecisionChoices = async (simulationId) => {
+  // [수정됨] 경로: /simulation/.../choices -> /simulations/.../get_choices
+  // [수정됨] 메서드: GET -> POST (백엔드가 @app.post를 사용하므로)
+  const response = await fetch(`${API_BASE_URL}/simulations/${simulationId}/get_choices`, {
+      method: 'POST', 
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({}) // POST 요청이므로 빈 body라도 보내는 것이 안전함
+  });
+  
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.detail || 'Failed to fetch choices');
+  }
+  return await response.json();
+};
+
+// 3. 선택(Decision) 전송 및 턴 실행
+export const executeTurn = async (simulationId, decisions) => {
+  // [수정됨] 경로: /simulation/... -> /simulations/... (이전에 수정한 부분 유지)
+  const response = await fetch(`${API_BASE_URL}/simulations/${simulationId}/execute_turn`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    // [중요 수정] 백엔드 스키마(ExecuteTurnRequest)에 맞춰 'decisions' 키로 한 번 감싸야 합니다.
+    body: JSON.stringify({ decisions }), 
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.detail || 'Failed to execute turn');
+  }
+  return await response.json();
+};
+
+// --- [신규 추가] 프리셋(Preset) 관련 함수 ---
+
+// 4. 프리셋 목록 불러오기
+export const getPresets = async () => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/simulations`, config);
-    return response.data; // { simulation_id, initial_state } 반환
+    const response = await fetch(`${API_BASE_URL}/presets`);
+    if (!response.ok) {
+      console.warn('Failed to fetch presets'); 
+      return [];
+    }
+    return await response.json();
   } catch (error) {
-    console.error("Error creating simulation:", error);
-    throw error;
+    console.error("Error fetching presets:", error);
+    return [];
   }
 };
 
-// 2. '다음 턴' 진행 API (기존과 동일)
-export const runNextTurn = async (simId) => {
-  try {
-    const response = await axios.post(`${API_BASE_URL}/simulations/${simId}/next_turn`);
-    return response.data; // { turn, turn_results, next_state } 반환
-  } catch (error) {
-    console.error("Error running next turn:", error);
-    throw error;
+// 5. 프리셋 저장하기
+export const savePreset = async (presetData) => {
+  // [수정됨] 경로: /presets (백엔드 경로 확인 필요, /admin/save_preset 일 수도 있음)
+  // api_main.py 코드를 보면 @app.post("/admin/save_preset") 입니다.
+  const response = await fetch(`${API_BASE_URL}/admin/save_preset`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(presetData),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.detail || 'Failed to save preset');
   }
+  return await response.json();
 };
 
-// 3. '이벤트' 주입 API (기존과 동일)
-export const injectEvent = async (simId, eventData) => {
-  try {
-    const response = await axios.post(`${API_BASE_URL}/simulations/${simId}/inject_event`, eventData);
-    return response.data; // { message } 반환
-  } catch (error) {
-    console.error("Error injecting event:", error);
-    throw error;
-  }
+// --- [신규 추가] 벤치마크(Track B) 관련 함수 ---
+
+// 6. 벤치마크 실행
+export const runBenchmark = async (benchmarkConfig) => {
+    // api_main.py 기준 경로: @app.post("/admin/run_benchmark")
+    const response = await fetch(`${API_BASE_URL}/admin/run_benchmark`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(benchmarkConfig)
+    });
+    
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Benchmark failed");
+    }
+    return await response.json();
 };
 
-// 4. '여러 턴' 진행 API (기존과 동일)
-/*export const runMultipleTurns = async (simId, turnCount) => {
-  try {
-    const response = await axios.post(
-      `${API_BASE_URL}/simulations/${simId}/run_turns?turns_to_run=${turnCount}`
-    );
-    return response.data; // { turns_ran, results_history, ... } 반환
-  } catch (error) {
-    console.error("Error running multiple turns:", error);
-    throw error;
-  }
-};*/
-
-// [신규] 1. AI에게 전략적 선택지를 요청
-export const getDecisionChoices = async (simId) => {
-  try {
-    const response = await axios.post(`${API_BASE_URL}/simulations/${simId}/get_choices`);
-    return response.data; // { "GM": [...], "Sony": [...] } 반환
-  } catch (error) {
-    console.error("Error getting agent choices:", error);
-    throw error;
-  }
-};
-
-// [신규] 2. 사용자가 선택한 결정을 서버로 전송하여 턴 실행
-export const executeTurn = async (simId, decisions) => {
-  try {
-    // decisions = { "GM": {price: ..., reasoning: ...}, "Sony": {...} }
-    const response = await axios.post(
-      `${API_BASE_URL}/simulations/${simId}/execute_turn`,
-      { decisions } // { "decisions": { "GM": ... } } 형태로 래핑하여 전송
-    );
-    return response.data; // { turn, turn_results, ... } 반환
-  } catch (error) {
-    console.error("Error executing turn:", error);
-    throw error;
-  }
+// 7. 자동 튜닝 (Auto-Tune)
+export const autoTuneParams = async (benchmarkConfig) => {
+    // api_main.py 기준 경로: @app.post("/admin/auto_tune")
+    const response = await fetch(`${API_BASE_URL}/admin/auto_tune`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(benchmarkConfig)
+    });
+    
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Auto-tune failed");
+    }
+    return await response.json();
 };

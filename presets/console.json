@@ -1,0 +1,31 @@
+{
+  "preset_name": "Console",
+  "description": "Auto-tuned from Console War. MAE: 7.23%",
+  "config": {
+    "total_turns": 20,
+    "market_size": 30000,
+    "initial_capital": 500000000,
+    "initial_marketing_budget_ratio": 0.02,
+    "initial_rd_budget_ratio": 0.01,
+    "gdp_growth_rate": 0.01,
+    "inflation_rate": 0.005,
+    "rd_innovation_threshold": 5000000,
+    "rd_innovation_impact": 5,
+    "rd_efficiency_threshold": 5000000,
+    "rd_efficiency_impact": 0.03,
+    "marketing_cost_base": 100000,
+    "marketing_cost_multiplier": 1.12,
+    "quality_decay_rate": 1,
+    "brand_decay_rate": 0.5,
+    "physics": {
+      "price_sensitivity": 10,
+      "marketing_efficiency": 1,
+      "weight_quality": 0.4,
+      "weight_brand": 0,
+      "others_overall_competitiveness": 1,
+      "rd_innovation_impact": 10,
+      "rd_innovation_threshold": 1000000,
+      "weight_price": 0.6
+    }
+  }
+}

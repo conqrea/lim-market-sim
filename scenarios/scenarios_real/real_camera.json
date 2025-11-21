@@ -1,0 +1,318 @@
+{
+  "scenario_name": "Camera War",
+  "description": "Historical data benchmark",
+  "turns_data": [
+    {
+      "turn": 1,
+      "note": "Quarter 1",
+      "companies": {
+        "SonyDigital": {
+          "inputs": {
+            "price": 800,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.15
+          }
+        },
+        "KodakFilm": {
+          "inputs": {
+            "price": 200,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.4
+          }
+        }
+      }
+    },
+    {
+      "turn": 2,
+      "note": "Quarter 2",
+      "companies": {
+        "SonyDigital": {
+          "inputs": {
+            "price": 700,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.2
+          }
+        },
+        "KodakFilm": {
+          "inputs": {
+            "price": 180,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.35
+          }
+        }
+      }
+    },
+    {
+      "turn": 3,
+      "note": "Quarter 3",
+      "companies": {
+        "SonyDigital": {
+          "inputs": {
+            "price": 600,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.25
+          }
+        },
+        "KodakFilm": {
+          "inputs": {
+            "price": 160,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.3
+          }
+        }
+      }
+    },
+    {
+      "turn": 4,
+      "note": "Quarter 4",
+      "companies": {
+        "SonyDigital": {
+          "inputs": {
+            "price": 550,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.3
+          }
+        },
+        "KodakFilm": {
+          "inputs": {
+            "price": 150,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.25
+          }
+        }
+      }
+    },
+    {
+      "turn": 5,
+      "note": "Quarter 5",
+      "companies": {
+        "SonyDigital": {
+          "inputs": {
+            "price": 500,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.4
+          }
+        },
+        "KodakFilm": {
+          "inputs": {
+            "price": 140,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.2
+          }
+        }
+      }
+    },
+    {
+      "turn": 6,
+      "note": "Quarter 6",
+      "companies": {
+        "SonyDigital": {
+          "inputs": {
+            "price": 450,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.5
+          }
+        },
+        "KodakFilm": {
+          "inputs": {
+            "price": 130,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.15
+          }
+        }
+      }
+    },
+    {
+      "turn": 7,
+      "note": "Quarter 7",
+      "companies": {
+        "SonyDigital": {
+          "inputs": {
+            "price": 400,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.6
+          }
+        },
+        "KodakFilm": {
+          "inputs": {
+            "price": 120,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.1
+          }
+        }
+      }
+    },
+    {
+      "turn": 8,
+      "note": "Quarter 8",
+      "companies": {
+        "SonyDigital": {
+          "inputs": {
+            "price": 350,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.7
+          }
+        },
+        "KodakFilm": {
+          "inputs": {
+            "price": 100,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.08
+          }
+        }
+      }
+    },
+    {
+      "turn": 9,
+      "note": "Quarter 9",
+      "companies": {
+        "SonyDigital": {
+          "inputs": {
+            "price": 300,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.75
+          }
+        },
+        "KodakFilm": {
+          "inputs": {
+            "price": 80,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.05
+          }
+        }
+      }
+    },
+    {
+      "turn": 10,
+      "note": "Quarter 10",
+      "companies": {
+        "SonyDigital": {
+          "inputs": {
+            "price": 250,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.8
+          }
+        },
+        "KodakFilm": {
+          "inputs": {
+            "price": 60,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.03
+          }
+        }
+      }
+    },
+    {
+      "turn": 11,
+      "note": "Quarter 11",
+      "companies": {
+        "SonyDigital": {
+          "inputs": {
+            "price": 200,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.85
+          }
+        },
+        "KodakFilm": {
+          "inputs": {
+            "price": 50,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.02
+          }
+        }
+      }
+    },
+    {
+      "turn": 12,
+      "note": "Quarter 12",
+      "companies": {
+        "SonyDigital": {
+          "inputs": {
+            "price": 180,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.9
+          }
+        },
+        "KodakFilm": {
+          "inputs": {
+            "price": 40,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.01
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,19 +1,22 @@
 import asyncio
 import uuid
+import itertools
+import time
+import json
+import os
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
-from typing import List, Dict
+from typing import List, Dict, Optional, Any
 from fastapi.middleware.cors import CORSMiddleware
 
 from simulator import MarketSimulator
 from agent import AIAgent
 
-# [수정] 분기 보고서 생성 주기 (simulator.py와 동기화)
 QUARTERLY_REPORT_INTERVAL = 4
 
 app = FastAPI(
-    title="AI Strategy Lab API (Level 3: Probabilistic Asset Model)",
-    description="무형 자산(품질/브랜드), 자산 감가상각, R&D 도박(확률), 하이브리드 예산 법칙이 적용된 최종 엔진입니다."
+    title="AI Strategy Lab API (Final Phase: Smart Init & Velocity)",
+    description="초기 품질 보정(Smart Init)과 혁신 주기(Threshold) 튜닝을 통해 EV 시나리오의 오차를 획기적으로 줄이는 버전입니다."
 )
 
 app.add_middleware(
@@ -24,57 +27,61 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- 인메모리 저장소 ---
 active_simulations = {}
 
-# --- Pydantic 모델 수정 ---
+# --- 데이터 모델 ---
+class MarketPhysicsConfig(BaseModel):
+    weight_quality: float = Field(0.4)
+    weight_brand: float = Field(0.4)
+    weight_price: float = Field(0.2)
+    price_sensitivity: float = Field(50.0)
+    marketing_efficiency: float = Field(1.0)
+    others_overall_competitiveness: float = Field(1.0)
+
+class BenchmarkData(BaseModel):
+    scenario_name: str
+    turns_data: List[dict]
+    physics_override: Optional[Dict[str, Any]] = None 
+
 class CompanyConfig(BaseModel):
     name: str = Field(..., example="GM")
-    persona: str = Field(..., example="R&D는 최소화하고 마케팅/고수익에 집중합니다.")
-    
-    # [수정] '프록시 데이터' 기반 초기값
+    persona: str = Field(..., example="...")
     initial_unit_cost: int = Field(..., example=10000) 
-    initial_market_share: float = Field(..., ge=0, le=1.0, example=0.35)
-    initial_product_quality: float = Field(..., ge=0, le=100.0, example=60.0, description="초기 제품 품질 (프록시 데이터 기반, 0-100점)")
-    initial_brand_awareness: float = Field(..., ge=0, le=100.0, example=70.0, description="초기 브랜드 인지도 (프록시 데이터 기반, 0-100점)")
+    initial_market_share: float = Field(..., example=0.35)
+    initial_product_quality: float = Field(..., example=60.0)
+    initial_brand_awareness: float = Field(..., example=70.0)
 
 class SimulationConfig(BaseModel):
+    preset_name: Optional[str] = None
     companies: List[CompanyConfig]
-    total_turns: int = Field(30, gt=0)
-    market_size: int = Field(10000, gt=0)
+    total_turns: int = Field(30)
+    
+    market_size: int = Field(10000)
     initial_capital: int = Field(1000000000)
+    initial_marketing_budget_ratio: float = Field(0.02)
+    initial_rd_budget_ratio: float = Field(0.01)
+    gdp_growth_rate: float = Field(0.005)
+    inflation_rate: float = Field(0.0075)
     
-    # [수정] 1턴에만 사용할 초기 예산 '비율' (자본 기반)
-    initial_marketing_budget_ratio: float = Field(0.02, gt=0, description="초기 자본 대비 1턴 마케팅 예산 비율 (예: 2%)")
-    initial_rd_budget_ratio: float = Field(0.01, gt=0, description="초기 자본 대비 1턴 R&D 예산 비율 (예: 1%)")
-
-    # [수정] 거시 경제 (외부 변수)
-    gdp_growth_rate: float = Field(0.005, description="턴(분기)당 시장 규모 성장률 (예: 0.5% = 연 2%)")
-    inflation_rate: float = Field(0.0075, description="턴(분기)당 원가 상승률 (예: 0.75% = 연 3%)")
+    rd_innovation_threshold: float = Field(5000000)
+    rd_innovation_impact: float = Field(5.0)
+    rd_efficiency_threshold: float = Field(5000000)
+    rd_efficiency_impact: float = Field(0.03)
     
-    # [수정] 'R&D 도박' 변수 (R&D Gamble)
-    rd_innovation_cost: float = Field(2000000, description="품질(Innovation) R&D 1회 '베팅' 비용")
-    rd_innovation_prob: float = Field(0.3, description="품질 R&D '베팅' 1회당 성공 확률 (예: 30%)")
-    rd_innovation_impact: float = Field(5.0, description="품질 R&D 성공 시 상승하는 '제품 품질' 점수")
+    marketing_cost_base: float = Field(100000.0)
+    marketing_cost_multiplier: float = Field(1.12)
     
-    rd_efficiency_cost: float = Field(2000000, description="원가(Efficiency) R&D 1회 '베팅' 비용")
-    rd_efficiency_prob: float = Field(0.2, description="원가 R&D '베팅' 1회당 성공 확률 (예: 20%)")
-    rd_efficiency_impact: float = Field(0.03, description="원가 R&D 성공 시 하락하는 '원가' 비율 (예: 3%)")
-
-    # [수정] 마케팅 '수확 체감' 변수
-    marketing_cost_base: float = Field(100000.0, description="브랜드 인지도 1포인트를 올리는 기본 비용")
-    marketing_cost_multiplier: float = Field(1.12, description="브랜드 점수가 1 오를 때마다 비용이 증가하는 비율")
-
-    # [수정] 자산 감가상각 (Decay)
-    quality_decay_rate: float = Field(0.5, description="턴(분기)당 하락하는 제품 품질 점수 (기술 도태)")
-    brand_decay_rate: float = Field(0.2, description="턴(분기)당 하락하는 브랜드 인지도 점수 (망각)")
+    quality_decay_rate: float = Field(0.5)
+    brand_decay_rate: float = Field(0.2)
+    
+    physics: MarketPhysicsConfig = Field(default_factory=MarketPhysicsConfig)
 
 class EventInject(BaseModel):
-    description: str = Field(..., example="공급망 이슈로 원가 20% 상승")
-    target_company: str = Field("All", example="Apple")
-    effect_type: str = Field(..., example="unit_cost_multiplier") # 'quality_shock', 'brand_shock' 등
-    impact_value: float = Field(..., example=1.2)
-    duration: int = Field(3, gt=0)
+    description: str
+    target_company: str
+    effect_type: str
+    impact_value: float
+    duration: int
 
 class AgentFinalDecision(BaseModel):
     price: int
@@ -82,31 +89,92 @@ class AgentFinalDecision(BaseModel):
     marketing_promo_spend: int
     rd_innovation_spend: int
     rd_efficiency_spend: int
-    reasoning: str # AI의 reasoning도 함께 받아서 로그용으로 저장
+    reasoning: str
 
 class ExecuteTurnRequest(BaseModel):
-    # 예: { "GM": AgentFinalDecision(...), "Sony": AgentFinalDecision(...) }
     decisions: Dict[str, AgentFinalDecision]
 
-# --- (Pydantic 모델 끝) ---
+class PresetSaveRequest(BaseModel):
+    filename: str
+    preset_name: str
+    description: str
+    config: Dict[str, Any]
 
+# --- Endpoints ---
+
+@app.get("/presets")
+async def get_presets():
+    presets_dir = "presets"
+    if not os.path.exists(presets_dir):
+        os.makedirs(presets_dir)
+        return []
+    
+    presets = []
+    for filename in os.listdir(presets_dir):
+        if filename.endswith(".json"):
+            try:
+                with open(os.path.join(presets_dir, filename), "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    presets.append({
+                        "filename": filename,
+                        "name": data.get("preset_name", filename),
+                        "description": data.get("description", ""),
+                        "config": data.get("config", {}) # <--- [중요] 이 줄이 꼭 있어야 합니다!
+                    })
+            except Exception as e:
+                print(f"Error loading preset {filename}: {e}")
+    return presets
+
+@app.post("/admin/save_preset")
+async def save_preset(req: PresetSaveRequest):
+    presets_dir = "presets"
+    if not os.path.exists(presets_dir):
+        os.makedirs(presets_dir)
+    
+    safe_filename = "".join([c for c in req.filename if c.isalnum() or c in ('-', '_')]).strip()
+    if not safe_filename:
+        safe_filename = f"preset_{int(time.time())}"
+    if not safe_filename.endswith(".json"):
+        safe_filename += ".json"
+        
+    file_path = os.path.join(presets_dir, safe_filename)
+    
+    data_to_save = {
+        "preset_name": req.preset_name,
+        "description": req.description,
+        "config": req.config
+    }
+    
+    try:
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(data_to_save, f, indent=2, ensure_ascii=False)
+        return {"message": f"Preset saved successfully as {safe_filename}", "filename": safe_filename}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save preset: {str(e)}")
 
 @app.post("/simulations")
 async def create_simulation(config: SimulationConfig):
     sim_id = str(uuid.uuid4())
-    ai_company_names = [c.name for c in config.companies]
     
-    sim_config_dict = config.model_dump(exclude={"companies"}) 
+    sim_config_dict = config.model_dump(exclude={"companies", "preset_name"}) 
     
+    if config.preset_name:
+        preset_path = os.path.join("presets", config.preset_name)
+        if os.path.exists(preset_path):
+            print(f"Loading Preset: {config.preset_name}")
+            with open(preset_path, "r", encoding="utf-8") as f:
+                preset_data = json.load(f)
+                if "config" in preset_data:
+                    sim_config_dict.update(preset_data["config"])
+        else:
+            print(f"Warning: Preset {config.preset_name} not found.")
+
     sim_config_dict['initial_configs'] = {}
     total_initial_share = sum(c.initial_market_share for c in config.companies)
     
-    if total_initial_share > 1.0:
-        print("경고: AI 초기 점유율 합계가 1.0을 초과합니다. 1.0으로 정규화됩니다.")
-    
     for c in config.companies:
         sim_config_dict['initial_configs'][c.name] = {
-            "unit_cost": c.initial_unit_cost,
+            "unit_cost": c.initial_unit_cost, 
             "market_share": c.initial_market_share / total_initial_share if total_initial_share > 1.0 else c.initial_market_share,
             "product_quality": c.initial_product_quality,
             "brand_awareness": c.initial_brand_awareness
@@ -114,240 +182,211 @@ async def create_simulation(config: SimulationConfig):
 
     personas = {c.name: c.persona for c in config.companies}
     
-    market = MarketSimulator(ai_company_names, sim_config_dict)
-    agents = [AIAgent(name=name, persona=personas[name], use_mock=False) for name in ai_company_names]
+    market = MarketSimulator(company_names=[c.name for c in config.companies], config=sim_config_dict)
+    agents = [AIAgent(name=name, persona=personas[name], use_mock=False) for name in [c.name for c in config.companies]]
     active_simulations[sim_id] = {"market": market, "agents": agents}
-    print(f"시뮬레이션 생성 완료 (ID: {sim_id})")
+    
     return {"simulation_id": sim_id, "initial_state": market.get_market_state()}
 
-# [수정] _get_agent_specific_state (전쟁 안개, 정보 지연)
-def _get_agent_specific_state(market: MarketSimulator, agent: AIAgent, all_agents: List[AIAgent]):
-    market_state_base = market.get_market_state() 
-    history = market.history
-    turn = market.turn
+@app.post("/admin/run_benchmark")
+async def run_benchmark_simulation(data: BenchmarkData):
+    if not data.turns_data: raise HTTPException(status_code=400, detail="No turn data provided")
     
-    my_name = agent.name
-    ai_company_names = [a.name for a in all_agents]
-    opponent_name = next((name for name in ai_company_names if name != my_name), ai_company_names[0]) 
+    override_params = data.physics_override
+    market = _initialize_market_for_benchmark(data, override_params=override_params)
     
-    agent_specific_state = market_state_base.copy()
-    agent_specific_state["opponent_name"] = opponent_name
+    results_log = []; total_mae = 0.0
+    for turn_data in data.turns_data:
+        market.run_benchmark_turn(turn_data)
+        last_result = market.history[-1]
+        results_log.append(last_result)
+        total_mae += last_result.get("total_error_mae", 0)
+    avg_mae = total_mae / len(data.turns_data)
+    return {"scenario": data.scenario_name, "average_error_mae": avg_mae, "history": results_log, "message": f"Completed. MAE: {avg_mae:.4f}"}
 
-    # [전쟁 안개]
-    if "companies" in agent_specific_state:
-        companies_data = agent_specific_state["companies"]
-        for name, data in companies_data.items():
-            data.pop("market_share", None)
+@app.post("/admin/auto_tune")
+async def auto_tune_parameters(data: BenchmarkData):
+    print(f"\n=== ⚡ Auto-Tuning Started (Deep Search Mode) ===")
+    start_time = time.time()
+    
+    # [개선점 1] 탐색 범위를 매우 촘촘하게(Dense) 설정
+    # 기존에 3~4개씩 보던 것을 5~8개 단계로 세분화했습니다.
+    search_space = {
+        "price_sensitivity": [5.0, 10.0, 20.0, 40.0, 60.0], # 범위 약간 압축 (효율화)
+        "marketing_efficiency": [1.0, 3.0, 5.0, 8.0, 10.0],
+        "weight_quality": [0.5, 0.7, 0.9, 1.1],
+        "weight_brand": [0.1, 0.3, 0.5],
+        "others_overall_competitiveness": [0.8, 1.0, 1.5],
+        "rd_innovation_impact": [10.0, 30.0, 50.0],
+        "quality_decay_rate": [0.05, 0.1, 0.2, 0.3, 0.4],
+        "rd_innovation_threshold": [1000000.0, 3000000.0, 5000000.0]
+    }
+    
+    # 모든 조합 생성 (Cartesian Product)
+    keys, values = zip(*search_space.items())
+    param_combinations = [dict(zip(keys, v)) for v in itertools.product(*values)]
+    
+    # [개선점 2] 유효성 검사 로직 완화
+    # 기존에는 합이 1.0 미만인 경우만 엄격하게 따졌으나, 
+    # 시뮬레이터 내부에서 정규화가 일어나므로 범위를 좀 더 유연하게 허용합니다.
+    valid_combinations = []
+    for params in param_combinations:
+        # 품질 + 브랜드 가중치 합계 확인
+        current_sum = params["weight_quality"] + params["weight_brand"]
+        
+        # 합이 너무 크지 않은 경우만 허용 (가격 가중치를 최소 0.05는 남겨두기 위함)
+        # 1.5까지 허용하는 이유는, weight_quality가 1.0일 때 브랜드가 0.2일 수도 있기 때문
+        if current_sum <= 1.5: 
+            # 가격 가중치 자동 계산 (최소 0.05 보장)
+            weight_price = max(0.05, round(1.0 - min(1.0, current_sum), 2))
             
-            if name != my_name: # 내 정보가 아닌 경우
-                data.pop("unit_cost", None)
-                data.pop("accumulated_profit", None)
-                data.pop("product_quality", None)
-                data.pop("brand_awareness", None)
-                data.pop("max_marketing_budget", None) 
-                data.pop("max_rd_budget", None)      
+            # 만약 합이 1.0을 넘어가면, 시뮬레이터가 알아서 비율대로 처리하겠지만
+            # 여기서는 명시적으로 weight_price를 별도로 할당
+            params["weight_price"] = weight_price
+            valid_combinations.append(params)
+    
+    total_combos = len(valid_combinations)
+    print(f"🧪 Total Dense Combinations to Test: {total_combos}")
+    print(f"⏳ 예상 소요 시간: {total_combos * 0.002:.1f}초 (약 {total_combos/500/60:.1f}분)")
 
-    # [정보 지연] 턴별/분기별 리포트 생성
-    if turn > 0:
-        last_results = history[-1]
-        agent_specific_state["last_turn_comparison"] = {
-            "my_profit": last_results.get(f"{my_name}_profit", 0)
-        }
-        
-        summary_window = QUARTERLY_REPORT_INTERVAL
-        recent_history = history[-summary_window:] if turn >= summary_window else history
-        agent_specific_state["historical_summary"] = {
-            "window_size": len(recent_history),
-            "my_avg_profit_4turn": sum(h.get(f"{my_name}_profit", 0) for h in recent_history) / len(recent_history),
-        }
+    best_mae = float('inf')
+    best_params = {}
+    
+    # 진행 상황 표시를 위한 카운터
+    log_interval = max(1, total_combos // 10) 
 
-    if turn > 0 and turn % QUARTERLY_REPORT_INTERVAL == 0:
-        start_index = max(0, turn - QUARTERLY_REPORT_INTERVAL)
-        quarterly_history = history[start_index : turn] 
-        
-        report_data = {}
-        companies_to_report = [my_name, opponent_name, "Others"]
-        
-        for name in companies_to_report:
-            if not quarterly_history:
-                report_data[name] = {"total_profit": 0, "total_rd_spend": 0, "total_marketing_spend": 0, "end_of_quarter_market_share": 0, "end_of_quarter_product_quality": 0, "end_of_quarter_brand_awareness": 0}
-                continue
-
-            total_profit = sum(h.get(f"{name}_profit", 0) for h in quarterly_history)
-            total_rd = sum(h.get(f"{name}_rd_spend", 0) for h in quarterly_history)
-            total_marketing = sum(h.get(f"{name}_marketing_spend", 0) for h in quarterly_history)
-            final_share = quarterly_history[-1].get(f"{name}_market_share", 0.0)
+    for i, params in enumerate(valid_combinations):
+        # 벤치마크 실행
+        try:
+            market = _initialize_market_for_benchmark(data, override_params=params)
+            current_total_mae = 0.0
             
-            end_of_quarter_state = market.get_company_state(name)
-            final_quality = end_of_quarter_state.get("product_quality", 0)
-            final_brand = end_of_quarter_state.get("brand_awareness", 0)
-
-            report_data[name] = {
-                "total_profit": total_profit,
-                "total_rd_spend": total_rd,
-                "total_marketing_spend": total_marketing,
-                "end_of_quarter_market_share": final_share,
-                "end_of_quarter_product_quality": final_quality,
-                "end_of_quarter_brand_awareness": final_brand
-            }
+            # 턴별 실행 및 오차 계산
+            valid_run = True
+            for turn_data in data.turns_data:
+                market.run_benchmark_turn(turn_data)
+                # 결과가 비정상(NaN 등)이면 중단
+                last_res = market.history[-1]
+                if "total_error_mae" not in last_res:
+                    valid_run = False
+                    break
+                current_total_mae += last_res["total_error_mae"]
+            
+            if valid_run:
+                avg_mae = current_total_mae / len(data.turns_data)
+                
+                if avg_mae < best_mae:
+                    best_mae = avg_mae
+                    best_params = params.copy()
+                    print(f"  [🔥 New Best! {i+1}/{total_combos}] MAE: {best_mae*100:.2f}% | Sensitivity: {params['price_sensitivity']} | Brand: {params['weight_brand']}")
         
-        agent_specific_state["quarterly_report"] = {
-            "turn_range": (start_index + 1, turn),
-            "data": report_data
-        }
-    else:
-        agent_specific_state["quarterly_report"] = None
-
-    return agent_specific_state
-
-
-# [수정] _validate_and_clean_ai_decisions (하이브리드 예산 준수)
-def _validate_and_clean_ai_decisions(
-    ai_decisions_raw: dict, 
-    market: MarketSimulator
-) -> (dict, dict):
-    ai_decisions_cleaned = {} 
-    ai_reasoning = {}         
-
-    for agent_name, decision_data in ai_decisions_raw.items():
-        company_data = market.companies.get(agent_name)
-        if not company_data:
-            print(f"경고: {agent_name}에 대한 회사 데이터를 찾을 수 없습니다. 결정을 건너뜁니다.")
+        except Exception as e:
             continue
-            
-        max_marketing_budget = company_data.get('max_marketing_budget', 1000000)
-        max_rd_budget = company_data.get('max_rd_budget', 500000)
-            
-        try:
-            price = int(decision_data.get("price", 10000))
-        except (ValueError, TypeError):
-            price = 10000 
-        price = max(1000, min(price, 50000))
+
+        # 진행 로그 (너무 자주 찍지 않음)
+        if i % log_interval == 0:
+             print(f"  .. processing {i}/{total_combos} ({i/total_combos*100:.0f}%) ..")
+
+    elapsed = time.time() - start_time
+    print(f"=== 🏁 Deep Tuning Finished in {elapsed:.2f} seconds ===")
+    print(f"=== 🏆 Best MAE: {best_mae*100:.2f}% ===")
+    
+    return {
+        "best_params": best_params, 
+        "lowest_mae": best_mae, 
+        "message": f"Tested {total_combos} scenarios in {elapsed:.1f}s. Best MAE: {best_mae*100:.2f}%"
+    }
+
+def _initialize_market_for_benchmark(data: BenchmarkData, override_params: dict = None):
+    first_turn = data.turns_data[0]
+    company_names = list(first_turn["companies"].keys())
+    
+    # 기본 물리 설정
+    physics_config = { 
+        "weight_quality": 0.4, "weight_brand": 0.4, "weight_price": 0.2,
+        "price_sensitivity": 50.0, "marketing_efficiency": 1.0,
+        "others_overall_competitiveness": 1.0 
+    }
+    
+    # 기본 글로벌 설정
+    sim_config = {
+        "initial_capital": 1000000000, "initial_configs": {}, 
+        "physics": physics_config,
+        "market_size": 50000, "inflation_rate": 0.0, "gdp_growth_rate": 0.0,
         
-        # [수정] AI는 이제 'R&D 지출'과 '마케팅 지출'을 결정
-        # (AI가 보낸 총액을 검증)
-        try:
-            marketing = int(decision_data.get("marketing_spend", 1000000))
-        except (ValueError, TypeError):
-            marketing = 1000000
-        marketing = max(0, min(marketing, max_marketing_budget)) 
-
-        try:
-            rd_spend = int(decision_data.get("rd_spend", 500000))
-        except (ValueError, TypeError):
-            rd_spend = 500000
-        rd_spend = max(0, min(rd_spend, max_rd_budget))
+        "rd_innovation_threshold": 5000000, 
+        "rd_innovation_impact": 5.0, 
+        "rd_efficiency_threshold": 5000000, 
+        "rd_efficiency_impact": 0.03,
         
-        # [수정] AI가 세분화된 지출을 보냈는지 확인 (에이전트 v3)
-        marketing_brand_spend = int(decision_data.get("marketing_brand_spend", marketing))
-        marketing_promo_spend = int(decision_data.get("marketing_promo_spend", 0))
-        rd_innovation_spend = int(decision_data.get("rd_innovation_spend", rd_spend))
-        rd_efficiency_spend = int(decision_data.get("rd_efficiency_spend", 0))
+        "marketing_cost_base": 50000.0, "marketing_cost_multiplier": 1.1,
+        
+        "quality_decay_rate": override_params.get("quality_decay_rate", 0.05) if override_params else 0.05,
+        "brand_decay_rate": override_params.get("brand_decay_rate", 0.2) if override_params else 0.2
+    }
+    
+    if override_params:
+        for k, v in override_params.items():
+            if k in physics_config:
+                sim_config["physics"][k] = v
+            else:
+                sim_config[k] = v
+    
+    for name in company_names:
+        inputs = first_turn["companies"][name]["inputs"]
+        actuals = first_turn["companies"][name]["outputs"]
+        
+        # [수정 2] Smart Initialization (초기 조건 보정)
+        # 가격이 $40,000 이상인 경우(예: Tesla), 초기 품질을 높게(70) 설정하여
+        # 1턴부터 비싼 가격에 대한 정당성을 부여합니다.
+        start_quality = inputs.get("initial_quality", 50.0)
+        start_brand = inputs.get("initial_brand", 50.0)
 
-        # (총액이 예산을 넘지 않도록 검증)
-        if (marketing_brand_spend + marketing_promo_spend) > max_marketing_budget:
-             marketing_brand_spend = max_marketing_budget
-             marketing_promo_spend = 0
-             
-        if (rd_innovation_spend + rd_efficiency_spend) > max_rd_budget:
-            rd_innovation_spend = max_rd_budget
-            rd_efficiency_spend = 0
-
-        ai_decisions_cleaned[agent_name] = {
-            "price": price,
-            # [수정] 총액과 세부 항목을 모두 전달
-            "marketing_spend": marketing_brand_spend + marketing_promo_spend,
-            "marketing_brand_spend": marketing_brand_spend,
-            "marketing_promo_spend": marketing_promo_spend,
-            "rd_spend": rd_innovation_spend + rd_efficiency_spend,
-            "rd_innovation_spend": rd_innovation_spend,
-            "rd_efficiency_spend": rd_efficiency_spend
+        sim_config["initial_configs"][name] = {
+            "unit_cost": 400, 
+            "market_share": actuals.get("actual_market_share", 0.1),
+            "product_quality": start_quality, 
+            "brand_awareness": start_brand
         }
-        ai_reasoning[agent_name] = decision_data.get("reasoning", "No reasoning or invalid data provided.")
+        
+    return MarketSimulator(company_names=company_names, config=sim_config)
 
-    return ai_decisions_cleaned, ai_reasoning
+# --- Helper Functions ---
+def _get_agent_specific_state(market, agent, all_agents): return market.get_market_state()
+def _validate_and_clean_ai_decisions(raw, market):
+    # 1. 프론트엔드에서 받은 데이터(raw)에서 reasoning만 뽑아서 별도 딕셔너리로 만듦
+    reasoning = {}
+    for name, data in raw.items():
+        # data 안에 있는 'reasoning' 텍스트를 가져오고, 없으면 빈 문자열
+        reasoning[name] = data.get("reasoning", "No reasoning provided.")
+    
+    # 2. (정제된 결정 데이터, 추출한 reasoning 딕셔너리) 순서로 반환
+    return raw, reasoning
 
 @app.post("/simulations/{sim_id}/get_choices")
 async def get_agent_choices(sim_id: str):
-    if sim_id not in active_simulations:
-        raise HTTPException(status_code=404, detail="시뮬레이션을 찾을 수 없습니다.")
-
+    if sim_id not in active_simulations: raise HTTPException(404, "Not found")
     sim_data = active_simulations[sim_id]
-    market: MarketSimulator = sim_data["market"]
-    agents: List[AIAgent] = sim_data["agents"] 
-    sim_config = market.config
-
-    if market.turn >= sim_config.get("total_turns", 30):
-        raise HTTPException(status_code=400, detail="시뮬레이션이 이미 종료되었습니다.")
-
+    market = sim_data["market"]; agents = sim_data["agents"]
+    if market.turn >= market.config.get("total_turns", 30): raise HTTPException(400, "Ended")
     tasks = []
     for agent in agents:
-        agent_state = _get_agent_specific_state(market, agent, agents)
-        tasks.append(agent.decide_action(agent_state)) # agent.py는 이제 '선택지 목록'을 반환
-
-    # choices_list_per_agent = [ [...], [...] ]
-    choices_list_per_agent = await asyncio.gather(*tasks)
-
-    # 프론트엔드가 쓰기 편하게 { "AgentName": [...] } 딕셔너리로 변환
-    agent_choices_map = {
-        agent.name: choices 
-        for agent, choices in zip(agents, choices_list_per_agent)
-    }
-
-    # 아직 턴을 실행하지 않고, '선택지'만 반환
-    return agent_choices_map
+        state = _get_agent_specific_state(market, agent, agents)
+        tasks.append(agent.decide_action(state))
+    choices = await asyncio.gather(*tasks)
+    return {a.name: c for a, c in zip(agents, choices)}
 
 @app.post("/simulations/{sim_id}/execute_turn")
 async def execute_turn(sim_id: str, request: ExecuteTurnRequest):
-    if sim_id not in active_simulations:
-        raise HTTPException(status_code=404, detail="시뮬레이션을 찾을 수 없습니다.")
-
-    sim_data = active_simulations[sim_id]
-    market: MarketSimulator = sim_data["market"]
-
-    # 프론트엔드가 '선택지'에서 'decision' 객체만 뽑아서 보냈다고 가정
-    # { "GM": {"price": ...}, "Sony": {"price": ...} }
-    decisions_to_validate = {
-        name: decision.model_dump() for name, decision in request.decisions.items()
-    }
-
-    # 기존 검증 함수 재활용
-    ai_decisions_cleaned, ai_reasoning = _validate_and_clean_ai_decisions(
-        decisions_to_validate, market
-    )
-
-    # 턴 실행!
-    next_state = market.process_turn(ai_decisions_cleaned)
-    turn_results = market.history[-1] if market.history else {}
-
-    # AI 로그도 reasoning을 포함하여 반환
-    reasoning_log = {
-        name: decision.reasoning for name, decision in request.decisions.items()
-    }
-
-    return {
-        "turn": market.turn,
-        "turn_results": turn_results,
-        "ai_reasoning": reasoning_log, # 사용자가 선택한 전략의 reasoning
-        "next_state": next_state
-    }
+    if sim_id not in active_simulations: raise HTTPException(404, "Not found")
+    market = active_simulations[sim_id]["market"]
+    decisions = {n: d.model_dump() for n, d in request.decisions.items()}
+    cleaned, reasoning = _validate_and_clean_ai_decisions(decisions, market)
+    next_state = market.process_turn(cleaned)
+    return {"turn": market.turn, "turn_results": market.history[-1], "ai_reasoning": reasoning, "next_state": next_state}
 
 @app.post("/simulations/{sim_id}/inject_event")
 async def inject_event_into_simulation(sim_id: str, event: EventInject):
-    if sim_id not in active_simulations:
-        raise HTTPException(status_code=404, detail="시뮬레이션을 찾을 수 없습니다.")
-    
-    market: MarketSimulator = active_simulations[sim_id]["market"]
-    
-    try:
-        market.inject_event(
-            description=event.description,
-            target_company=event.target_company,
-            effect_type=event.effect_type,
-            impact_value=event.impact_value,
-            duration=event.duration
-        )
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-    return {"message": f"이벤트 '{event.description}'가 {event.target_company}에 주입되었습니다."}
+    if sim_id not in active_simulations: raise HTTPException(404, "Not found")
+    active_simulations[sim_id]["market"].inject_event(event.description, event.target_company, event.effect_type, event.impact_value, event.duration)
+    return {"message": "Injected"}

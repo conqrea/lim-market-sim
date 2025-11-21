@@ -1,15 +1,13 @@
 import math
 import pandas as pd
-import random # [신규] R&D 도박을 위해 추가
 
-# [수정] 분기 보고서 생성 주기 (api_main.py와 동기화)
+# 분기 보고서 생성 주기
 QUARTERLY_REPORT_INTERVAL = 4
 
 class Event:
     def __init__(self, description, target_company, effect_type, impact_value, duration):
         self.description = description
         self.target_company = target_company
-        # [수정] effect_type에 'quality_shock', 'brand_shock' 추가
         self.effect_type = effect_type 
         self.impact_value = impact_value
         self.duration = duration
@@ -17,11 +15,10 @@ class Event:
     def apply(self, company_data):
         if self.effect_type == 'unit_cost_multiplier':
             company_data['unit_cost'] *= self.impact_value
-        elif self.effect_type == 'quality_shock': # (예: 신제품 결함)
-            company_data['product_quality'] = max(0, company_data['product_quality'] + self.impact_value) # (음수 값으로 전달)
-        elif self.effect_type == 'brand_shock': # (예: 스캔들)
+        elif self.effect_type == 'quality_shock':
+            company_data['product_quality'] = max(0, company_data['product_quality'] + self.impact_value)
+        elif self.effect_type == 'brand_shock':
             company_data['brand_awareness'] = max(0, company_data['brand_awareness'] + self.impact_value)
-        # (다른 이벤트 유형 추가 가능)
         return company_data
 
     def tick(self):
@@ -38,19 +35,15 @@ class MarketSimulator:
 
         self.companies = {}
         
-        # [수정] 1턴에만 사용할 초기 예산을 config에서 읽어옴 (자본 기반)
         initial_capital = config.get("initial_capital", 0)
         initial_marketing_budget = initial_capital * config.get("initial_marketing_budget_ratio", 0.02)
         initial_rd_budget = initial_capital * config.get("initial_rd_budget_ratio", 0.01)
         
-        # [수정] config에서 초기 자산 맵을 가져옴
         initial_configs = config.get("initial_configs", {})
         total_initial_share = sum(cfg.get("market_share", 0) for cfg in initial_configs.values())
         
         if total_initial_share > 1.0:
-             print("경고: AI 초기 점유율 합계가 1.0을 초과합니다. 1.0으로 정규화됩니다.")
              total_initial_share = 1.0
-        
         others_initial_share = 1.0 - total_initial_share
 
         for name in self.ai_company_names:
@@ -65,19 +58,21 @@ class MarketSimulator:
                 "accumulated_profit": initial_capital,
                 "product_quality": cfg.get("product_quality", 50.0),
                 "brand_awareness": cfg.get("brand_awareness", 50.0),
-                "max_marketing_budget": initial_marketing_budget, # 1턴 예산
-                "max_rd_budget": initial_rd_budget                # 1턴 예산
+                "max_marketing_budget": initial_marketing_budget,
+                "max_rd_budget": initial_rd_budget,
+                "accumulated_rd_innovation_point": 0.0,
+                "accumulated_rd_efficiency_point": 0.0
             }
             
         for name in self.dummy_company_names:
-            # Others는 AI 회사들의 평균 초기값/자산을 가짐
             avg_cost = 10000
             avg_quality = 50.0
             avg_brand = 50.0
             if initial_configs:
-                avg_cost = sum(cfg.get("unit_cost", 10000) for cfg in initial_configs.values()) / len(initial_configs)
-                avg_quality = sum(cfg.get("product_quality", 50) for cfg in initial_configs.values()) / len(initial_configs)
-                avg_brand = sum(cfg.get("brand_awareness", 50) for cfg in initial_configs.values()) / len(initial_configs)
+                avg_vals = initial_configs.values()
+                avg_cost = sum(c.get("unit_cost", 10000) for c in avg_vals) / len(avg_vals)
+                avg_quality = sum(c.get("product_quality", 50) for c in avg_vals) / len(avg_vals)
+                avg_brand = sum(c.get("brand_awareness", 50) for c in avg_vals) / len(avg_vals)
 
             self.companies[name] = {
                 "market_share": others_initial_share,
@@ -86,19 +81,20 @@ class MarketSimulator:
                 "product_quality": avg_quality,
                 "brand_awareness": avg_brand,
                 "max_marketing_budget": initial_marketing_budget / 2,
-                "max_rd_budget": 0 
+                "max_rd_budget": 0,
+                "accumulated_rd_innovation_point": 0.0,
+                "accumulated_rd_efficiency_point": 0.0
             }
         
         self.turn = 0
         self.history = []
         self.pending_event_queue = [] 
         self.active_effects = []      
-        print("MarketSimulator가 성공적으로 생성되었습니다! (Level 3: Probabilistic Asset Model)")
+        # print("MarketSimulator Initialized.")
 
     def inject_event(self, description, target_company, effect_type, impact_value, duration):
         event = Event(description, target_company, effect_type, impact_value, duration)
         self.pending_event_queue.append(event)
-        print(f"이벤트 주입됨: {description} (대상: {target_company}, {duration}턴 지속)")
 
     def _apply_events(self):
         next_active_effects = []
@@ -120,13 +116,11 @@ class MarketSimulator:
         avg_ai_price = 10000
         avg_ai_marketing = 1000000
         if self.history:
-            last_history = self.history[-1]
-            ai_prices = [last_history.get(f"{name}_price", 10000) for name in self.ai_company_names if f"{name}_price" in last_history]
-            ai_marketings = [last_history.get(f"{name}_marketing_spend", 1000000) for name in self.ai_company_names if f"{name}_marketing_spend" in last_history]
-            if ai_prices:
-                avg_ai_price = sum(ai_prices) / len(ai_prices)
-            if ai_marketings:
-                avg_ai_marketing = sum(ai_marketings) / len(ai_marketings)
+            last = self.history[-1]
+            prices = [last.get(f"{n}_price", 10000) for n in self.ai_company_names]
+            mkts = [last.get(f"{n}_marketing_spend", 1000000) for n in self.ai_company_names]
+            if prices: avg_ai_price = sum(prices) / len(prices)
+            if mkts: avg_ai_marketing = sum(mkts) / len(mkts)
 
         for name in self.dummy_company_names:
             budget = self.companies[name].get('max_marketing_budget', avg_ai_marketing * 0.8)
@@ -141,68 +135,110 @@ class MarketSimulator:
             }
         return decisions
 
-    # [수정] _calculate_value_scores (핵심 물리 법칙)
-    def _calculate_value_scores(self, decisions: dict):
-        value_scores = {}
-        
+    # [수정됨] 정규화(Normalization) 및 로짓 스케일링 적용
+    def _calculate_utility_scores(self, decisions: dict):
+        utility_scores = {}
         if not decisions:
             return {}
             
         avg_price = sum(d['price'] for d in decisions.values()) / len(decisions)
+        
+        physics = self.config.get('physics', {})
+        w_quality = physics.get('weight_quality', 0.4)
+        w_brand = physics.get('weight_brand', 0.4)
+        w_price = physics.get('weight_price', 0.2)
+        sensitivity = physics.get('price_sensitivity', 50.0)
+        others_competitiveness = physics.get('others_overall_competitiveness', 1.0)
 
         for name, data in self.companies.items():
             if name not in decisions:
                 continue
 
-            quality = data.get("product_quality", 50.0)
-            brand = data.get("brand_awareness", 50.0)
-            price = decisions[name].get("price", avg_price)
+            # [변경] 품질/브랜드 점수를 0~10 스케일로 정규화 (기존 0~100)
+            # 이렇게 해야 exp() 계산 시 값이 너무 커지지 않음
+            quality_score = data.get("product_quality", 50.0) / 10.0
+            brand_score = data.get("brand_awareness", 50.0) / 10.0
             
-            # [신규] 프로모션(단기 할인) 효과 적용
+            price = decisions[name].get("price", avg_price)
             promo_spend = decisions[name].get("marketing_promo_spend", 0)
-            # (매우 단순한 예시: 프로모션 100만당 1% 가격 할인 효과)
-            promo_discount_factor = 1.0 - (promo_spend / 100000000) # (최대 10% 할인 가정)
+            promo_discount_factor = 1.0 - (promo_spend / 100000000) 
             effective_price = price * max(0.9, promo_discount_factor)
 
-            price_competitiveness = (avg_price / max(effective_price, 1)) * 50 
-            
-            # [수정] 가치 점수 공식 (가중치)
-            quality_weight = 0.4
-            brand_weight = 0.4
-            price_weight = 0.2
-            
-            value = (quality * quality_weight) + \
-                    (brand * brand_weight) + \
-                    (price_competitiveness * price_weight)
-            
-            value_scores[name] = max(0.1, value) # (점수가 0이 되는 것 방지)
-            
-        return value_scores
+            # [변경] 가격 점수 계산: 로그 스케일 사용 (작은 차이도 민감하게)
+            # (평균 / 내 가격) 비율이 1.0이면 0점, 1.1이면 +점수
+            # sensitivity가 50이면 -> 10% 쌀 때 약 +5점 효용
+            if effective_price > 0:
+                price_ratio = avg_price / effective_price
+                # 로그를 취해 선형적으로 변환 후 민감도 곱함
+                price_score = math.log(price_ratio) * (sensitivity / 5.0) # 스케일 조정 (나누기 5)
+            else:
+                price_score = 0
 
-    # --- process_turn 함수 (엔진 재설계) ---
+            # 총 효용 (Utility)
+            # 이제 모든 점수가 대략 -5 ~ +10 사이에서 움직임
+            utility = (quality_score * w_quality) + \
+                      (brand_score * w_brand) + \
+                      (price_score * w_price)
+            
+            if name == "Others":
+                # Others 점수 부스트 (1.0이면 그대로, 1.5면 50% 증폭)
+                utility *= others_competitiveness
+
+            utility_scores[name] = utility
+            
+        return utility_scores
+
     def process_turn(self, ai_decisions: dict):
+        dummy_decisions = self._get_dummy_decisions()
+        all_decisions = {**ai_decisions, **dummy_decisions}
         self.turn += 1
-        print(f"\n--- Turn {self.turn} ---")
-        
-        # --- 1. 거시 경제 적용 (외부 변수) ---
+        print(f"\n--- Turn {self.turn} (Standard) ---")
         inflation = self.config.get("inflation_rate", 0.0)
         gdp_growth = self.config.get("gdp_growth_rate", 0.0)
-        
         self.config['market_size'] *= (1 + gdp_growth)
-        for name in self.all_company_names:
-            self.companies[name]['unit_cost'] *= (1 + inflation)
+        for name in self.all_company_names: self.companies[name]['unit_cost'] *= (1 + inflation)
+        self._apply_events()
+        return self._process_turn_internal(all_decisions, is_benchmark=False)
 
-        # --- 2. 자산 감가상각 (Asset Decay) 적용 ---
+    def run_benchmark_turn(self, turn_data: dict):
+        self.turn = turn_data["turn"]
+        macro = turn_data.get("macro", {})
+        gdp_growth = macro.get("gdp_growth", 0.0)
+        inflation = macro.get("inflation", 0.0)
+        self.config['market_size'] *= (1 + gdp_growth)
+        for name in self.all_company_names: self.companies[name]['unit_cost'] *= (1 + inflation)
+        self._apply_events()
+        
+        forced_decisions = {}
+        companies_data = turn_data.get("companies", {})
+        dummy_decisions = self._get_dummy_decisions()
+        
+        for name in self.ai_company_names:
+            if name in companies_data:
+                inputs = companies_data[name]["inputs"]
+                price = inputs.get("price", 20000)
+                current_share = self.companies[name]['market_share']
+                if current_share <= 0: current_share = 0.1 
+                estimated_revenue = self.config['market_size'] * current_share * price
+                marketing_spend = estimated_revenue * inputs.get("marketing_spend_ratio", 0.02)
+                rd_spend = estimated_revenue * inputs.get("rd_spend_ratio", 0.01)
+                forced_decisions[name] = {
+                    "price": price, "marketing_spend": marketing_spend, "marketing_brand_spend": marketing_spend, 
+                    "marketing_promo_spend": 0, "rd_spend": rd_spend, "rd_innovation_spend": rd_spend * 0.5,
+                    "rd_efficiency_spend": rd_spend * 0.5
+                }
+            else:
+                forced_decisions[name] = dummy_decisions.get(name, {})
+        all_decisions = {**forced_decisions, **dummy_decisions}
+        return self._process_turn_internal(all_decisions, is_benchmark=True, benchmark_truth=companies_data)
+
+    def _process_turn_internal(self, all_decisions: dict, is_benchmark: bool = False, benchmark_truth: dict = None):
         quality_decay = self.config.get("quality_decay_rate", 0.5)
         brand_decay = self.config.get("brand_decay_rate", 0.2)
         for name in self.all_company_names:
             self.companies[name]['product_quality'] = max(0, self.companies[name]['product_quality'] - quality_decay)
             self.companies[name]['brand_awareness'] = max(0, self.companies[name]['brand_awareness'] - brand_decay)
 
-        # --- 3. 이벤트 적용 ---
-        self._apply_events() 
-
-        # --- 4. 파산 로직 ---
         active_ai_company_names = self.ai_company_names[:]
         bankrupt_company_names = []
         for name in self.ai_company_names:
@@ -212,109 +248,82 @@ class MarketSimulator:
                     bankrupt_company_names.append(name)
         
         active_all_company_names = active_ai_company_names + self.dummy_company_names
-        
-        dummy_decisions = self._get_dummy_decisions()
-        all_decisions = {**ai_decisions, **dummy_decisions}
-        
-        active_decisions = {
-            name: all_decisions[name] 
-            for name in active_all_company_names 
-            if name in all_decisions
-        }
+        active_decisions = {n: all_decisions[n] for n in active_all_company_names if n in all_decisions}
 
-        # --- 5. AI 지출로 인한 '자산' 업데이트 (R&D 도박 / 마케팅 수확 체감) ---
-        
-        # R&D 도박 변수
-        rd_inno_cost = self.config.get("rd_innovation_cost", 2000000)
-        rd_inno_prob = self.config.get("rd_innovation_prob", 0.3)
+        rd_inno_threshold = self.config.get("rd_innovation_threshold", 5000000)
         rd_inno_impact = self.config.get("rd_innovation_impact", 5.0)
-        rd_eff_cost = self.config.get("rd_efficiency_cost", 2000000)
-        rd_eff_prob = self.config.get("rd_efficiency_prob", 0.2)
+        rd_eff_threshold = self.config.get("rd_efficiency_threshold", 5000000)
         rd_eff_impact = self.config.get("rd_efficiency_impact", 0.03)
-
-        # 마케팅 수확 체감 변수
+        physics = self.config.get('physics', {})
+        mkt_efficiency = physics.get('marketing_efficiency', 1.0)
         mkt_base = self.config.get("marketing_cost_base", 100000)
         mkt_mult = self.config.get("marketing_cost_multiplier", 1.12)
 
         for name in active_ai_company_names:
-            # (R&D 도박 실행)
             spend_rd_inno = active_decisions[name].get('rd_innovation_spend', 0)
-            num_bets_inno = math.floor(spend_rd_inno / rd_inno_cost)
-            for _ in range(num_bets_inno):
-                if random.random() < rd_inno_prob:
-                    self.companies[name]['product_quality'] += rd_inno_impact
-                    print(f"*** {name} 품질 R&D 성공! (품질 +{rd_inno_impact}) ***")
-            
+            self.companies[name]['accumulated_rd_innovation_point'] += spend_rd_inno
+            if self.companies[name]['accumulated_rd_innovation_point'] >= rd_inno_threshold:
+                self.companies[name]['product_quality'] += rd_inno_impact
+                self.companies[name]['accumulated_rd_innovation_point'] -= rd_inno_threshold
+                if not is_benchmark: print(f"*** {name} 품질 혁신 달성! ***")
+
             spend_rd_eff = active_decisions[name].get('rd_efficiency_spend', 0)
-            num_bets_eff = math.floor(spend_rd_eff / rd_eff_cost)
-            for _ in range(num_bets_eff):
-                if random.random() < rd_eff_prob:
-                    self.companies[name]['unit_cost'] *= (1.0 - rd_eff_impact)
-                    print(f"*** {name} 원가 R&D 성공! (원가 -{rd_eff_impact*100}%) ***")
+            self.companies[name]['accumulated_rd_efficiency_point'] += spend_rd_eff
+            if self.companies[name]['accumulated_rd_efficiency_point'] >= rd_eff_threshold:
+                self.companies[name]['unit_cost'] *= (1.0 - rd_eff_impact)
+                self.companies[name]['accumulated_rd_efficiency_point'] -= rd_eff_threshold
+                if not is_benchmark: print(f"*** {name} 원가 혁신 달성! ***")
             
-            # (마케팅 투자 -> 브랜드 상승 - 수확 체감 적용)
             spend_mkt_brand = active_decisions[name].get('marketing_brand_spend', 0)
             current_brand = self.companies[name]['brand_awareness']
-            cost_per_point_mkt = mkt_base * (mkt_mult ** current_brand) # 점수가 높을수록 1점 올리기 비쌈
-            points_gained_mkt = spend_mkt_brand / max(cost_per_point_mkt, 1)
-            
+            cost_per_point_mkt = mkt_base * (mkt_mult ** current_brand)
+            points_gained_mkt = (spend_mkt_brand / max(cost_per_point_mkt, 1)) * mkt_efficiency
             self.companies[name]['product_quality'] = min(100, self.companies[name]['product_quality'])
             self.companies[name]['brand_awareness'] = min(100, current_brand + points_gained_mkt)
 
-        # --- 6. '가치 점수' 기반 시장 점유율 계산 ---
-        value_scores = self._calculate_value_scores(active_decisions)
-        total_value = sum(value_scores.values())
+        utility_scores = self._calculate_utility_scores(active_decisions)
+        if utility_scores:
+            max_util = max(utility_scores.values())
+            # [수정] exp 계산 시 max_util을 빼서 overflow 방지
+            exp_scores = {k: math.exp(v - max_util) for k, v in utility_scores.items()}
+            total_exp = sum(exp_scores.values())
+        else:
+            exp_scores = {}; total_exp = 0
 
         current_turn_results = {"turn": self.turn}
+        total_composite_error = 0.0
+        sim_ranks = []; real_ranks = []
 
         for name in self.all_company_names:
-            
-            if name in active_decisions:
-                share = value_scores.get(name, 0) / total_value if total_value > 0 else 0
-            else:
-                share = 0
-                
+            if name in active_decisions and total_exp > 0:
+                share = exp_scores[name] / total_exp
+            else: share = 0
             self.companies[name]['market_share'] = share
             
-            if name not in all_decisions:
-                current_turn_results[f"{name}_price"] = 0
-                current_turn_results[f"{name}_marketing_spend"] = 0
-                current_turn_results[f"{name}_rd_spend"] = 0
-                current_turn_results[f"{name}_revenue"] = 0
-                current_turn_results[f"{name}_profit"] = 0
-                current_turn_results[f"{name}_unit_cost"] = self.companies[name]['unit_cost']
-                current_turn_results[f"{name}_market_share"] = share
-                current_turn_results[f"{name}_accumulated_profit"] = self.companies[name]['accumulated_profit']
-                current_turn_results[f"{name}_product_quality"] = self.companies[name]['product_quality']
-                current_turn_results[f"{name}_brand_awareness"] = self.companies[name]['brand_awareness']
-                current_turn_results[f"{name}_marketing_brand_spend"] = 0
-                current_turn_results[f"{name}_marketing_promo_spend"] = 0
-                current_turn_results[f"{name}_rd_innovation_spend"] = 0
-                current_turn_results[f"{name}_rd_efficiency_spend"] = 0
-                continue 
+            if name not in all_decisions: continue 
 
             price = all_decisions[name]['price']
-            # (총 지출액 기록)
-            marketing_spend = active_decisions[name].get('marketing_spend', 0)
-            rd_spend = active_decisions[name].get('rd_spend', 0)
-
-            mkt_brand = all_decisions[name].get('marketing_brand_spend', 0)
-            mkt_promo = all_decisions[name].get('marketing_promo_spend', 0)
-            rd_inno = all_decisions[name].get('rd_innovation_spend', 0)
-            rd_eff = all_decisions[name].get('rd_efficiency_spend', 0)
-            
+            marketing_spend = all_decisions[name].get('marketing_spend', 0)
+            rd_spend = all_decisions[name].get('rd_spend', 0)
             sales_volume = self.config['market_size'] * share
             revenue = sales_volume * price
-            
-            if name in bankrupt_company_names:
-                print(f"!!! 턴 {self.turn}: {name} 파산. 시장에서 퇴출됩니다.")
-                marketing_spend = 0 
-                rd_spend = 0
-
+            if name in bankrupt_company_names: marketing_spend = 0; rd_spend = 0
             profit = revenue - marketing_spend - rd_spend - (sales_volume * self.companies[name]['unit_cost'])
-            
-            if name in self.ai_company_names:
-                self.companies[name]['accumulated_profit'] += profit
+            profit_margin = profit / revenue if revenue > 0 else 0.0
+
+            if name in self.ai_company_names: self.companies[name]['accumulated_profit'] += profit
+
+            if is_benchmark and benchmark_truth and name in benchmark_truth:
+                actual_share = benchmark_truth[name]["outputs"]["actual_market_share"]
+                share_error = share - actual_share
+                actual_margin = benchmark_truth[name]["outputs"].get("actual_profit_margin", None)
+                margin_error = 0.0
+                if actual_margin is not None: margin_error = profit_margin - actual_margin
+                composite_error = (abs(share_error) * 0.7) + (abs(margin_error) * 0.3)
+                total_composite_error += composite_error
+                current_turn_results[f"{name}_error"] = share_error
+                sim_ranks.append((name, share))
+                real_ranks.append((name, actual_share))
 
             current_turn_results[f"{name}_price"] = price
             current_turn_results[f"{name}_marketing_spend"] = marketing_spend
@@ -326,45 +335,35 @@ class MarketSimulator:
             current_turn_results[f"{name}_accumulated_profit"] = self.companies[name]['accumulated_profit']
             current_turn_results[f"{name}_product_quality"] = self.companies[name]['product_quality']
             current_turn_results[f"{name}_brand_awareness"] = self.companies[name]['brand_awareness']
-            current_turn_results[f"{name}_marketing_brand_spend"] = mkt_brand
-            current_turn_results[f"{name}_marketing_promo_spend"] = mkt_promo
-            current_turn_results[f"{name}_rd_innovation_spend"] = rd_inno
-            current_turn_results[f"{name}_rd_efficiency_spend"] = rd_eff
+            current_turn_results[f"{name}_marketing_brand_spend"] = all_decisions[name].get('marketing_brand_spend', 0)
+            current_turn_results[f"{name}_marketing_promo_spend"] = all_decisions[name].get('marketing_promo_spend', 0)
+            current_turn_results[f"{name}_rd_innovation_spend"] = all_decisions[name].get('rd_innovation_spend', 0)
+            current_turn_results[f"{name}_rd_efficiency_spend"] = all_decisions[name].get('rd_efficiency_spend', 0)
+            current_turn_results[f"{name}_accumulated_rd_innovation_point"] = self.companies[name]['accumulated_rd_innovation_point']
+            current_turn_results[f"{name}_accumulated_rd_efficiency_point"] = self.companies[name]['accumulated_rd_efficiency_point']
+
+        if is_benchmark and sim_ranks:
+            sim_ranks.sort(key=lambda x: x[1], reverse=True)
+            real_ranks.sort(key=lambda x: x[1], reverse=True)
+            if sim_ranks[0][0] != real_ranks[0][0]: total_composite_error += 0.1
+            current_turn_results["total_error_mae"] = total_composite_error / len(sim_ranks)
 
         self.history.append(current_turn_results)
 
-        # --- 7. (하이브리드 예산 업데이트) ---
-        
-        # (매 턴, 총 자본 기반 R&D 예산 업데이트)
         for name in self.ai_company_names:
             current_capital = self.companies[name]['accumulated_profit']
-            if current_capital > 0:
-                self.companies[name]['max_rd_budget'] = max(500_000, current_capital * 0.01) # 총 자본의 1%
-            else:
-                self.companies[name]['max_rd_budget'] = 500_000 
+            self.companies[name]['max_rd_budget'] = max(500_000, current_capital * 0.01) if current_capital > 0 else 500_000
 
-        # (매 분기 말, 지난 분기 이익 기반 마케팅 예산 업데이트)
         if self.turn > 0 and self.turn % QUARTERLY_REPORT_INTERVAL == 0:
             start_index = max(0, self.turn - QUARTERLY_REPORT_INTERVAL)
             quarterly_history = self.history[start_index : self.turn]
-            
-            print(f"--- [Turn {self.turn}] 분기 결산 및 다음 분기 마케팅 예산 재조정 ---")
-
             for name in self.ai_company_names:
                 last_quarter_profit = sum(h.get(f"{name}_profit", 0) for h in quarterly_history)
-                
-                if last_quarter_profit > 0:
-                    self.companies[name]['max_marketing_budget'] = max(1_000_000, last_quarter_profit * 0.1) # 분기 이익의 10%
-                else:
-                    self.companies[name]['max_marketing_budget'] = 1_000_000 
-                
-                print(f"  [{name}] 지난 분기 이익: {last_quarter_profit:,.0f} -> 다음 분기 Mkt 예산: {self.companies[name]['max_marketing_budget']:,.0f}")
-                print(f"  [{name}] (참고) 현재 총 자본: {self.companies[name]['accumulated_profit']:,.0f} -> 다음 턴 R&D 예산: {self.companies[name]['max_rd_budget']:,.0f}")
+                self.companies[name]['max_marketing_budget'] = max(1_000_000, last_quarter_profit * 0.1) if last_quarter_profit > 0 else 1_000_000
 
         return self.get_market_state()
-    
+
     def get_company_state(self, name: str) -> dict:
-        """특정 회사의 현재 상태(자산 포함)를 반환합니다. (정보 지연용)"""
         if name in self.companies:
             return self.companies[name]
         return {}
@@ -378,11 +377,11 @@ class MarketSimulator:
                 "inflation_rate": self.config.get("inflation_rate"),
                 "quality_decay_rate": self.config.get("quality_decay_rate"),
                 "brand_decay_rate": self.config.get("brand_decay_rate"),
-                # [신규] R&D 도박 비용/확률 정보 제공
-                "rd_innovation_cost": self.config.get("rd_innovation_cost"),
-                "rd_innovation_prob": self.config.get("rd_innovation_prob"),
-                "rd_efficiency_cost": self.config.get("rd_efficiency_cost"),
-                "rd_efficiency_prob": self.config.get("rd_efficiency_prob"),
+                "rd_innovation_threshold": self.config.get("rd_innovation_threshold"),
+                "rd_innovation_impact": self.config.get("rd_innovation_impact"),
+                "rd_efficiency_threshold": self.config.get("rd_efficiency_threshold"),
+                "rd_efficiency_impact": self.config.get("rd_efficiency_impact"),
+                "physics": self.config.get("physics", {})
             },
             "companies": {}
         }
@@ -394,13 +393,12 @@ class MarketSimulator:
                 "product_quality": data.get('product_quality', 50.0),
                 "brand_awareness": data.get('brand_awareness', 50.0),
                 "max_marketing_budget": data.get('max_marketing_budget', 1000000),
-                "max_rd_budget": data.get('max_rd_budget', 500000)
+                "max_rd_budget": data.get('max_rd_budget', 500000),
+                "accumulated_rd_innovation_point": data.get("accumulated_rd_innovation_point", 0.0),
+                "accumulated_rd_efficiency_point": data.get("accumulated_rd_efficiency_point", 0.0)
             }
         
-        state["active_events"] = [
-            f"{e.description} ({e.duration}턴 남음)" for e in self.active_effects
-        ]
-        
+        state["active_events"] = [f"{e.description} ({e.duration}턴 남음)" for e in self.active_effects]
         if self.history:
             state["last_turn_results"] = self.history[-1]
             

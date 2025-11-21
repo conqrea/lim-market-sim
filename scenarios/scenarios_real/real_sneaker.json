@@ -1,0 +1,318 @@
+{
+  "scenario_name": "Sneaker War",
+  "description": "Historical data benchmark",
+  "turns_data": [
+    {
+      "turn": 1,
+      "note": "Quarter 1",
+      "companies": {
+        "Nike": {
+          "inputs": {
+            "price": 120,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.5
+          }
+        },
+        "Adidas": {
+          "inputs": {
+            "price": 100,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.15
+          }
+        }
+      }
+    },
+    {
+      "turn": 2,
+      "note": "Quarter 2",
+      "companies": {
+        "Nike": {
+          "inputs": {
+            "price": 120,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.5
+          }
+        },
+        "Adidas": {
+          "inputs": {
+            "price": 120,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.16
+          }
+        }
+      }
+    },
+    {
+      "turn": 3,
+      "note": "Quarter 3",
+      "companies": {
+        "Nike": {
+          "inputs": {
+            "price": 120,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.49
+          }
+        },
+        "Adidas": {
+          "inputs": {
+            "price": 130,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.18
+          }
+        }
+      }
+    },
+    {
+      "turn": 4,
+      "note": "Quarter 4",
+      "companies": {
+        "Nike": {
+          "inputs": {
+            "price": 120,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.48
+          }
+        },
+        "Adidas": {
+          "inputs": {
+            "price": 140,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.2
+          }
+        }
+      }
+    },
+    {
+      "turn": 5,
+      "note": "Quarter 5",
+      "companies": {
+        "Nike": {
+          "inputs": {
+            "price": 120,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.47
+          }
+        },
+        "Adidas": {
+          "inputs": {
+            "price": 150,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.22
+          }
+        }
+      }
+    },
+    {
+      "turn": 6,
+      "note": "Quarter 6",
+      "companies": {
+        "Nike": {
+          "inputs": {
+            "price": 120,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.46
+          }
+        },
+        "Adidas": {
+          "inputs": {
+            "price": 150,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.24
+          }
+        }
+      }
+    },
+    {
+      "turn": 7,
+      "note": "Quarter 7",
+      "companies": {
+        "Nike": {
+          "inputs": {
+            "price": 120,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.45
+          }
+        },
+        "Adidas": {
+          "inputs": {
+            "price": 150,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.25
+          }
+        }
+      }
+    },
+    {
+      "turn": 8,
+      "note": "Quarter 8",
+      "companies": {
+        "Nike": {
+          "inputs": {
+            "price": 125,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.44
+          }
+        },
+        "Adidas": {
+          "inputs": {
+            "price": 150,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.26
+          }
+        }
+      }
+    },
+    {
+      "turn": 9,
+      "note": "Quarter 9",
+      "companies": {
+        "Nike": {
+          "inputs": {
+            "price": 125,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.43
+          }
+        },
+        "Adidas": {
+          "inputs": {
+            "price": 150,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.27
+          }
+        }
+      }
+    },
+    {
+      "turn": 10,
+      "note": "Quarter 10",
+      "companies": {
+        "Nike": {
+          "inputs": {
+            "price": 125,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.42
+          }
+        },
+        "Adidas": {
+          "inputs": {
+            "price": 150,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.28
+          }
+        }
+      }
+    },
+    {
+      "turn": 11,
+      "note": "Quarter 11",
+      "companies": {
+        "Nike": {
+          "inputs": {
+            "price": 130,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.42
+          }
+        },
+        "Adidas": {
+          "inputs": {
+            "price": 150,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.28
+          }
+        }
+      }
+    },
+    {
+      "turn": 12,
+      "note": "Quarter 12",
+      "companies": {
+        "Nike": {
+          "inputs": {
+            "price": 130,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.42
+          }
+        },
+        "Adidas": {
+          "inputs": {
+            "price": 150,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.28
+          }
+        }
+      }
+    }
+  ]
+}

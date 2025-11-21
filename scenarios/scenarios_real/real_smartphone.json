@@ -1,0 +1,318 @@
+{
+  "scenario_name": "Smartphone War",
+  "description": "Historical data benchmark",
+  "turns_data": [
+    {
+      "turn": 1,
+      "note": "Quarter 1",
+      "companies": {
+        "Apple": {
+          "inputs": {
+            "price": 500,
+            "marketing_spend_ratio": 0.02,
+            "rd_spend_ratio": 0.15
+          },
+          "outputs": {
+            "actual_market_share": 0.05
+          }
+        },
+        "Nokia": {
+          "inputs": {
+            "price": 200,
+            "marketing_spend_ratio": 0.08,
+            "rd_spend_ratio": 0.02
+          },
+          "outputs": {
+            "actual_market_share": 0.45
+          }
+        }
+      }
+    },
+    {
+      "turn": 2,
+      "note": "Quarter 2",
+      "companies": {
+        "Apple": {
+          "inputs": {
+            "price": 500,
+            "marketing_spend_ratio": 0.02,
+            "rd_spend_ratio": 0.15
+          },
+          "outputs": {
+            "actual_market_share": 0.08
+          }
+        },
+        "Nokia": {
+          "inputs": {
+            "price": 190,
+            "marketing_spend_ratio": 0.08,
+            "rd_spend_ratio": 0.02
+          },
+          "outputs": {
+            "actual_market_share": 0.42
+          }
+        }
+      }
+    },
+    {
+      "turn": 3,
+      "note": "Quarter 3",
+      "companies": {
+        "Apple": {
+          "inputs": {
+            "price": 500,
+            "marketing_spend_ratio": 0.02,
+            "rd_spend_ratio": 0.15
+          },
+          "outputs": {
+            "actual_market_share": 0.12
+          }
+        },
+        "Nokia": {
+          "inputs": {
+            "price": 180,
+            "marketing_spend_ratio": 0.08,
+            "rd_spend_ratio": 0.02
+          },
+          "outputs": {
+            "actual_market_share": 0.38
+          }
+        }
+      }
+    },
+    {
+      "turn": 4,
+      "note": "Quarter 4",
+      "companies": {
+        "Apple": {
+          "inputs": {
+            "price": 500,
+            "marketing_spend_ratio": 0.02,
+            "rd_spend_ratio": 0.15
+          },
+          "outputs": {
+            "actual_market_share": 0.18
+          }
+        },
+        "Nokia": {
+          "inputs": {
+            "price": 170,
+            "marketing_spend_ratio": 0.08,
+            "rd_spend_ratio": 0.02
+          },
+          "outputs": {
+            "actual_market_share": 0.32
+          }
+        }
+      }
+    },
+    {
+      "turn": 5,
+      "note": "Quarter 5",
+      "companies": {
+        "Apple": {
+          "inputs": {
+            "price": 500,
+            "marketing_spend_ratio": 0.02,
+            "rd_spend_ratio": 0.15
+          },
+          "outputs": {
+            "actual_market_share": 0.22
+          }
+        },
+        "Nokia": {
+          "inputs": {
+            "price": 160,
+            "marketing_spend_ratio": 0.08,
+            "rd_spend_ratio": 0.02
+          },
+          "outputs": {
+            "actual_market_share": 0.28
+          }
+        }
+      }
+    },
+    {
+      "turn": 6,
+      "note": "Quarter 6",
+      "companies": {
+        "Apple": {
+          "inputs": {
+            "price": 450,
+            "marketing_spend_ratio": 0.02,
+            "rd_spend_ratio": 0.15
+          },
+          "outputs": {
+            "actual_market_share": 0.28
+          }
+        },
+        "Nokia": {
+          "inputs": {
+            "price": 150,
+            "marketing_spend_ratio": 0.08,
+            "rd_spend_ratio": 0.02
+          },
+          "outputs": {
+            "actual_market_share": 0.22
+          }
+        }
+      }
+    },
+    {
+      "turn": 7,
+      "note": "Quarter 7",
+      "companies": {
+        "Apple": {
+          "inputs": {
+            "price": 450,
+            "marketing_spend_ratio": 0.02,
+            "rd_spend_ratio": 0.15
+          },
+          "outputs": {
+            "actual_market_share": 0.35
+          }
+        },
+        "Nokia": {
+          "inputs": {
+            "price": 140,
+            "marketing_spend_ratio": 0.08,
+            "rd_spend_ratio": 0.02
+          },
+          "outputs": {
+            "actual_market_share": 0.18
+          }
+        }
+      }
+    },
+    {
+      "turn": 8,
+      "note": "Quarter 8",
+      "companies": {
+        "Apple": {
+          "inputs": {
+            "price": 450,
+            "marketing_spend_ratio": 0.02,
+            "rd_spend_ratio": 0.15
+          },
+          "outputs": {
+            "actual_market_share": 0.4
+          }
+        },
+        "Nokia": {
+          "inputs": {
+            "price": 130,
+            "marketing_spend_ratio": 0.08,
+            "rd_spend_ratio": 0.02
+          },
+          "outputs": {
+            "actual_market_share": 0.15
+          }
+        }
+      }
+    },
+    {
+      "turn": 9,
+      "note": "Quarter 9",
+      "companies": {
+        "Apple": {
+          "inputs": {
+            "price": 400,
+            "marketing_spend_ratio": 0.02,
+            "rd_spend_ratio": 0.15
+          },
+          "outputs": {
+            "actual_market_share": 0.45
+          }
+        },
+        "Nokia": {
+          "inputs": {
+            "price": 120,
+            "marketing_spend_ratio": 0.08,
+            "rd_spend_ratio": 0.02
+          },
+          "outputs": {
+            "actual_market_share": 0.12
+          }
+        }
+      }
+    },
+    {
+      "turn": 10,
+      "note": "Quarter 10",
+      "companies": {
+        "Apple": {
+          "inputs": {
+            "price": 400,
+            "marketing_spend_ratio": 0.02,
+            "rd_spend_ratio": 0.15
+          },
+          "outputs": {
+            "actual_market_share": 0.5
+          }
+        },
+        "Nokia": {
+          "inputs": {
+            "price": 110,
+            "marketing_spend_ratio": 0.08,
+            "rd_spend_ratio": 0.02
+          },
+          "outputs": {
+            "actual_market_share": 0.1
+          }
+        }
+      }
+    },
+    {
+      "turn": 11,
+      "note": "Quarter 11",
+      "companies": {
+        "Apple": {
+          "inputs": {
+            "price": 400,
+            "marketing_spend_ratio": 0.02,
+            "rd_spend_ratio": 0.15
+          },
+          "outputs": {
+            "actual_market_share": 0.55
+          }
+        },
+        "Nokia": {
+          "inputs": {
+            "price": 100,
+            "marketing_spend_ratio": 0.08,
+            "rd_spend_ratio": 0.02
+          },
+          "outputs": {
+            "actual_market_share": 0.08
+          }
+        }
+      }
+    },
+    {
+      "turn": 12,
+      "note": "Quarter 12",
+      "companies": {
+        "Apple": {
+          "inputs": {
+            "price": 400,
+            "marketing_spend_ratio": 0.02,
+            "rd_spend_ratio": 0.15
+          },
+          "outputs": {
+            "actual_market_share": 0.6
+          }
+        },
+        "Nokia": {
+          "inputs": {
+            "price": 90,
+            "marketing_spend_ratio": 0.08,
+            "rd_spend_ratio": 0.02
+          },
+          "outputs": {
+            "actual_market_share": 0.05
+          }
+        }
+      }
+    }
+  ]
+}

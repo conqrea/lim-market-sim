@@ -1,0 +1,318 @@
+{
+  "scenario_name": "Browser War",
+  "description": "Historical data benchmark",
+  "turns_data": [
+    {
+      "turn": 1,
+      "note": "Quarter 1",
+      "companies": {
+        "Chrome": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.01
+          }
+        },
+        "IE": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.6
+          }
+        }
+      }
+    },
+    {
+      "turn": 2,
+      "note": "Quarter 2",
+      "companies": {
+        "Chrome": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.05
+          }
+        },
+        "IE": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.55
+          }
+        }
+      }
+    },
+    {
+      "turn": 3,
+      "note": "Quarter 3",
+      "companies": {
+        "Chrome": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.1
+          }
+        },
+        "IE": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.5
+          }
+        }
+      }
+    },
+    {
+      "turn": 4,
+      "note": "Quarter 4",
+      "companies": {
+        "Chrome": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.15
+          }
+        },
+        "IE": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.45
+          }
+        }
+      }
+    },
+    {
+      "turn": 5,
+      "note": "Quarter 5",
+      "companies": {
+        "Chrome": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.2
+          }
+        },
+        "IE": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.4
+          }
+        }
+      }
+    },
+    {
+      "turn": 6,
+      "note": "Quarter 6",
+      "companies": {
+        "Chrome": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.25
+          }
+        },
+        "IE": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.35
+          }
+        }
+      }
+    },
+    {
+      "turn": 7,
+      "note": "Quarter 7",
+      "companies": {
+        "Chrome": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.3
+          }
+        },
+        "IE": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.3
+          }
+        }
+      }
+    },
+    {
+      "turn": 8,
+      "note": "Quarter 8",
+      "companies": {
+        "Chrome": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.35
+          }
+        },
+        "IE": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.25
+          }
+        }
+      }
+    },
+    {
+      "turn": 9,
+      "note": "Quarter 9",
+      "companies": {
+        "Chrome": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.4
+          }
+        },
+        "IE": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.2
+          }
+        }
+      }
+    },
+    {
+      "turn": 10,
+      "note": "Quarter 10",
+      "companies": {
+        "Chrome": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.45
+          }
+        },
+        "IE": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.18
+          }
+        }
+      }
+    },
+    {
+      "turn": 11,
+      "note": "Quarter 11",
+      "companies": {
+        "Chrome": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.5
+          }
+        },
+        "IE": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.15
+          }
+        }
+      }
+    },
+    {
+      "turn": 12,
+      "note": "Quarter 12",
+      "companies": {
+        "Chrome": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.55
+          }
+        },
+        "IE": {
+          "inputs": {
+            "price": 1,
+            "marketing_spend_ratio": 0.05,
+            "rd_spend_ratio": 0.05
+          },
+          "outputs": {
+            "actual_market_share": 0.12
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "scenario_name": "CPU Wars (2017-2020) - The Ryzen Revolution",
+  "description": "Desktop CPU Market Share (PassMark & Mercury Research Data). Intel's stagnation vs AMD's architectural disruption.",
+  "turns_data": [
+    { "turn": 1, "year_quarter": "2017 Q1", "companies": {
+      "Intel": { "inputs": { "price": 350000, "initial_quality": 80.0, "initial_brand": 90.0 }, "outputs": { "actual_market_share": 0.810, "actual_profit_margin": 0.28 } },
+      "AMD":   { "inputs": { "price": 150000, "initial_quality": 50.0, "initial_brand": 30.0 }, "outputs": { "actual_market_share": 0.190, "actual_profit_margin": -0.05 } }
+    }},
+    { "turn": 2, "year_quarter": "2017 Q2", "companies": {
+      "Intel": { "inputs": { "price": 350000 }, "outputs": { "actual_market_share": 0.795 } },
+      "AMD":   { "inputs": { "price": 220000 }, "outputs": { "actual_market_share": 0.205 } }
+    }},
+    { "turn": 3, "year_quarter": "2017 Q3", "companies": {
+      "Intel": { "inputs": { "price": 340000 }, "outputs": { "actual_market_share": 0.780 } },
+      "AMD":   { "inputs": { "price": 210000 }, "outputs": { "actual_market_share": 0.220 } }
+    }},
+    { "turn": 4, "year_quarter": "2017 Q4", "companies": {
+      "Intel": { "inputs": { "price": 340000 }, "outputs": { "actual_market_share": 0.775 } },
+      "AMD":   { "inputs": { "price": 200000 }, "outputs": { "actual_market_share": 0.225 } }
+    }},
+    { "turn": 5, "year_quarter": "2018 Q1", "companies": {
+      "Intel": { "inputs": { "price": 330000 }, "outputs": { "actual_market_share": 0.770 } },
+      "AMD":   { "inputs": { "price": 190000 }, "outputs": { "actual_market_share": 0.230 } }
+    }},
+    { "turn": 6, "year_quarter": "2018 Q2", "companies": {
+      "Intel": { "inputs": { "price": 330000 }, "outputs": { "actual_market_share": 0.760 } },
+      "AMD":   { "inputs": { "price": 230000 }, "outputs": { "actual_market_share": 0.240 } }
+    }},
+    { "turn": 7, "year_quarter": "2018 Q3", "companies": {
+      "Intel": { "inputs": { "price": 350000 }, "outputs": { "actual_market_share": 0.750 } },
+      "AMD":   { "inputs": { "price": 220000 }, "outputs": { "actual_market_share": 0.250 } }
+    }},
+    { "turn": 8, "year_quarter": "2018 Q4", "companies": {
+      "Intel": { "inputs": { "price": 360000 }, "outputs": { "actual_market_share": 0.740 } },
+      "AMD":   { "inputs": { "price": 210000 }, "outputs": { "actual_market_share": 0.260 } }
+    }},
+    { "turn": 9, "year_quarter": "2019 Q1", "companies": {
+      "Intel": { "inputs": { "price": 350000 }, "outputs": { "actual_market_share": 0.730 } },
+      "AMD":   { "inputs": { "price": 200000 }, "outputs": { "actual_market_share": 0.270 } }
+    }},
+    { "turn": 10, "year_quarter": "2019 Q2", "companies": {
+      "Intel": { "inputs": { "price": 340000 }, "outputs": { "actual_market_share": 0.705 } },
+      "AMD":   { "inputs": { "price": 250000 }, "outputs": { "actual_market_share": 0.295 } }
+    }},
+    { "turn": 11, "year_quarter": "2019 Q3", "companies": {
+      "Intel": { "inputs": { "price": 330000 }, "outputs": { "actual_market_share": 0.680 } },
+      "AMD":   { "inputs": { "price": 240000 }, "outputs": { "actual_market_share": 0.320 } }
+    }},
+    { "turn": 12, "year_quarter": "2019 Q4", "companies": {
+      "Intel": { "inputs": { "price": 320000 }, "outputs": { "actual_market_share": 0.660 } },
+      "AMD":   { "inputs": { "price": 230000 }, "outputs": { "actual_market_share": 0.340 } }
+    }},
+    { "turn": 13, "year_quarter": "2020 Q1", "companies": {
+      "Intel": { "inputs": { "price": 310000 }, "outputs": { "actual_market_share": 0.645 } },
+      "AMD":   { "inputs": { "price": 220000 }, "outputs": { "actual_market_share": 0.355 } }
+    }},
+    { "turn": 14, "year_quarter": "2020 Q2", "companies": {
+      "Intel": { "inputs": { "price": 300000 }, "outputs": { "actual_market_share": 0.630 } },
+      "AMD":   { "inputs": { "price": 210000 }, "outputs": { "actual_market_share": 0.370 } }
+    }},
+    { "turn": 15, "year_quarter": "2020 Q3", "companies": {
+      "Intel": { "inputs": { "price": 290000 }, "outputs": { "actual_market_share": 0.615 } },
+      "AMD":   { "inputs": { "price": 210000 }, "outputs": { "actual_market_share": 0.385 } }
+    }},
+    { "turn": 16, "year_quarter": "2020 Q4", "companies": {
+      "Intel": { "inputs": { "price": 280000 }, "outputs": { "actual_market_share": 0.600 } },
+      "AMD":   { "inputs": { "price": 300000 }, "outputs": { "actual_market_share": 0.400 } }
+    }}
+  ]
+}
