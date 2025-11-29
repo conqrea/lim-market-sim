@@ -40,8 +40,10 @@ class MarketPhysicsConfig(BaseModel):
 
 class BenchmarkData(BaseModel):
     scenario_name: str
+    description: Optional[str] = None
+    config: Optional[Dict[str, Any]] = None 
     turns_data: List[dict]
-    physics_override: Optional[Dict[str, Any]] = None 
+    physics_override: Optional[Dict[str, Any]] = None
 
 class CompanyConfig(BaseModel):
     name: str = Field(..., example="GM")
@@ -301,49 +303,64 @@ def _initialize_market_for_benchmark(data: BenchmarkData, override_params: dict 
     first_turn = data.turns_data[0]
     company_names = list(first_turn["companies"].keys())
     
-    # 기본 물리 설정
-    physics_config = { 
+    # 1. [기준 정의] 무엇이 '물리 변수(Physics)'인지 키(Key) 목록 정의
+    # 이 딕셔너리는 시뮬레이션의 기본 물리값으로도 쓰이고, 
+    # 나중에 override_params가 들어왔을 때 분류하는 기준으로도 쓰입니다.
+    default_physics = {
         "weight_quality": 0.4, "weight_brand": 0.4, "weight_price": 0.2,
         "price_sensitivity": 50.0, "marketing_efficiency": 1.0,
         "others_overall_competitiveness": 1.0 
     }
     
-    # 기본 글로벌 설정
+    # 2. [환경 설정] 기본값 정의 (시장 규모, 초기 자본 등)
     sim_config = {
-        "initial_capital": 1000000000, "initial_configs": {}, 
-        "physics": physics_config,
-        "market_size": 50000, "inflation_rate": 0.0, "gdp_growth_rate": 0.0,
+        "market_size": 50000,           # 기본값
+        "initial_capital": 1000000000,  # 기본값
+        "marketing_cost_base": 50000.0,
+        "inflation_rate": 0.0,
+        "gdp_growth_rate": 0.0,
         
+        # 튜닝 대상이지만 Physics 안에는 없는 변수들 (Root 레벨)
         "rd_innovation_threshold": 5000000, 
         "rd_innovation_impact": 5.0, 
         "rd_efficiency_threshold": 5000000, 
         "rd_efficiency_impact": 0.03,
+        "marketing_cost_multiplier": 1.1,
+        "quality_decay_rate": 0.05,
+        "brand_decay_rate": 0.2,
         
-        "marketing_cost_base": 50000.0, "marketing_cost_multiplier": 1.1,
-        
-        "quality_decay_rate": override_params.get("quality_decay_rate", 0.05) if override_params else 0.05,
-        "brand_decay_rate": override_params.get("brand_decay_rate", 0.2) if override_params else 0.2
+        # Physics 섹션 초기화
+        "physics": default_physics.copy(), 
+        "initial_configs": {}
     }
-    
+
+    # 3. [JSON 데이터 주입] 시나리오 파일에 config가 있다면 덮어쓰기
+    # 예: 스마트폰 시장이라 market_size를 50000 -> 5000000으로 변경
+    if hasattr(data, "config") and data.config:
+        # 주의: data.config에 physics 키가 있다면 그것도 덮어씌워질 수 있음
+        # 여기서는 Root 레벨 변수(market_size 등) 업데이트가 주 목적
+        sim_config.update(data.config)
+
+    # 4. [튜닝 값 적용] Auto-Tune이 넘겨준 파라미터(override_params) 적용
     if override_params:
         for k, v in override_params.items():
-            if k in physics_config:
+            # (1) 물리 변수 목록에 있는 키라면 -> physics 안에 넣음
+            if k in default_physics:
                 sim_config["physics"][k] = v
+            # (2) 그 외(예: quality_decay_rate, rd_threshold) -> Root에 넣음
             else:
                 sim_config[k] = v
     
+    # 5. [기업 초기 상태 설정] JSON 데이터 기반
     for name in company_names:
         inputs = first_turn["companies"][name]["inputs"]
         actuals = first_turn["companies"][name]["outputs"]
         
-        # [수정 2] Smart Initialization (초기 조건 보정)
-        # 가격이 $40,000 이상인 경우(예: Tesla), 초기 품질을 높게(70) 설정하여
-        # 1턴부터 비싼 가격에 대한 정당성을 부여합니다.
         start_quality = inputs.get("initial_quality", 50.0)
         start_brand = inputs.get("initial_brand", 50.0)
-
+        
         sim_config["initial_configs"][name] = {
-            "unit_cost": 400, 
+            "unit_cost": 400, # 벤치마크에서는 원가가 큰 의미 없으므로 고정
             "market_share": actuals.get("actual_market_share", 0.1),
             "product_quality": start_quality, 
             "brand_awareness": start_brand
