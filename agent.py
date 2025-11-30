@@ -4,36 +4,72 @@ import json
 import random
 import os
 from google import genai
+from google.genai import types
 from dotenv import load_dotenv
+from pydantic import BaseModel, Field
+from typing import Dict, List, Any, Optional
 import re
 
 load_dotenv()
 
+class CompanyInputs(BaseModel):
+    price: int = Field(description="제품 가격 (정수)")
+    marketing_spend_ratio: float = Field(description="매출 대비 마케팅비 비율 (0.05~0.3)")
+    rd_spend_ratio: float = Field(description="매출 대비 R&D비 비율 (0.05~0.2)")
+    initial_quality: float = Field(description="제품 품질 점수 (0~100)")
+    initial_brand: float = Field(description="브랜드 인지도 점수 (0~100)")
+    unit_cost: int = Field(description="단위 원가 (정수, 가격의 70~90% 수준)")
+
+class CompanyOutputs(BaseModel):
+    actual_market_share: float = Field(description="당시 시장 점유율 (0.0~1.0)")
+    actual_accumulated_profit: int = Field(description="누적 이익 (추정치)")
+
+class CompanyData(BaseModel):
+    persona: str = Field(description="[1.정체성(매 턴 복사)] [2.상황] [3.지침] 구조의 텍스트")
+    inputs: CompanyInputs
+    outputs: CompanyOutputs
+
+class TurnData(BaseModel):
+    turn: int
+    turn_description: str = Field(description="해당 턴의 핵심 사건 요약")
+    companies: Dict[str, CompanyData] 
+
+class PhysicsConfig(BaseModel):
+    price_sensitivity: float = Field(description="가격 민감도 (20~50)")
+    marketing_efficiency: float = Field(description="마케팅 효율 (1.5~3.0)")
+    weight_quality: float
+    weight_brand: float
+    weight_price: float
+    others_overall_competitiveness: float
+
+class ScenarioConfig(BaseModel):
+    total_turns: int
+    market_size: int
+    initial_capital: int
+    physics: PhysicsConfig
+    # [핵심] 자본금 규모에 비례하도록 유도
+    marketing_cost_base: float = Field(description="마케팅 기준가 (예상 매출의 10% 수준)")
+    rd_innovation_threshold: float = Field(description="R&D 기준가 (예상 매출의 20% 수준)")
+    rd_efficiency_threshold: float = Field(description="R&D 효율 기준가 (예상 매출의 20% 수준)")
+
+class ScenarioOutput(BaseModel):
+    scenario_name: str
+    description: str
+    config: ScenarioConfig
+    turns_data: List[TurnData]
+
 # (Mock API 함수)
 def call_mock_llm_api(prompt: str) -> str:
-    """LLM API를 모방하는 목(Mock) 함수입니다."""
     print("--- [MOCK] LLM API 호출됨 ---")
-    # Mock 응답도 JSON 배열 형태로 반환하도록 수정
     response = [
         {
-            "reasoning": "Mock API 응답: R&D(혁신/효율) 누적을 위해 꾸준히 투자하고, 마케팅으로 브랜드를 방어합니다.",
-            "probability": 0.6,
+            "reasoning": "Mock Response: 유지 보수 전략",
+            "probability": 1.0,
             "decision": {
-                "price": 10000 + random.randint(-500, 500),
-                "marketing_brand_spend": 1000000,
+                "price": 0, # 0으로 두면 아래 로직에서 원가 기반 자동 설정됨
+                "marketing_brand_spend": 0,
                 "marketing_promo_spend": 0,
-                "rd_innovation_spend": 2000000,
-                "rd_efficiency_spend": 1000000
-            }
-        },
-        {
-            "reasoning": "Mock API 응답 (대안): 공격적인 가격 인하로 점유율을 노립니다.",
-            "probability": 0.4,
-            "decision": {
-                "price": 9000,
-                "marketing_brand_spend": 500000,
-                "marketing_promo_spend": 500000,
-                "rd_innovation_spend": 1000000,
+                "rd_innovation_spend": 0,
                 "rd_efficiency_spend": 0
             }
         }
@@ -42,28 +78,38 @@ def call_mock_llm_api(prompt: str) -> str:
 
 # (JSON 추출 함수)
 def extract_and_load_json(text: str) -> dict:
-    """LLM 응답 텍스트에서 JSON 블록을 추출하여 파싱합니다."""
-    match = re.search(r'```json\s*([\s\S]*?)\s*```', text)
-    if match:
-        json_str = match.group(1)
-    else:
-        json_str = text
-    
+    """
+    LLM 응답 텍스트에서 JSON 객체만 정밀하게 추출하여 파싱합니다.
+    Markdown 코드 블록(```json), 앞뒤 공백, 사족 등을 모두 무시합니다.
+    """
     try:
+        # 1. 텍스트 내에서 가장 바깥쪽 중괄호 '{}'의 위치를 찾습니다.
+        start_index = text.find('{')
+        end_index = text.rfind('}')
+
+        # 중괄호가 없으면 파싱 불가
+        if start_index == -1 or end_index == -1:
+            print(f"JSON 파싱 오류: 중괄호를 찾을 수 없습니다. (Text: {text[:50]}...)")
+            return None
+
+        # 2. 순수한 JSON 문자열만 잘라냅니다.
+        json_str = text[start_index : end_index + 1]
+
+        # 3. 파싱 시도
         return json.loads(json_str)
+
     except json.JSONDecodeError as e:
         print(f"JSON 파싱 오류: {e}")
-        print(f"원본 텍스트: {text[:200]}...") 
-        if "{" not in text:
-            return None
-        return None 
+        # 디버깅을 위해 문제의 텍스트 일부를 출력
+        print(f"추출된 텍스트(일부): {text[:200]}...") 
+        return None
 
 class AIAgent:
     def __init__(self, name: str, persona: str, use_mock: bool = False):
         self.name = name
         self.persona = persona
         self.use_mock = use_mock
-        self.model_name = 'gemini-2.0-flash' # 필요에 따라 모델명 변경 (예: gemini-pro)
+        self.model_name = 'gemini-2.5-pro' # 필요에 따라 모델명 변경 (예: gemini-pro)
 
         if not self.use_mock and not os.getenv("GOOGLE_API_KEY") and not os.getenv("GEMINI_API_KEY"):
              raise ValueError("GOOGLE_API_KEY 또는 GEMINI_API_KEY 환경 변수가 설정되지 않았습니다.")
@@ -79,21 +125,33 @@ class AIAgent:
             return response.text
         except Exception as e:
             print(f"!!! Gemini API 비동기 호출 중 오류 발생 ({self.name}): {e} !!!")
-            # 에러 발생 시 안전한 기본값 반환
-            error_fallback = [
-                {
-                    "reasoning": f"API 호출 오류 발생: {e}. 기본 방어 전략을 수행합니다.",
-                    "probability": 1.0,
-                    "decision": {
-                        "price": 10000,
-                        "marketing_brand_spend": 100000,
-                        "marketing_promo_spend": 0,
-                        "rd_innovation_spend": 100000,
-                        "rd_efficiency_spend": 0
-                    }
+            # [수정] 여기서 하드코딩된 JSON을 리턴하지 않고 에러를 던져서
+            # decide_action의 try-except 블록이 '현재 상태 기반 Fallback'을 쓰게 유도함
+            raise e
+
+    def _create_fallback_decision(self, market_state: dict, reason: str):
+        my_data = market_state.get("companies", {}).get(self.name, {})
+        current_cost = my_data.get("unit_cost", 100) # 원가 없으면 100
+        safe_price = int(current_cost * 1.1) # 10% 마진
+        
+        current_capital = my_data.get("accumulated_profit", 0)
+        safe_budget = max(0, int(current_capital * 0.01))
+
+        print(f"🛡️ [Fallback] {self.name} 안전 모드! 원가({current_cost}) -> 가격({safe_price})")
+
+        return [
+            {
+                "reasoning": f"시스템 오류({reason})로 인한 안전 모드. 원가({current_cost:.1f}) 기반 방어적 가격 설정.",
+                "probability": 1.0,
+                "decision": {
+                    "price": safe_price,
+                    "marketing_brand_spend": int(safe_budget * 0.5),
+                    "marketing_promo_spend": 0,
+                    "rd_innovation_spend": int(safe_budget * 0.5),
+                    "rd_efficiency_spend": 0
                 }
-            ]
-            return json.dumps(error_fallback)
+            }
+        ]
 
     async def decide_action(self, market_state: dict) -> dict:
         """[Phase 1] R&D 누적 시스템, 물리 엔진 튜닝, 하이브리드 예산 규칙에 따라 행동을 결정합니다."""
@@ -262,7 +320,7 @@ class AIAgent:
             * 현상 유지를 위해서라도 꾸준한 투자가 필요합니다.
 
         * **법칙 2: R&D 누적 (Accumulation System)**
-            * R&D는 더 이상 '확률 도박'이 아닙니다. **마일스톤(목표 금액)을 달성할 때까지 투자를 '누적'해야 합니다.**
+            * R&D는 마일스톤(목표 금액)을 달성할 때까지 투자를 '누적'해야 합니다.**
             * [E. R&D 프로젝트 진행 현황]을 참고하여, 조금씩 꾸준히 투자할지, 아니면 한 번에 큰돈을 부어 기술 격차를 벌릴지 결정하십시오.
             * `rd_innovation_spend`: 품질 향상 프로젝트에 누적됩니다. (제품 경쟁력 상승)
             * `rd_efficiency_spend`: 원가 절감 프로젝트에 누적됩니다. (이익률 개선)
@@ -310,12 +368,12 @@ class AIAgent:
         """
         
         # --- 7. API 호출 및 파싱 ---
-        if self.use_mock:
-            response_text = call_mock_llm_api(prompt) 
-        else:
-            response_text = await self.get_gemini_response_async(prompt)
-
         try:
+            if self.use_mock:
+                response_text = call_mock_llm_api(prompt) 
+            else:
+                response_text = await self.get_gemini_response_async(prompt)
+            
             # extract_and_load_json은 JSON 배열(list)을 반환해야 함
             choices_list = extract_and_load_json(response_text)
 
@@ -323,33 +381,220 @@ class AIAgent:
                 print(f"오류: AI 응답이 JSON 배열이 아닙니다. 응답: {response_text[:100]}...")
                 raise json.JSONDecodeError("JSON 파싱 함수가 list를 반환하지 않음", response_text, 0)
 
-            # [호환성 처리] 각 선택지(choice) 내부의 decision 객체 키 확인 및 보정
+            # [호환성 처리 및 안전장치]
             for choice in choices_list:
                 decision = choice.get("decision", {})
-                # 혹시 AI가 구버전 키(marketing_spend 등)를 썼을 경우를 대비해 변환
+                
+                # 가격이 0이거나 터무니없이 작으면 원가 기반 보정
+                price = decision.get("price", 0)
+                my_cost = market_state.get("companies", {}).get(self.name, {}).get("unit_cost", 100)
+                if price <= 0:
+                     decision["price"] = int(my_cost * 1.1)
+                
+                # 키 이름 보정 (구버전 호환)
                 if "marketing_spend" in decision and "marketing_brand_spend" not in decision:
                     decision["marketing_brand_spend"] = int(decision.get("marketing_spend", 0))
-                    decision["marketing_promo_spend"] = 0
                 if "rd_spend" in decision and "rd_innovation_spend" not in decision:
                     decision["rd_innovation_spend"] = int(decision.get("rd_spend", 0))
-                    decision["rd_efficiency_spend"] = 0
+                
                 choice["decision"] = decision 
 
             return choices_list 
 
-        except json.JSONDecodeError as e:
-            print(f"오류: LLM 응답이 유효한 JSON 배열이 아닙니다. (에러: {e}) 응답: {response_text[:100]}...")
-            # 에러 발생 시 기본 선택지 반환
-            return [
-                {
-                    "reasoning": "JSON 파싱 오류. 기본 보수적 전략으로 결정.",
-                    "probability": 1.0,
-                    "decision": {
-                        "price": 10000,
-                        "marketing_brand_spend": 100000,
-                        "marketing_promo_spend": 0,
-                        "rd_innovation_spend": 100000,
-                        "rd_efficiency_spend": 0
-                    }
-                }
-            ]
+        except Exception as e:
+            # [핵심] 모든 에러(API, 파싱 등)를 잡아서 안전 모드 가동
+            return self._create_fallback_decision(market_state, str(e))
+        
+SCENARIO_DESIGNER_SYSTEM_PROMPT = """
+당신은 정교한 '비즈니스 워게임 시뮬레이션 설계자'입니다.
+사용자 주제를 바탕으로 JSON 시나리오를 작성하되, **AI 에이전트가 시뮬레이션 변수(점유율, 이익 등)를 보고 판단할 수 있는 "구체적이고 실전적인 페르소나"**를 작성해야 합니다.
+문장을 길게 쓰지 말고 **핵심만 짧게** 쓰십시오.
+
+### 1. 페르소나 작성 규칙 (Simulation-Friendly)
+각 회사의 `persona`는 아래 3단 구조를 따르며, **시뮬레이션 변수(Market Share, Profit, R&D, Cost)**를 직접 언급해야 합니다.
+
+* **[1. 정체성 (Identity)]**: 회사의 궁극적 목표 (1턴부터 10턴까지 **동일한 문장 복사**)
+    * 예: "우리는 **고마진(High Profit)**과 **프리미엄 브랜드(High Brand)**를 추구하는 럭셔리 기업입니다."
+
+* **[2. 상황 (Context)]**: 현재 수치적 상황 요약
+    * 예: "**점유율(Market Share)** 안정적 / **매출 성장(Revenue Growth)** 정체."
+
+* **[3. 지침 (Directive)]**: 구체적인 행동 전략 (우선순위 설정)
+    * 상황에 따라 **'선택과 집중'** 혹은 **'균형 유지'**를 명확히 지시하십시오.
+    * **Type A (공격/위기):** "~를 희생해서라도 ~를 달성하라." (Trade-off)
+        * 예: "가격을 낮춰 **단기 이익(Profit)** 희생/**점유율(Share)** 방어."
+    * **Type B (안정/성장):** "~와 ~의 균형을 맞춰라." (Balance)
+        * 예: "안정적인 선에서 **R&D 혁신(Innovation)** 투자 증가."
+
+### 2. 분량 및 구조
+* **총 10턴(Turns)**으로 구성하십시오.
+* `turn_description`: 1문장 요약.
+
+### 3. 경제 데이터 (Realistic Data)
+* `unit_cost`: 판매가(`price`) 대비 마진(10~30%)을 고려하여 **반드시 정수(Integer)**로 기입.
+* `marketing_cost_base` 등은 자본금 규모에 맞춰 현실적으로 설정.
+
+### 4. 출력 형식
+* 오직 **순수한 JSON 문자열**만 출력하십시오.
+* `companies` 내부 데이터는 반드시 `inputs`과 `outputs` 객체로 분리해야 합니다. **구조 평탄화 금지.**
+
+---
+**[JSON 출력 예시 (Strictly Follow)]**
+{
+  "scenario_name": "Smartphone Wars 2010",
+  "description": "Apple vs Samsung competition...",
+  "config": {
+    "total_turns": 10,
+    "market_size": 1000000,
+    "initial_capital": 5000000000,
+    "physics": { "price_sensitivity": 30.0, "marketing_efficiency": 2.0, "weight_quality": 0.5, "weight_brand": 0.3, "weight_price": 0.2, "others_overall_competitiveness": 0.5 },
+    "marketing_cost_base": 2000000,
+    "rd_innovation_threshold": 100000000
+  },
+  "turns_data": [
+    {
+      "turn": 0,
+      "turn_description": "Galaxy S 출시로 인한 경쟁 본격화.",
+      "companies": {
+        "Apple": {
+          "persona": "[1.정체성] 우리는 **고마진(High Profit)**과 **프리미엄 브랜드(High Brand)**를 최우선으로 추구합니다. 점유율보다 대당 순이익을 중시합니다. [2.상황] 독점적 지위가 흔들림. [3.지침] **가격(Price) 방어**, **이익(Profit) 우선**, **마케팅(Marketing) 집중**.",
+          "inputs": { 
+            "price": 800, "unit_cost": 400, 
+            "marketing_spend_ratio": 0.2, "rd_spend_ratio": 0.1, 
+            "initial_quality": 90, "initial_brand": 95 
+          },
+          "outputs": { "actual_market_share": 0.45, "actual_accumulated_profit": 100000000 }
+        },
+        "Samsung": {
+          "persona": "[1.정체성] 우리는 **시장 점유율(Market Share)** 극대화와 **가격 경쟁력(Price Competitiveness)**을 핵심 가치로 삼습니다. [2.상황] 시장 진입 초기. [3.지침] **이익(Profit) 희생**, **점유율(Share) 확대**, **저가 정책(Low Price)**.",
+          "inputs": { 
+            "price": 600, "unit_cost": 350, 
+            "marketing_spend_ratio": 0.3, "rd_spend_ratio": 0.1, 
+            "initial_quality": 80, "initial_brand": 60 
+          },
+          "outputs": { "actual_market_share": 0.25, "actual_accumulated_profit": 50000000 }
+        }
+      }
+    },
+    {
+      "turn": 1,
+      "turn_description": "보급형 모델 확산으로 삼성 점유율 상승.",
+      "companies": {
+        "Apple": {
+          "persona": "[1.정체성] 우리는 **고마진(High Profit)**과 **프리미엄 브랜드(High Brand)**를 최우선으로 추구합니다. 점유율보다 대당 순이익을 중시합니다. (복사됨) [2.상황] 경쟁사 추격 허용. [3.지침] **가격(Price) 동결**, **R&D 품질 혁신(Innovation)**, **격차 유지**.",
+          "inputs": { 
+            "price": 800, "unit_cost": 390, 
+            "marketing_spend_ratio": 0.2, "rd_spend_ratio": 0.15,
+            "initial_quality": 92, "initial_brand": 94
+          },
+          "outputs": { 
+            "actual_market_share": 0.42, 
+            "actual_accumulated_profit": 250000000 
+          }
+        },
+        "Samsung": {
+          "persona": "[1.정체성] 우리는 **시장 점유율(Market Share)** 극대화와 **가격 경쟁력(Price Competitiveness)**을 핵심 가치로 삼습니다. (복사됨) [2.상황] 점유율 확대 성공. [3.지침] **마진(Margin) 최소화**, **물량 공세(Volume)**, **판촉 강화**.",
+          "inputs": { 
+            "price": 550, "unit_cost": 340, 
+            "marketing_spend_ratio": 0.25, "rd_spend_ratio": 0.1,
+            "initial_quality": 82, "initial_brand": 65
+          },
+          "outputs": { 
+            "actual_market_share": 0.30, 
+            "actual_accumulated_profit": 130000000 
+          }
+        }
+      }
+    }
+  ]
+}
+"""
+
+async def generate_scenario_async(topic: str, model_name: str = 'gemini-2.5-pro') -> dict:
+    """
+    LLM을 사용하여 주제(topic)에 맞는 시나리오 JSON을 생성합니다.
+    """
+    if not os.getenv("GOOGLE_API_KEY") and not os.getenv("GEMINI_API_KEY"):
+        print("!!! API Key not found. Returning MOCK Scenario. !!!")
+        return _generate_mock_scenario(topic)
+
+    prompt = f"""
+    주제: "{topic}"
+    위 주제로 시뮬레이션 시나리오 JSON을 작성해줘.
+    """
+
+    try:
+        print(f"--- (Scenario Generation Start: {topic}) ---")
+        
+        async with genai.Client().aio as client:
+            response = await client.models.generate_content(
+                model=model_name,
+                contents=prompt,
+                # [핵심 수정] Native JSON Mode 활성화 & 토큰 한도 최대치
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    # response_schema=ScenarioOutput,
+                    system_instruction=SCENARIO_DESIGNER_SYSTEM_PROMPT,
+                    max_output_tokens=8192, 
+                    temperature=0.7,
+                )
+            )
+        
+        scenario_json = json.loads(response.text)
+        
+        # Native JSON 모드는 마크다운 없이 순수 JSON만 주므로 바로 파싱 가능
+        try:
+            config = scenario_json.get("config", {})
+            market_size = config.get("market_size", 1000000)
+            
+            # 대표 가격 찾기 (첫 턴의 첫 회사 가격 참조)
+            first_turn = scenario_json.get("turns_data", [])[0]
+            first_company = list(first_turn.get("companies", {}).values())[0]
+            price = first_company.get("inputs", {}).get("price", 100)
+            
+            # 예상 시장 총 매출 (Total Addressable Market Revenue)
+            estimated_revenue = market_size * price
+            
+            # 밸런싱 공식 적용
+            # - 마케팅 기준가: 매출의 10% (이 정도 써야 브랜드 점수 오름)
+            # - R&D 임계값: 매출의 20% (이 정도 써야 기술 혁신 일어남)
+            new_mkt_base = int(estimated_revenue * 0.1)
+            new_rd_threshold = int(estimated_revenue * 0.2)
+            
+            print(f"🔧 [Auto-Balance] Revenue: {estimated_revenue:,}")
+            print(f"   -> Marketing Base: {new_mkt_base:,} (Was: {config.get('marketing_cost_base', 'N/A')})")
+            print(f"   -> R&D Threshold:  {new_rd_threshold:,}")
+
+            # 값 덮어쓰기
+            scenario_json["config"]["marketing_cost_base"] = new_mkt_base
+            scenario_json["config"]["rd_innovation_threshold"] = new_rd_threshold
+            scenario_json["config"]["rd_efficiency_threshold"] = new_rd_threshold
+
+        except json.JSONDecodeError:
+            # 혹시라도 실패하면 기존 추출 함수 시도
+            print(f"⚠️ Auto-balancing skipped due to error: {e}")
+            scenario_json = extract_and_load_json(response.text)
+        
+        if not scenario_json:
+            print(f"Truncated Text Check: ...{response.text[-200:]}")
+            raise ValueError("LLM이 유효한 JSON을 반환하지 않았습니다.")
+            
+        return scenario_json
+
+    except Exception as e:
+        print(f"!!! Scenario Generation Error: {e} !!!")
+        raise e
+
+def _generate_mock_scenario(topic: str) -> dict:
+    """API 키가 없을 때 반환할 더미 데이터"""
+    return {
+        "scenario_name": f"Mock Scenario: {topic}",
+        "description": "API 키가 없어 생성된 테스트 데이터입니다.",
+        "config": {
+            "total_turns": 5,
+            "market_size": 100000,
+            "initial_capital": 1000000000,
+            "physics": {"price_sensitivity": 20}
+        },
+        "turns_data": []
+    }

@@ -1,0 +1,339 @@
+{
+  "scenario_name": "콘솔 제국의 패권: 소니 vs. 마이크로소프트",
+  "description": "세계 게임 시장의 두 거인, 소니(플레이스테이션)와 마이크로소프트(엑스박스)의 차세대 콘솔 패권 경쟁을 시뮬레이션합니다. 가격 정책, 독점 콘텐츠 투자, 서비스 생태계 구축 전략이 시장 점유율과 수익성에 미치는 영향을 10턴에 걸쳐 분석합니다.",
+  "config": {
+    "total_turns": 10,
+    "market_size": 100000000,
+    "initial_capital": 50000000000,
+    "physics": {
+      "price_sensitivity": 40,
+      "marketing_sensitivity": 35,
+      "rd_sensitivity": 50,
+      "service_model_attraction": 0.15
+    },
+    "marketing_cost_base": 25000000,
+    "rd_innovation_threshold": 1000000000
+  },
+  "turns_data": [
+    {
+      "turn": 0,
+      "turn_description": "차세대 콘솔이 동시에 출시되며 새로운 전쟁의 서막이 올랐다.",
+      "companies": {
+        "Sony_PlayStation": {
+          "persona": "[1.정체성] 우리는 장인정신으로 최고의 엔터테인먼트 경험을 창조합니다. 독창적인 스토리텔링과 압도적인 기술력으로 게이머의 상상을 현실로 만드는 것이 우리의 사명입니다. [2.상황] 신규 콘솔 출시. 강력한 독점 출시작 보유. [3.지침] 공격적인 가격(499$)으로 초기 시장을 선점하고, 독점작 마케팅에 집중하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 460,
+            "marketing_spend_ratio": 0.15,
+            "rd_spend_ratio": 0.2
+          },
+          "outputs": {
+            "actual_market_share": 0.5,
+            "actual_accumulated_profit": 0
+          }
+        },
+        "Microsoft_Xbox": {
+          "persona": "[1.정체성] 우리는 모든 게이머를 위한 개방적이고 강력한 생태계를 구축합니다. 하드웨어의 경계를 넘어, 언제 어디서든 최고의 게임을 즐길 수 있는 자유를 제공하는 것이 우리의 비전입니다. [2.상황] 신규 콘솔 출시. '게임 패스' 구독 서비스가 핵심 경쟁력. [3.지침] 하드웨어 성능을 강조하되, '게임 패스'의 가치를 집중적으로 홍보하여 가입자를 확보하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 470,
+            "marketing_spend_ratio": 0.18,
+            "rd_spend_ratio": 0.15
+          },
+          "outputs": {
+            "actual_market_share": 0.5,
+            "actual_accumulated_profit": 0
+          }
+        }
+      }
+    },
+    {
+      "turn": 1,
+      "turn_description": "출시 초기, 근소한 가격 우위와 독점작 효과로 소니가 판매량에서 약간 앞서나갔다.",
+      "companies": {
+        "Sony_PlayStation": {
+          "persona": "[1.정체성] 우리는 장인정신으로 최고의 엔터테인먼트 경험을 창조합니다. 독창적인 스토리텔링과 압도적인 기술력으로 게이머의 상상을 현실로 만드는 것이 우리의 사명입니다. [2.상황] 초기 판매량 우위 확보. 연말 시즌 대비. [3.지침] 현재 가격 정책을 유지하며, 생산량을 최대로 늘려 공급 부족 사태를 막아라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 455,
+            "marketing_spend_ratio": 0.12,
+            "rd_spend_ratio": 0.18
+          },
+          "outputs": {
+            "actual_market_share": 0.52,
+            "actual_accumulated_profit": 0
+          }
+        },
+        "Microsoft_Xbox": {
+          "persona": "[1.정체성] 우리는 모든 게이머를 위한 개방적이고 강력한 생태계를 구축합니다. 하드웨어의 경계를 넘어, 언제 어디서든 최고의 게임을 즐길 수 있는 자유를 제공하는 것이 우리의 비전입니다. [2.상황] 판매량 소폭 열세. '게임 패스' 가입자 수는 꾸준히 증가. [3.지침] 콘솔 판매량에 집착하지 말고, '게임 패스 데이원' 정책을 강화하여 생태계를 확장하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 465,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.17
+          },
+          "outputs": {
+            "actual_market_share": 0.48,
+            "actual_accumulated_profit": 0
+          }
+        }
+      }
+    },
+    {
+      "turn": 2,
+      "turn_description": "마이크로소프트가 대형 게임 개발사를 인수하며 독점 콘텐츠 전쟁에 불을 지폈다.",
+      "companies": {
+        "Sony_PlayStation": {
+          "persona": "[1.정체성] 우리는 장인정신으로 최고의 엔터테인먼트 경험을 창조합니다. 독창적인 스토리텔링과 압도적인 기술력으로 게이머의 상상을 현실로 만드는 것이 우리의 사명입니다. [2.상황] 경쟁사의 공격적인 M&A. 기존 파트너십 강화 필요. [3.지침] 내부 스튜디오의 차기작 개발에 R&D 투자를 집중하고, 서드파티 독점 계약을 추가로 확보하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 450,
+            "marketing_spend_ratio": 0.15,
+            "rd_spend_ratio": 0.3
+          },
+          "outputs": {
+            "actual_market_share": 0.51,
+            "actual_accumulated_profit": 0
+          }
+        },
+        "Microsoft_Xbox": {
+          "persona": "[1.정체성] 우리는 모든 게이머를 위한 개방적이고 강력한 생태계를 구축합니다. 하드웨어의 경계를 넘어, 언제 어디서든 최고의 게임을 즐길 수 있는 자유를 제공하는 것이 우리의 비전입니다. [2.상황] 대형 스튜디오 인수 성공. 콘텐츠 라이브러리 대폭 강화. [3.지침] 인수한 스튜디오의 신작을 '게임 패스'에 즉시 추가할 것을 발표하고, 대대적인 홍보를 진행하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 460,
+            "marketing_spend_ratio": 0.25,
+            "rd_spend_ratio": 0.28
+          },
+          "outputs": {
+            "actual_market_share": 0.49,
+            "actual_accumulated_profit": 0
+          }
+        }
+      }
+    },
+    {
+      "turn": 3,
+      "turn_description": "시장 점유율 확대를 위해 마이크로소프트가 기습적인 가격 인하를 단행했다.",
+      "companies": {
+        "Sony_PlayStation": {
+          "persona": "[1.정체성] 우리는 장인정신으로 최고의 엔터테인먼트 경험을 창조합니다. 독창적인 스토리텔링과 압도적인 기술력으로 게이머의 상상을 현실로 만드는 것이 우리의 사명입니다. [2.상황] 경쟁사의 가격 인하로 인한 압박. 수익성 악화 우려. [3.지침] 가격은 동결한다. 대신 인기 게임 번들 패키지를 출시하여 가격 저항을 최소화하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 445,
+            "marketing_spend_ratio": 0.18,
+            "rd_spend_ratio": 0.25
+          },
+          "outputs": {
+            "actual_market_share": 0.5,
+            "actual_accumulated_profit": 0
+          }
+        },
+        "Microsoft_Xbox": {
+          "persona": "[1.정체성] 우리는 모든 게이머를 위한 개방적이고 강력한 생태계를 구축합니다. 하드웨어의 경계를 넘어, 언제 어디서든 최고의 게임을 즐길 수 있는 자유를 제공하는 것이 우리의 비전입니다. [2.상황] 시장 점유율 확보를 위한 출혈 감수. [3.지침] 콘솔 가격을 449$로 전격 인하한다. 단기 손실을 감수하고 신규 유저를 최대한 유입시켜라.",
+          "inputs": {
+            "price": 449,
+            "unit_cost": 455,
+            "marketing_spend_ratio": 0.22,
+            "rd_spend_ratio": 0.2
+          },
+          "outputs": {
+            "actual_market_share": 0.5,
+            "actual_accumulated_profit": 0
+          }
+        }
+      }
+    },
+    {
+      "turn": 4,
+      "turn_description": "소니의 기대작 독점 게임이 출시되어 엄청난 흥행을 기록하며 콘솔 판매량을 견인했다.",
+      "companies": {
+        "Sony_PlayStation": {
+          "persona": "[1.정체성] 우리는 장인정신으로 최고의 엔터테인먼트 경험을 창조합니다. 독창적인 스토리텔링과 압도적인 기술력으로 게이머의 상상을 현실로 만드는 것이 우리의 사명입니다. [2.상황] 블록버스터 독점작 출시. 평론가와 유저 모두에게 극찬. [3.지침] '올해의 게임' 수상을 목표로 모든 마케팅 역량을 신작 홍보에 총동원하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 440,
+            "marketing_spend_ratio": 0.3,
+            "rd_spend_ratio": 0.2
+          },
+          "outputs": {
+            "actual_market_share": 0.54,
+            "actual_accumulated_profit": 0
+          }
+        },
+        "Microsoft_Xbox": {
+          "persona": "[1.정체성] 우리는 모든 게이머를 위한 개방적이고 강력한 생태계를 구축합니다. 하드웨어의 경계를 넘어, 언제 어디서든 최고의 게임을 즐길 수 있는 자유를 제공하는 것이 우리의 비전입니다. [2.상황] 경쟁사 독점작의 흥행으로 화제성 독점 실패. [3.지침] '게임 패스' 라이브러리에 고전 명작들을 대거 추가하고, 클라우드 게이밍 베타 서비스를 발표하여 기술적 우위를 강조하라.",
+          "inputs": {
+            "price": 449,
+            "unit_cost": 450,
+            "marketing_spend_ratio": 0.15,
+            "rd_spend_ratio": 0.25
+          },
+          "outputs": {
+            "actual_market_share": 0.46,
+            "actual_accumulated_profit": 0
+          }
+        }
+      }
+    },
+    {
+      "turn": 5,
+      "turn_description": "양사 모두 성능을 개선한 '프로' 모델 출시를 준비하며 R&D 투자를 대폭 늘렸다.",
+      "companies": {
+        "Sony_PlayStation": {
+          "persona": "[1.정체성] 우리는 장인정신으로 최고의 엔터테인먼트 경험을 창조합니다. 독창적인 스토리텔링과 압도적인 기술력으로 게이머의 상상을 현실로 만드는 것이 우리의 사명입니다. [2.상황] 시장 성숙기 진입. 하드웨어 업그레이드 수요 발생. [3.지침] 차세대 VR 기기 개발과 콘솔 성능 강화 모델(프로) 개발에 R&D 자원을 집중 배분하라.",
+          "inputs": {
+            "price": 479,
+            "unit_cost": 430,
+            "marketing_spend_ratio": 0.1,
+            "rd_spend_ratio": 0.35
+          },
+          "outputs": {
+            "actual_market_share": 0.55,
+            "actual_accumulated_profit": 0
+          }
+        },
+        "Microsoft_Xbox": {
+          "persona": "[1.정체성] 우리는 모든 게이머를 위한 개방적이고 강력한 생태계를 구축합니다. 하드웨어의 경계를 넘어, 언제 어디서든 최고의 게임을 즐길 수 있는 자유를 제공하는 것이 우리의 비전입니다. [2.상황] 하드코어 게이머들을 위한 고성능 모델 필요. [3.지침] '가장 강력한 콘솔'이라는 명성을 유지하기 위해 프로 모델 개발에 박차를 가하라. 기존 모델은 가격을 추가 인하한다.",
+          "inputs": {
+            "price": 429,
+            "unit_cost": 440,
+            "marketing_spend_ratio": 0.12,
+            "rd_spend_ratio": 0.38
+          },
+          "outputs": {
+            "actual_market_share": 0.45,
+            "actual_accumulated_profit": 0
+          }
+        }
+      }
+    },
+    {
+      "turn": 6,
+      "turn_description": "마이크로소프트의 클라우드 게이밍 서비스가 정식 출시되며 게임 시장의 패러다임을 바꾸려 시도했다.",
+      "companies": {
+        "Sony_PlayStation": {
+          "persona": "[1.정체성] 우리는 장인정신으로 최고의 엔터테인먼트 경험을 창조합니다. 독창적인 스토리텔링과 압도적인 기술력으로 게이머의 상상을 현실로 만드는 것이 우리의 사명입니다. [2.상황] 경쟁사의 서비스 모델 확장. 구독 서비스 개편 필요. [3.지침] 기존 구독 서비스를 통합 및 개편하여 '게임 패스'에 대항할 새로운 구독 모델을 발표하라.",
+          "inputs": {
+            "price": 479,
+            "unit_cost": 425,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.28
+          },
+          "outputs": {
+            "actual_market_share": 0.54,
+            "actual_accumulated_profit": 0
+          }
+        },
+        "Microsoft_Xbox": {
+          "persona": "[1.정체성] 우리는 모든 게이머를 위한 개방적이고 강력한 생태계를 구축합니다. 하드웨어의 경계를 넘어, 언제 어디서든 최고의 게임을 즐길 수 있는 자유를 제공하는 것이 우리의 비전입니다. [2.상황] 클라우드 게이밍(xCloud) 정식 서비스 시작. [3.지침] '언제 어디서든 엑스박스를'이라는 슬로건으로 대규모 캠페인을 벌여, 하드웨어 판매를 넘어선 생태계의 가치를 알려라.",
+          "inputs": {
+            "price": 429,
+            "unit_cost": 435,
+            "marketing_spend_ratio": 0.28,
+            "rd_spend_ratio": 0.22
+          },
+          "outputs": {
+            "actual_market_share": 0.46,
+            "actual_accumulated_profit": 0
+          }
+        }
+      }
+    },
+    {
+      "turn": 7,
+      "turn_description": "소니가 새로운 구독 서비스를 성공적으로 런칭하며 마이크로소프트의 공세에 맞불을 놓았다.",
+      "companies": {
+        "Sony_PlayStation": {
+          "persona": "[1.정체성] 우리는 장인정신으로 최고의 엔터테인먼트 경험을 창조합니다. 독창적인 스토리텔링과 압도적인 기술력으로 게이머의 상상을 현실로 만드는 것이 우리의 사명입니다. [2.상황] 신규 구독 서비스 출시. 초기 가입자 반응 긍정적. [3.지침] 과거의 명작 독점작들을 구독 서비스에 대거 포함시켜 라이브러리의 깊이를 강화하라.",
+          "inputs": {
+            "price": 479,
+            "unit_cost": 420,
+            "marketing_spend_ratio": 0.25,
+            "rd_spend_ratio": 0.2
+          },
+          "outputs": {
+            "actual_market_share": 0.53,
+            "actual_accumulated_profit": 0
+          }
+        },
+        "Microsoft_Xbox": {
+          "persona": "[1.정체성] 우리는 모든 게이머를 위한 개방적이고 강력한 생태계를 구축합니다. 하드웨어의 경계를 넘어, 언제 어디서든 최고의 게임을 즐길 수 있는 자유를 제공하는 것이 우리의 비전입니다. [2.상황] 경쟁사의 구독 서비스 견제. '게임 패스'의 차별성 강화 필요. [3.지침] 서드파티 대작 게임의 '데이원' 입점 계약을 추가로 체결하여 '게임 패스'의 독보적인 가치를 유지하라.",
+          "inputs": {
+            "price": 429,
+            "unit_cost": 430,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.25
+          },
+          "outputs": {
+            "actual_market_share": 0.47,
+            "actual_accumulated_profit": 0
+          }
+        }
+      }
+    },
+    {
+      "turn": 8,
+      "turn_description": "시장이 포화 상태에 이르자, 양사는 연말 대규모 할인 경쟁에 돌입했다.",
+      "companies": {
+        "Sony_PlayStation": {
+          "persona": "[1.정체성] 우리는 장인정신으로 최고의 엔터테인먼트 경험을 창조합니다. 독창적인 스토리텔링과 압도적인 기술력으로 게이머의 상상을 현실로 만드는 것이 우리의 사명입니다. [2.상황] 시장 성장 둔화. 재고 소진 및 추가 판매 모멘텀 필요. [3.지침] 블랙프라이데이 시즌을 겨냥하여 주력 게임 2~3개를 포함한 파격적인 번들 상품을 출시하라.",
+          "inputs": {
+            "price": 449,
+            "unit_cost": 415,
+            "marketing_spend_ratio": 0.22,
+            "rd_spend_ratio": 0.15
+          },
+          "outputs": {
+            "actual_market_share": 0.52,
+            "actual_accumulated_profit": 0
+          }
+        },
+        "Microsoft_Xbox": {
+          "persona": "[1.정체성] 우리는 모든 게이머를 위한 개방적이고 강력한 생태계를 구축합니다. 하드웨어의 경계를 넘어, 언제 어디서든 최고의 게임을 즐길 수 있는 자유를 제공하는 것이 우리의 비전입니다. [2.상황] 연말 쇼핑 시즌. 점유율 격차를 좁힐 마지막 기회. [3.지침] 콘솔 가격을 399$까지 인하하고, '게임 패스' 3개월 이용권을 번들에 포함하여 생태계로의 진입 장벽을 완전히 허물어라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 420,
+            "marketing_spend_ratio": 0.25,
+            "rd_spend_ratio": 0.15
+          },
+          "outputs": {
+            "actual_market_share": 0.48,
+            "actual_accumulated_profit": 0
+          }
+        }
+      }
+    },
+    {
+      "turn": 9,
+      "turn_description": "한 세대의 콘솔 전쟁이 마무리되며, 양사는 차세대 기기 준비와 함께 각자의 생태계 강화에 집중했다.",
+      "companies": {
+        "Sony_PlayStation": {
+          "persona": "[1.정체성] 우리는 장인정신으로 최고의 엔터테인먼트 경험을 창조합니다. 독창적인 스토리텔링과 압도적인 기술력으로 게이머의 상상을 현실로 만드는 것이 우리의 사명입니다. [2.상황] 콘솔 세대 황혼기. 차세대기 개발 착수. [3.지침] 현재 세대 판매량 1위 달성을 자축하며, 차세대 콘솔의 비전을 암시하는 티저 광고를 공개하라.",
+          "inputs": {
+            "price": 449,
+            "unit_cost": 410,
+            "marketing_spend_ratio": 0.1,
+            "rd_spend_ratio": 0.4
+          },
+          "outputs": {
+            "actual_market_share": 0.53,
+            "actual_accumulated_profit": 0
+          }
+        },
+        "Microsoft_Xbox": {
+          "persona": "[1.정체성] 우리는 모든 게이머를 위한 개방적이고 강력한 생태계를 구축합니다. 하드웨어의 경계를 넘어, 언제 어디서든 최고의 게임을 즐길 수 있는 자유를 제공하는 것이 우리의 비전입니다. [2.상황] 콘솔 세대 황혼기. 구독 서비스 수익이 하드웨어 손실을 상쇄. [3.지침] 콘솔 판매량보다 총 게이머 수와 구독자 수를 핵심 성과로 발표하고, 차세대 비전 역시 '서비스 중심'임을 강조하라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 415,
+            "marketing_spend_ratio": 0.1,
+            "rd_spend_ratio": 0.45
+          },
+          "outputs": {
+            "actual_market_share": 0.47,
+            "actual_accumulated_profit": 0
+          }
+        }
+      }
+    }
+  ]
+}

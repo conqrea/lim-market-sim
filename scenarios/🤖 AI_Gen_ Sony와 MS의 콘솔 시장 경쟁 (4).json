@@ -1,0 +1,380 @@
+{
+  "scenario_name": "Console Wars: The Next Generation",
+  "config": {
+    "total_turns": 10,
+    "market_size": 50000000,
+    "initial_capital": 10000000000,
+    "physics": {
+      "price_sensitivity": 40,
+      "marketing_efficiency": 2.5,
+      "weight_quality": 0.4,
+      "weight_brand": 0.4,
+      "weight_price": 0.2,
+      "others_overall_competitiveness": 0.3
+    },
+    "marketing_cost_base": 50000000,
+    "rd_innovation_threshold": 500000000
+  },
+  "turns_data": [
+    {
+      "turn": 0,
+      "turn_description": "차세대 콘솔(PS4, Xbox One) 출시. 초기 시장 선점 경쟁 시작.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 압도적인 독점 타이틀과 강력한 브랜드 충성도를 통해 하드웨어 **시장 점유율(Market Share)**을 극대화하는 것을 최우선 목표로 삼습니다. [2.상황] 신규 콘솔 출시에 대한 시장 기대감이 높음. [3.지침] 초기 **이익(Profit)**을 다소 희생하더라도 경쟁사보다 낮은 **가격(Price)**으로 출시하여 초기 **점유율(Share)**을 확실히 장악하라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 380,
+            "marketing_spend_ratio": 0.3,
+            "rd_spend_ratio": 0.15,
+            "initial_quality": 88,
+            "initial_brand": 90
+          },
+          "outputs": {
+            "actual_market_share": 0.55,
+            "actual_accumulated_profit": 50000000
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 하드웨어 판매를 넘어, 게임패스(Game Pass)를 중심으로 한 강력한 서비스 생태계를 구축하여 지속 가능한 **이익(Profit)**을 창출하는 것을 궁극적 목표로 합니다. [2.상황] 높은 가격과 초기 정책에 대한 부정적 여론 존재. [3.지침] **점유율(Share)** 확보가 어렵더라도 높은 **가격(Price)**을 유지하여 하드웨어 **마진(Margin)**을 확보하고, 서비스 부문 **R&D**에 집중하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 450,
+            "marketing_spend_ratio": 0.25,
+            "rd_spend_ratio": 0.2,
+            "initial_quality": 85,
+            "initial_brand": 88
+          },
+          "outputs": {
+            "actual_market_share": 0.4,
+            "actual_accumulated_profit": 90000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 1,
+      "turn_description": "Sony의 점유율 우위 공고화. Microsoft는 가격 인하로 대응.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 압도적인 독점 타이틀과 강력한 브랜드 충성도를 통해 하드웨어 **시장 점유율(Market Share)**을 극대화하는 것을 최우선 목표로 삼습니다. [2.상황] 시장 선점에 성공하며 점유율이 크게 상승. [3.지침] 확보한 **점유율(Share)**을 유지하는 선에서, 독점작 개발 **R&D** 투자와 **마케팅(Marketing)**의 균형을 맞춰 브랜드 가치를 더욱 높여라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 370,
+            "marketing_spend_ratio": 0.28,
+            "rd_spend_ratio": 0.18,
+            "initial_quality": 90,
+            "initial_brand": 92
+          },
+          "outputs": {
+            "actual_market_share": 0.6,
+            "actual_accumulated_profit": 350000000
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 하드웨어 판매를 넘어, 게임패스(Game Pass)를 중심으로 한 강력한 서비스 생태계를 구축하여 지속 가능한 **이익(Profit)**을 창출하는 것을 궁극적 목표로 합니다. [2.상황] 점유율 격차가 벌어지며 위기감 고조. [3.지침] **단기 이익(Profit)**을 포기하고 **가격(Price)**을 인하하여 **점유율(Share)** 하락을 방어하고, 게임패스 서비스 홍보에 **마케팅(Marketing)**을 집중하라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 420,
+            "marketing_spend_ratio": 0.3,
+            "rd_spend_ratio": 0.18,
+            "initial_quality": 86,
+            "initial_brand": 87
+          },
+          "outputs": {
+            "actual_market_share": 0.36,
+            "actual_accumulated_profit": 120000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 2,
+      "turn_description": "양사 모두 독점작 출시 경쟁. PS4 Pro, Xbox One S 등 개선 모델 출시.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 압도적인 독점 타이틀과 강력한 브랜드 충성도를 통해 하드웨어 **시장 점유율(Market Share)**을 극대화하는 것을 최우선 목표로 삼습니다. [2.상황] 시장 지배력이 안정권에 접어들었음. [3.지침] 하드웨어 **수익성(Profitability)**을 개선하고, 차세대 기술 **R&D** 투자를 늘려 기술 격차를 준비하라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 350,
+            "marketing_spend_ratio": 0.25,
+            "rd_spend_ratio": 0.22,
+            "initial_quality": 92,
+            "initial_brand": 94
+          },
+          "outputs": {
+            "actual_market_share": 0.62,
+            "actual_accumulated_profit": 800000000
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 하드웨어 판매를 넘어, 게임패스(Game Pass)를 중심으로 한 강력한 서비스 생태계를 구축하여 지속 가능한 **이익(Profit)**을 창출하는 것을 궁극적 목표로 합니다. [2.상황] 게임패스 가입자 수가 서서히 증가하며 새로운 수익 모델의 가능성을 보임. [3.지침] 하드웨어 **점유율(Share)** 경쟁은 현상 유지에 집중하고, **R&D**와 **마케팅(Marketing)** 자원을 게임패스 콘텐츠 확보에 공격적으로 재분배하라.",
+          "inputs": {
+            "price": 349,
+            "unit_cost": 380,
+            "marketing_spend_ratio": 0.28,
+            "rd_spend_ratio": 0.25,
+            "initial_quality": 88,
+            "initial_brand": 88
+          },
+          "outputs": {
+            "actual_market_share": 0.35,
+            "actual_accumulated_profit": 250000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 3,
+      "turn_description": "콘솔 시장 성숙기. Microsoft의 게임 스튜디오 인수 시작.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 압도적인 독점 타이틀과 강력한 브랜드 충성도를 통해 하드웨어 **시장 점유율(Market Share)**을 극대화하는 것을 최우선 목표로 삼습니다. [2.상황] 경쟁사의 스튜디오 인수로 독점 콘텐츠 경쟁이 심화될 조짐. [3.지침] 안정적인 **이익(Profit)**을 바탕으로 자체 스튜디오의 **R&D** 역량을 강화하고, **점유율(Share)** 유지를 위한 방어적 **마케팅(Marketing)**을 실행하라.",
+          "inputs": {
+            "price": 349,
+            "unit_cost": 330,
+            "marketing_spend_ratio": 0.22,
+            "rd_spend_ratio": 0.25,
+            "initial_quality": 93,
+            "initial_brand": 95
+          },
+          "outputs": {
+            "actual_market_share": 0.61,
+            "actual_accumulated_profit": 1300000000
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 하드웨어 판매를 넘어, 게임패스(Game Pass)를 중심으로 한 강력한 서비스 생태계를 구축하여 지속 가능한 **이익(Profit)**을 창출하는 것을 궁극적 목표로 합니다. [2.상황] 대규모 M&A를 통해 콘텐츠 라인업 강화. [3.지침] **하드웨어 판매 이익(Hardware Profit)**이 감소하더라도, 인수한 스튜디오의 게임을 게임패스에 통합하여 서비스 매력도를 극대화하고 가입자 기반을 넓혀라.",
+          "inputs": {
+            "price": 299,
+            "unit_cost": 350,
+            "marketing_spend_ratio": 0.3,
+            "rd_spend_ratio": 0.3,
+            "initial_quality": 90,
+            "initial_brand": 90
+          },
+          "outputs": {
+            "actual_market_share": 0.37,
+            "actual_accumulated_profit": 400000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 4,
+      "turn_description": "세대 교체기 임박. 차세대 콘솔 개발 경쟁 심화.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 압도적인 독점 타이틀과 강력한 브랜드 충성도를 통해 하드웨어 **시장 점유율(Market Share)**을 극대화하는 것을 최우선 목표로 삼습니다. [2.상황] 높은 시장 점유율을 기반으로 차세대기 개발에 집중. [3.지침] 현재의 **이익(Profit)**을 차세대 콘솔 **R&D**에 집중 투자하여, 출시 시점에 경쟁사를 압도할 기술적 우위를 확보하는 것을 최우선 과제로 삼아라.",
+          "inputs": {
+            "price": 299,
+            "unit_cost": 310,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.35,
+            "initial_quality": 94,
+            "initial_brand": 96
+          },
+          "outputs": {
+            "actual_market_share": 0.6,
+            "actual_accumulated_profit": 1750000000
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 하드웨어 판매를 넘어, 게임패스(Game Pass)를 중심으로 한 강력한 서비스 생태계를 구축하여 지속 가능한 **이익(Profit)**을 창출하는 것을 궁극적 목표로 합니다. [2.상황] 게임패스가 핵심 비즈니스로 자리잡음. [3.지침] 차세대 콘솔은 두 가지 버전(고성능/보급형)으로 기획하여 **가격(Price)** 선택지를 넓히고, 모든 **R&D**는 게임패스와의 완벽한 호환성에 초점을 맞춰라.",
+          "inputs": {
+            "price": 299,
+            "unit_cost": 330,
+            "marketing_spend_ratio": 0.25,
+            "rd_spend_ratio": 0.35,
+            "initial_quality": 91,
+            "initial_brand": 91
+          },
+          "outputs": {
+            "actual_market_share": 0.38,
+            "actual_accumulated_profit": 650000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 5,
+      "turn_description": "차세대 콘솔(PS5, Xbox Series X/S) 발표. 출시 전 마케팅 전쟁.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 압도적인 독점 타이틀과 강력한 브랜드 충성도를 통해 하드웨어 **시장 점유율(Market Share)**을 극대화하는 것을 최우선 목표로 삼습니다. [2.상황] 차세대기에 대한 높은 기대감 형성. [3.지침] **생산 비용(Cost)**이 높더라도 최고의 성능을 목표로 하고, 대규모 **마케팅(Marketing)**을 통해 브랜드 리더십을 각인시켜 초기 **점유율(Share)**을 확보하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 480,
+            "marketing_spend_ratio": 0.4,
+            "rd_spend_ratio": 0.3,
+            "initial_quality": 96,
+            "initial_brand": 97
+          },
+          "outputs": {
+            "actual_market_share": 0.58,
+            "actual_accumulated_profit": 1850000000
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 하드웨어 판매를 넘어, 게임패스(Game Pass)를 중심으로 한 강력한 서비스 생태계를 구축하여 지속 가능한 **이익(Profit)**을 창출하는 것을 궁극적 목표로 합니다. [2.상황] Series X(고성능)와 S(보급형)의 이원화 전략 발표. [3.지침] **하드웨어 판매 이익(Hardware Profit)**을 포기하고, 보급형 모델의 낮은 **가격(Price)**을 무기로 **시장 점유율(Share)**을 방어하며, 모든 마케팅 메시지를 '게임패스를 위한 최고의 기기'로 통일하라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 430,
+            "marketing_spend_ratio": 0.4,
+            "rd_spend_ratio": 0.3,
+            "initial_quality": 94,
+            "initial_brand": 92
+          },
+          "outputs": {
+            "actual_market_share": 0.4,
+            "actual_accumulated_profit": 750000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 6,
+      "turn_description": "신규 콘솔 출시 초기, 공급 부족 사태 발생. ",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 압도적인 독점 타이틀과 강력한 브랜드 충성도를 통해 하드웨어 **시장 점유율(Market Share)**을 극대화하는 것을 최우선 목표로 삼습니다. [2.상황] 폭발적인 수요 대비 공급이 따라가지 못함. [3.지침] **점유율(Share)** 확대가 물리적으로 어려운 상황이므로, 무리한 **마케팅(Marketing)** 비용을 줄이고 공급망 안정화와 **생산 비용(Cost)** 절감에 집중하여 **수익성(Profitability)**을 방어하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 470,
+            "marketing_spend_ratio": 0.25,
+            "rd_spend_ratio": 0.2,
+            "initial_quality": 97,
+            "initial_brand": 98
+          },
+          "outputs": {
+            "actual_market_share": 0.57,
+            "actual_accumulated_profit": 2100000000
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 하드웨어 판매를 넘어, 게임패스(Game Pass)를 중심으로 한 강력한 서비스 생태계를 구축하여 지속 가능한 **이익(Profit)**을 창출하는 것을 궁극적 목표로 합니다. [2.상황] 보급형 모델(Series S)의 생산이 상대적으로 원활. [3.지침] 경쟁사의 공급 부족을 기회로 삼아, 보급형 모델의 **마케팅(Marketing)**을 강화하여 신규 사용자를 게임패스 생태계로 유입시키고 **점유율(Share)**을 높여라.",
+          "inputs": {
+            "price": 299,
+            "unit_cost": 320,
+            "marketing_spend_ratio": 0.35,
+            "rd_spend_ratio": 0.2,
+            "initial_quality": 92,
+            "initial_brand": 93
+          },
+          "outputs": {
+            "actual_market_share": 0.42,
+            "actual_accumulated_profit": 900000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 7,
+      "turn_description": "공급망 점차 안정화. 클라우드 게이밍 경쟁 본격화.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 압도적인 독점 타이틀과 강력한 브랜드 충성도를 통해 하드웨어 **시장 점유율(Market Share)**을 극대화하는 것을 최우선 목표로 삼습니다. [2.상황] 공급이 안정되며 판매량이 다시 증가. [3.지침] 다시 **마케팅(Marketing)** 투자를 늘려 **점유율(Share)** 격차를 벌리고, 경쟁사의 클라우드 서비스에 대응하기 위한 자체 서비스 **R&D** 투자를 시작하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 450,
+            "marketing_spend_ratio": 0.3,
+            "rd_spend_ratio": 0.25,
+            "initial_quality": 98,
+            "initial_brand": 98
+          },
+          "outputs": {
+            "actual_market_share": 0.59,
+            "actual_accumulated_profit": 2500000000
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 하드웨어 판매를 넘어, 게임패스(Game Pass)를 중심으로 한 강력한 서비스 생태계를 구축하여 지속 가능한 **이익(Profit)**을 창출하는 것을 궁극적 목표로 합니다. [2.상황] 클라우드 게이밍(xCloud)이 게임패스의 핵심 경쟁력으로 부상. [3.지침] **하드웨어 마진(Margin)**을 최소화하더라도 게임패스 가입자를 늘리는 것이 우선이다. **R&D** 자원을 클라우드 인프라 안정화에 집중 투자하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 460,
+            "marketing_spend_ratio": 0.3,
+            "rd_spend_ratio": 0.3,
+            "initial_quality": 95,
+            "initial_brand": 94
+          },
+          "outputs": {
+            "actual_market_share": 0.41,
+            "actual_accumulated_profit": 1100000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 8,
+      "turn_description": "Microsoft, 초대형 게임사(액티비전 블리자드) 인수 발표로 시장 충격.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 압도적인 독점 타이틀과 강력한 브랜드 충성도를 통해 하드웨어 **시장 점유율(Market Share)**을 극대화하는 것을 최우선 목표로 삼습니다. [2.상황] 핵심 서드파티 게임의 독점화 위기 발생. [3.지침] **단기 이익(Profit)**이 감소하더라도, 즉시 대응 가능한 소니의 독점작 **마케팅(Marketing)**을 강화하고, 우리 플랫폼의 가치를 지키기 위한 방어적 M&A 및 **R&D** 투자를 검토하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 440,
+            "marketing_spend_ratio": 0.35,
+            "rd_spend_ratio": 0.28,
+            "initial_quality": 98,
+            "initial_brand": 97
+          },
+          "outputs": {
+            "actual_market_share": 0.58,
+            "actual_accumulated_profit": 2850000000
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 하드웨어 판매를 넘어, 게임패스(Game Pass)를 중심으로 한 강력한 서비스 생태계를 구축하여 지속 가능한 **이익(Profit)**을 창출하는 것을 궁극적 목표로 합니다. [2.상황] M&A를 통해 게임패스의 콘텐츠 라이브러리가 비약적으로 강화됨. [3.지침] 인수 비용으로 인한 단기적 **수익(Profit)** 악화를 감수하고, 확보한 IP를 활용하여 게임패스 가입자를 폭발적으로 늘려 **생태계 점유율(Ecosystem Share)**을 굳혀라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 450,
+            "marketing_spend_ratio": 0.35,
+            "rd_spend_ratio": 0.25,
+            "initial_quality": 96,
+            "initial_brand": 96
+          },
+          "outputs": {
+            "actual_market_share": 0.42,
+            "actual_accumulated_profit": 1200000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 9,
+      "turn_description": "시장 구도 재편. 하드웨어 판매와 서비스 가입자 경쟁의 공존.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 압도적인 독점 타이틀과 강력한 브랜드 충성도를 통해 하드웨어 **시장 점유율(Market Share)**을 극대화하는 것을 최우선 목표로 삼습니다. [2.상황] 여전히 하드웨어 판매량은 우세하나, 서비스 경쟁력에서 위협을 느낌. [3.지침] 안정적인 하드웨어 **이익(Profit)**과 높은 **점유율(Share)**을 바탕으로, 자체 구독 서비스(PS Plus) 개편에 **R&D**와 **마케팅** 자원을 집중하여 균형을 맞춰라.",
+          "inputs": {
+            "price": 449,
+            "unit_cost": 420,
+            "marketing_spend_ratio": 0.3,
+            "rd_spend_ratio": 0.3,
+            "initial_quality": 99,
+            "initial_brand": 98
+          },
+          "outputs": {
+            "actual_market_share": 0.57,
+            "actual_accumulated_profit": 3300000000
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 하드웨어 판매를 넘어, 게임패스(Game Pass)를 중심으로 한 강력한 서비스 생태계를 구축하여 지속 가능한 **이익(Profit)**을 창출하는 것을 궁극적 목표로 합니다. [2.상황] 서비스 중심 전략이 성공적으로 안착하여, 안정적인 반복 수익 창출. [3.지침] 하드웨어 **점유율(Share)**은 2위로 만족하되, 게임패스 **수익(Profit)**을 극대화하고, 클라우드 게이밍 등 미래 기술 **R&D**에 투자하여 장기적인 지배력을 확보하라.",
+          "inputs": {
+            "price": 449,
+            "unit_cost": 440,
+            "marketing_spend_ratio": 0.28,
+            "rd_spend_ratio": 0.35,
+            "initial_quality": 97,
+            "initial_brand": 97
+          },
+          "outputs": {
+            "actual_market_share": 0.43,
+            "actual_accumulated_profit": 1500000000
+          }
+        }
+      }
+    }
+  ]
+}

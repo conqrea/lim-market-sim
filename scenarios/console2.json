@@ -1,0 +1,209 @@
+{
+  "scenario_name": "The 8th Gen Console War: Pre-Launch to Maturity (2013-2015)",
+  "description": "E3 2013 직전의 긴장감부터 2015년 PS4의 독주 체제까지 다룹니다. 초반 마케팅 실책이 장기적으로 어떤 영향을 미치는지, 그리고 이를 만회하기 위한 전략 수정 과정을 포함합니다.",
+  "references": {
+    "Sony_FY2013_IR": "https://www.sony.com/en/SonyInfo/IR/library/presen/er/13q4_sony.pdf",
+    "MS_FY2014_Earnings": "https://www.microsoft.com/investor/reports/ar14/index.html",
+    "IHS_Teardown_2013": "https://technology.ihs.com/466849/sony-playstation-4-teardown-reveals-381-bill-of-materials",
+    "GeekWire_Xbox_Sales": "https://www.geekwire.com/2014/xbox-one-sales-top-3-million-units-2013-trailing-ps4/",
+    "Eurogamer_Kinect_Drop": "https://www.eurogamer.net/microsoft-to-drop-kinect-from-xbox-one-bundles"
+  },
+  "config": {
+    "total_turns": 10,
+    "market_size": 2000000,
+    "initial_capital": 3000000000,
+    "gdp_growth_rate": 0.005,
+    "inflation_rate": 0.002,
+    "marketing_cost_base": 5000000,
+    "marketing_cost_multiplier": 1.2,
+    "rd_innovation_threshold": 60000000,
+    "rd_innovation_impact": 12.0,
+    "physics": {
+      "price_sensitivity": 30.0,
+      "marketing_efficiency": 2.5,
+      "weight_quality": 0.45,
+      "weight_brand": 0.25,
+      "weight_price": 0.3,
+      "others_overall_competitiveness": 0.6
+    }
+  },
+  "turns_data": [
+    {
+      "turn": 0,
+      "turn_description": "2013 Q2 (Pre-E3): The Reveal. MS announces 'TV & Sports' focus with DRM policies. Sony stays quiet.",
+      "source_link": "https://www.polygon.com/2013/5/21/4353010/xbox-one-reveal-event-summary",
+      "companies": {
+        "Sony": {
+          "persona": "[초기 전략] 경쟁사의 실수를 기다리며 '게이머 친화적(Gamer First)' 이미지를 구축할 준비를 하십시오. 아직 가격을 공개하지 말고, 개발자들의 지지를 얻는 데 집중합니다.",
+          "inputs": {
+            "price": 0,
+            "marketing_spend_ratio": 0.05,
+            "initial_quality": 80.0,
+            "initial_brand": 70.0
+          },
+          "outputs": {
+            "actual_market_share": 0.50,
+            "actual_accumulated_profit": 0
+          }
+        },
+        "Microsoft": {
+          "persona": "[돈 매트릭 체제] 콘솔은 단순한 게임기가 아니라 '거실을 점령하는 셋톱박스'여야 합니다. TV, 스포츠, Skype 기능을 강조하십시오. 중고 거래 제한(DRM)과 상시 온라인 연결은 미래지향적 플랫폼을 위해 필수적입니다.",
+          "inputs": {
+            "price": 0,
+            "marketing_spend_ratio": 0.10,
+            "initial_quality": 75.0,
+            "initial_brand": 65.0
+          },
+          "outputs": {
+            "actual_market_share": 0.50,
+            "actual_accumulated_profit": 0
+          }
+        }
+      }
+    },
+    {
+      "turn": 1,
+      "turn_description": "2013 Q3 (E3 2013): The Mic Drop. Sony announces $399 & No DRM. MS announces $499 & DRM.",
+      "source_link": "https://www.youtube.com/watch?v=kWSIFh8ICaA",
+      "companies": {
+        "Sony": {
+          "persona": "[결정적 한 방] 경쟁사보다 $100 저렴한 $399 가격을 확정 발표하십시오. '게임을 공유하는 방법' 영상을 통해 경쟁사의 DRM 정책을 조롱하고, 게이머들의 절대적인 지지를 확보하십시오. 마케팅 비용을 대폭 늘려 브랜드 인지도를 폭발시켜야 합니다.",
+          "inputs": { "price": 399, "marketing_spend_ratio": 0.30 },
+          "outputs": { "actual_market_share": 0.65, "actual_accumulated_profit": -50000000 }
+        },
+        "Microsoft": {
+          "persona": "[위기] $499 가격(키넥트 포함)을 고수합니다. 소비자들이 우리 기기의 '프리미엄 가치'를 이해해줄 것이라 믿습니다. 여론이 좋지 않지만, 정책을 철회하기엔 너무 늦었습니다. (실제 역사: 이후 DRM 정책 급히 철회)",
+          "inputs": { "price": 499, "marketing_spend_ratio": 0.25 },
+          "outputs": { "actual_market_share": 0.35, "actual_accumulated_profit": -80000000 }
+        }
+      }
+    },
+    {
+      "turn": 2,
+      "turn_description": "2013 Q4 (Launch): Release Window. PS4 sells 4.2M, Xbox One sells 3M units.",
+      "source_link": "https://www.theverge.com/2014/1/7/5284382/sony-sold-4-2-million-ps4s-in-2013",
+      "companies": {
+        "Sony": {
+          "persona": "물량이 부족할 정도로 판매가 급증하고 있습니다. 항공 운송을 해서라도 재고를 채우십시오. 대당 마진이 거의 없지만($18 이익 추정), 하드웨어 보급이 최우선입니다.",
+          "inputs": { "price": 399, "marketing_spend_ratio": 0.15 },
+          "outputs": { "actual_market_share": 0.58, "actual_accumulated_profit": 10000000 }
+        },
+        "Microsoft": {
+          "persona": "핵심 시장(미국/영국)에 집중하여 방어하십시오. $499 가격 저항이 심하지만, 런칭 타이틀(Forza, Dead Rising)의 품질로 승부합니다.",
+          "inputs": { "price": 499, "marketing_spend_ratio": 0.20 },
+          "outputs": { "actual_market_share": 0.42, "actual_accumulated_profit": 20000000 }
+        }
+      }
+    },
+    {
+      "turn": 3,
+      "turn_description": "2014 Q1: The Gap Widens. PS4 supply stabilizes, Xbox momentum slows.",
+      "source_link": "https://www.ign.com/articles/2014/04/17/ps4-sales-hit-7-million-globally",
+      "companies": {
+        "Sony": {
+          "inputs": { "price": 399, "marketing_spend_ratio": 0.10 },
+          "outputs": { "actual_market_share": 0.61, "actual_accumulated_profit": 40000000 }
+        },
+        "Microsoft": {
+          "inputs": { "price": 499, "marketing_spend_ratio": 0.15 },
+          "outputs": { "actual_market_share": 0.39, "actual_accumulated_profit": 35000000 }
+        }
+      }
+    },
+    {
+      "turn": 4,
+      "turn_description": "2014 Q2: Leadership Change. Phil Spencer takes over Xbox. Kinect Unbundled ($399).",
+      "source_link": "https://news.xbox.com/en-us/2014/05/13/xbox-delivering-more-choices/",
+      "companies": {
+        "Sony": {
+          "inputs": { "price": 399, "marketing_spend_ratio": 0.10 },
+          "outputs": { "actual_market_share": 0.63, "actual_accumulated_profit": 80000000 }
+        },
+        "Microsoft": {
+          "persona": "[전략 전면 수정/필 스펜서 취임] 우리는 게이머의 목소리를 듣지 않았습니다. Kinect 필수 정책을 폐기하고, 가격을 $399로 인하하여 PS4와 동등한 가격 경쟁력을 확보합니다. TV 기능보다는 '게임' 자체에 집중하는 리브랜딩을 시작하십시오.",
+          "inputs": { "price": 399, "marketing_spend_ratio": 0.25 },
+          "outputs": { "actual_market_share": 0.37, "actual_accumulated_profit": 15000000 }
+        }
+      }
+    },
+    {
+      "turn": 5,
+      "turn_description": "2014 Q3: Rebuilding Trust. Xbox sales improve slightly, but PS4 dominance continues.",
+      "source_link": "https://www.gamespot.com/articles/xbox-one-sales-rise-to-2-4-million-in-latest-qua/1100-6423145/",
+      "companies": {
+        "Sony": {
+          "inputs": { "price": 399, "marketing_spend_ratio": 0.12 },
+          "outputs": { "actual_market_share": 0.65, "actual_accumulated_profit": 150000000 }
+        },
+        "Microsoft": {
+          "inputs": { "price": 399, "marketing_spend_ratio": 0.18 },
+          "outputs": { "actual_market_share": 0.35, "actual_accumulated_profit": 40000000 }
+        }
+      }
+    },
+    {
+      "turn": 6,
+      "turn_description": "2014 Q4 (Holiday): Aggressive Price Cut. MS drops to $349 (temporary).",
+      "source_link": "https://money.cnn.com/2014/11/03/technology/xbox-one-price-cut/index.html",
+      "companies": {
+        "Sony": {
+          "persona": "가격 인하 없이도 잘 팔립니다. 경쟁사의 할인에 말려들지 말고, $399 가격을 유지하며 이익률을 극대화하십시오. 독점작(Bloodborne 등) 준비에 R&D를 투입합니다.",
+          "inputs": { "price": 399, "marketing_spend_ratio": 0.15 },
+          "outputs": { "actual_market_share": 0.64, "actual_accumulated_profit": 250000000 }
+        },
+        "Microsoft": {
+          "persona": "[공격적 판촉] 연말 시즌 점유율 회복을 위해 마진을 포기합니다. 가격을 $349로 한시적 인하하고 번들을 제공하여 판매량을 최대한 끌어올리십시오.",
+          "inputs": { "price": 349, "marketing_spend_ratio": 0.25 },
+          "outputs": { "actual_market_share": 0.36, "actual_accumulated_profit": 30000000 }
+        }
+      }
+    },
+    {
+      "turn": 7,
+      "turn_description": "2015 H1: Stability. PS4 ~22M, Xbox ~12M estimated.",
+      "source_link": "https://www.vg247.com/ps4-sales-pass-22-3-million-worldwide",
+      "companies": {
+        "Sony": {
+          "inputs": { "price": 399, "marketing_spend_ratio": 0.10 },
+          "outputs": { "actual_market_share": 0.66, "actual_accumulated_profit": 400000000 }
+        },
+        "Microsoft": {
+          "persona": "가격을 $349로 사실상 고정합니다. 하드웨어 판매 격차를 인정하고, Xbox Live 서비스 품질 강화와 하위 호환(Backwards Compatibility) 기술 개발에 R&D를 집중하여 팬심을 되돌리십시오.",
+          "inputs": { "price": 349, "marketing_spend_ratio": 0.15 },
+          "outputs": { "actual_market_share": 0.34, "actual_accumulated_profit": 50000000 }
+        }
+      }
+    },
+    {
+      "turn": 8,
+      "turn_description": "2015 H2: PS4 Price Cut. Sony drops to $349 to match Xbox.",
+      "source_link": "https://blog.playstation.com/2015/10/08/ps4-price-drop-299-99-new-games/",
+      "companies": {
+        "Sony": {
+          "persona": "제조 원가가 충분히 떨어졌습니다. 이제 우리도 가격을 $349로 인하하여 경쟁사의 유일한 장점(가격)마저 무력화하고 쐐기를 박으십시오.",
+          "inputs": { "price": 349, "marketing_spend_ratio": 0.15 },
+          "outputs": { "actual_market_share": 0.68, "actual_accumulated_profit": 600000000 }
+        },
+        "Microsoft": {
+          "inputs": { "price": 349, "marketing_spend_ratio": 0.15 },
+          "outputs": { "actual_market_share": 0.32, "actual_accumulated_profit": 70000000 }
+        }
+      }
+    },
+    {
+      "turn": 9,
+      "turn_description": "2015 Q4 (Holiday): Market Maturity. PS4 reaches ~35M units sold.",
+      "source_link": "https://www.sony.com/en/SonyInfo/IR/library/presen/er/15q4_sony.pdf",
+      "companies": {
+        "Sony": {
+          "inputs": { "price": 349, "marketing_spend_ratio": 0.12 },
+          "outputs": { "actual_market_share": 0.70, "actual_accumulated_profit": 900000000 }
+        },
+        "Microsoft": {
+          "inputs": { "price": 349, "marketing_spend_ratio": 0.15 },
+          "outputs": { "actual_market_share": 0.30, "actual_accumulated_profit": 100000000 }
+        }
+      }
+    }
+  ]
+}

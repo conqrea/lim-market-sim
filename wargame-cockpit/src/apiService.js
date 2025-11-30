@@ -128,3 +128,40 @@ export const autoTuneParams = async (benchmarkConfig) => {
     }
     return await response.json();
 };
+
+// Track C: 시나리오 기반 시뮬레이션 생성
+export const createSimulationFromScenario = async (benchmarkData) => {
+    const response = await fetch(`${API_BASE_URL}/simulations/create_from_scenario`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(benchmarkData)
+    });
+    if (!response.ok) throw new Error("Failed to create scenario simulation");
+    return await response.json();
+};
+
+// Track C: 페르소나 수정 (개입)
+export const updatePersona = async (simulationId, companyName, newPersona) => {
+    const response = await fetch(`${API_BASE_URL}/simulations/${simulationId}/update_persona`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ company_name: companyName, new_persona: newPersona })
+    });
+    if (!response.ok) throw new Error("Failed to update persona");
+    return await response.json();
+};
+
+export const generateScenarioAI = async (topic) => {
+    // api_main.py에 새로 만든 엔드포인트 호출
+    const response = await fetch(`${API_BASE_URL}/admin/generate_scenario`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topic })
+    });
+    
+    if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.detail || "Scenario generation failed");
+    }
+    return await response.json();
+};

@@ -10,7 +10,7 @@ from typing import List, Dict, Optional, Any
 from fastapi.middleware.cors import CORSMiddleware
 
 from simulator import MarketSimulator
-from agent import AIAgent
+from agent import AIAgent, generate_scenario_async
 
 QUARTERLY_REPORT_INTERVAL = 4
 
@@ -52,11 +52,13 @@ class CompanyConfig(BaseModel):
     initial_market_share: float = Field(..., example=0.35)
     initial_product_quality: float = Field(..., example=60.0)
     initial_brand_awareness: float = Field(..., example=70.0)
+    initial_accumulated_profit: Optional[float] = Field(None)
 
 class SimulationConfig(BaseModel):
     preset_name: Optional[str] = None
     companies: List[CompanyConfig]
     total_turns: int = Field(30)
+    start_turn: int = Field(0)
     
     market_size: int = Field(10000)
     initial_capital: int = Field(1000000000)
@@ -65,18 +67,21 @@ class SimulationConfig(BaseModel):
     gdp_growth_rate: float = Field(0.005)
     inflation_rate: float = Field(0.0075)
     
-    rd_innovation_threshold: float = Field(5000000)
+    rd_innovation_threshold: float = Field(None)
     rd_innovation_impact: float = Field(5.0)
-    rd_efficiency_threshold: float = Field(5000000)
+    rd_efficiency_threshold: float = Field(None)
     rd_efficiency_impact: float = Field(0.03)
     
-    marketing_cost_base: float = Field(100000.0)
+    marketing_cost_base: float = Field(None)
     marketing_cost_multiplier: float = Field(1.12)
     
-    quality_decay_rate: float = Field(0.5)
+    quality_decay_rate: float = Field(0.05)
     brand_decay_rate: float = Field(0.2)
     
     physics: MarketPhysicsConfig = Field(default_factory=MarketPhysicsConfig)
+
+class ScenarioRequest(BaseModel):
+    topic: str = Field(..., description="시나리오 주제 (예: 2010년 스마트폰 전쟁)")
 
 class EventInject(BaseModel):
     description: str
@@ -179,14 +184,24 @@ async def create_simulation(config: SimulationConfig):
             "unit_cost": c.initial_unit_cost, 
             "market_share": c.initial_market_share / total_initial_share if total_initial_share > 1.0 else c.initial_market_share,
             "product_quality": c.initial_product_quality,
-            "brand_awareness": c.initial_brand_awareness
+            "brand_awareness": c.initial_brand_awareness,
+            "accumulated_profit": c.initial_accumulated_profit
         }
 
     personas = {c.name: c.persona for c in config.companies}
     
     market = MarketSimulator(company_names=[c.name for c in config.companies], config=sim_config_dict)
+    market.turn = config.start_turn
+    
+    for c in config.companies:
+        if c.initial_accumulated_profit is not None:
+            market.companies[c.name]["accumulated_profit"] = c.initial_accumulated_profit
+            # 이익 기반 예산 재산정
+            market.companies[c.name]["max_rd_budget"] = max(500000, c.initial_accumulated_profit * 0.05)
+
     agents = [AIAgent(name=name, persona=personas[name], use_mock=False) for name in [c.name for c in config.companies]]
     active_simulations[sim_id] = {"market": market, "agents": agents}
+    print(f"✅ Simulation Created: {sim_id} (Turn {market.turn})")
     
     return {"simulation_id": sim_id, "initial_state": market.get_market_state()}
 
@@ -299,74 +314,71 @@ async def auto_tune_parameters(data: BenchmarkData):
         "message": f"Tested {total_combos} scenarios in {elapsed:.1f}s. Best MAE: {best_mae*100:.2f}%"
     }
 
-def _initialize_market_for_benchmark(data: BenchmarkData, override_params: dict = None):
-    first_turn = data.turns_data[0]
-    company_names = list(first_turn["companies"].keys())
-    
-    # 1. [기준 정의] 무엇이 '물리 변수(Physics)'인지 키(Key) 목록 정의
-    # 이 딕셔너리는 시뮬레이션의 기본 물리값으로도 쓰이고, 
-    # 나중에 override_params가 들어왔을 때 분류하는 기준으로도 쓰입니다.
-    default_physics = {
-        "weight_quality": 0.4, "weight_brand": 0.4, "weight_price": 0.2,
-        "price_sensitivity": 50.0, "marketing_efficiency": 1.0,
-        "others_overall_competitiveness": 1.0 
-    }
-    
-    # 2. [환경 설정] 기본값 정의 (시장 규모, 초기 자본 등)
-    sim_config = {
-        "market_size": 50000,           # 기본값
-        "initial_capital": 1000000000,  # 기본값
-        "marketing_cost_base": 50000.0,
-        "inflation_rate": 0.0,
-        "gdp_growth_rate": 0.0,
-        
-        # 튜닝 대상이지만 Physics 안에는 없는 변수들 (Root 레벨)
-        "rd_innovation_threshold": 5000000, 
-        "rd_innovation_impact": 5.0, 
-        "rd_efficiency_threshold": 5000000, 
-        "rd_efficiency_impact": 0.03,
-        "marketing_cost_multiplier": 1.1,
-        "quality_decay_rate": 0.05,
-        "brand_decay_rate": 0.2,
-        
-        # Physics 섹션 초기화
-        "physics": default_physics.copy(), 
-        "initial_configs": {}
-    }
-
-    # 3. [JSON 데이터 주입] 시나리오 파일에 config가 있다면 덮어쓰기
-    # 예: 스마트폰 시장이라 market_size를 50000 -> 5000000으로 변경
-    if hasattr(data, "config") and data.config:
-        # 주의: data.config에 physics 키가 있다면 그것도 덮어씌워질 수 있음
-        # 여기서는 Root 레벨 변수(market_size 등) 업데이트가 주 목적
-        sim_config.update(data.config)
-
-    # 4. [튜닝 값 적용] Auto-Tune이 넘겨준 파라미터(override_params) 적용
+def _initialize_market_for_benchmark(data: BenchmarkData, override_params: Optional[Dict] = None) -> MarketSimulator:
+    # 1. Config 로드 및 물리 엔진 오버라이드
+    config = data.config.copy()
     if override_params:
-        for k, v in override_params.items():
-            # (1) 물리 변수 목록에 있는 키라면 -> physics 안에 넣음
-            if k in default_physics:
-                sim_config["physics"][k] = v
-            # (2) 그 외(예: quality_decay_rate, rd_threshold) -> Root에 넣음
-            else:
-                sim_config[k] = v
+        # physics가 있으면 병합
+        if "physics" in config and isinstance(config["physics"], dict):
+            config["physics"].update(override_params)
+        else:
+            config["physics"] = override_params
+            
+        # Root 레벨 파라미터(R&D 등)도 오버라이드 지원
+        if "rd_innovation_impact" in override_params:
+            config["rd_innovation_impact"] = override_params["rd_innovation_impact"]
+        if "rd_innovation_threshold" in override_params:
+            config["rd_innovation_threshold"] = override_params["rd_innovation_threshold"]
+
+    # 2. 첫 턴 데이터에서 회사 목록 및 초기 상태 추출
+    first_turn = data.turns_data[0]
+    companies_data = first_turn.get("companies", {})
     
-    # 5. [기업 초기 상태 설정] JSON 데이터 기반
+    # [핵심 수정] companies가 dict인지 list인지 확인하여 처리
+    if isinstance(companies_data, list):
+        # List 형태인 경우: [{"name": "A", ...}, {"name": "B", ...}] -> {"A": {...}, "B": {...}} 변환
+        companies_dict = {}
+        for comp in companies_data:
+            name = comp.get("name", "Unknown")
+            companies_dict[name] = comp
+        companies_data = companies_dict
+    
+    # 이제 companies_data는 무조건 딕셔너리임
+    company_names = list(companies_data.keys())
+    
+    # 3. 초기 설정(initial_configs) 구성
+    config['initial_configs'] = {}
+    
+    # 총 점유율 합계 계산 (비율 보정용)
+    total_share = 0
     for name in company_names:
-        inputs = first_turn["companies"][name]["inputs"]
-        actuals = first_turn["companies"][name]["outputs"]
+        # JSON 구조 차이 대응 (outputs.actual_market_share vs market_share)
+        comp_info = companies_data[name]
+        outputs = comp_info.get("outputs", {})
+        inputs = comp_info.get("inputs", {})
         
-        start_quality = inputs.get("initial_quality", 50.0)
-        start_brand = inputs.get("initial_brand", 50.0)
+        share = outputs.get("actual_market_share", 0) or comp_info.get("market_share", 0)
+        total_share += share
+
+    for name in company_names:
+        comp_info = companies_data[name]
+        outputs = comp_info.get("outputs", {})
+        inputs = comp_info.get("inputs", {})
         
-        sim_config["initial_configs"][name] = {
-            "unit_cost": 400, # 벤치마크에서는 원가가 큰 의미 없으므로 고정
-            "market_share": actuals.get("actual_market_share", 0.1),
-            "product_quality": start_quality, 
-            "brand_awareness": start_brand
+        # 점유율 정규화
+        share = outputs.get("actual_market_share", 0) or comp_info.get("market_share", 0.1)
+        if total_share > 1.0: share = share / total_share
+        
+        # 나머지 데이터 매핑
+        config['initial_configs'][name] = {
+            "market_share": share,
+            "unit_cost": inputs.get("unit_cost") or (inputs.get("price", 100) * 0.8), # 원가 없으면 추정
+            "product_quality": inputs.get("initial_quality", 50.0),
+            "brand_awareness": inputs.get("initial_brand", 50.0),
+            "accumulated_profit": outputs.get("actual_accumulated_profit", 0)
         }
-        
-    return MarketSimulator(company_names=company_names, config=sim_config)
+
+    return MarketSimulator(company_names=company_names, config=config)
 
 # --- Helper Functions ---
 def _get_agent_specific_state(market, agent, all_agents): return market.get_market_state()
@@ -407,3 +419,78 @@ async def inject_event_into_simulation(sim_id: str, event: EventInject):
     if sim_id not in active_simulations: raise HTTPException(404, "Not found")
     active_simulations[sim_id]["market"].inject_event(event.description, event.target_company, event.effect_type, event.impact_value, event.duration)
     return {"message": "Injected"}
+
+class PersonaUpdate(BaseModel):
+    company_name: str
+    new_persona: str
+
+# 1. 실행 중인 시뮬레이션의 특정 에이전트 페르소나 변경
+@app.post("/simulations/{sim_id}/update_persona")
+async def update_persona(sim_id: str, update: PersonaUpdate):
+    if sim_id not in active_simulations:
+        raise HTTPException(404, "Simulation not found")
+    
+    sim_data = active_simulations[sim_id]
+    agents = sim_data["agents"]
+    
+    target_agent = next((a for a in agents if a.name == update.company_name), None)
+    if not target_agent:
+        raise HTTPException(404, f"Agent {update.company_name} not found")
+        
+    # 페르소나 교체
+    old_persona = target_agent.persona
+    target_agent.persona = update.new_persona
+    
+    print(f"🔄 [Intervention] {update.company_name} Persona Updated!")
+    print(f"   OLD: {old_persona[:30]}...")
+    print(f"   NEW: {target_agent.persona[:30]}...")
+    
+    return {"message": "Persona updated successfully", "company": update.company_name}
+
+# 2. (Track C 전용) 시나리오 기반 시뮬레이션 초기화
+# 기존 create_simulation과 비슷하지만, 실제 역사 데이터(BenchmarkData)를 함께 로드하여
+# '비교용 정답지(Actual History)'를 프론트엔드에 넘겨줄 준비를 합니다.
+@app.post("/simulations/create_from_scenario")
+async def create_simulation_from_scenario(data: BenchmarkData):
+    # 1. 기본 시뮬레이션 생성 로직 재사용
+    # 벤치마크 데이터의 첫 턴을 기준으로 초기 상태 설정
+    market = _initialize_market_for_benchmark(data, override_params=data.physics_override)
+    
+    sim_id = str(uuid.uuid4())
+    
+    # 2. AI 에이전트 생성 (벤치마크 데이터의 페르소나 활용)
+    # 벤치마크 데이터 안에 persona 정보가 없다면 기본값 사용
+    companies_data = data.turns_data[0]["companies"]
+    agents = []
+    
+    for name in market.ai_company_names:
+        # 데이터에 persona가 있으면 쓰고, 없으면 기본값
+        persona_text = "Standard Profit Maximizer" 
+        if "persona" in companies_data.get(name, {}):
+             persona_text = companies_data[name]["persona"]
+             
+        agents.append(AIAgent(name=name, persona=persona_text, use_mock=False))
+
+    active_simulations[sim_id] = {"market": market, "agents": agents}
+    
+    # 3. 중요: 프론트엔드가 비교할 수 있도록 '실제 역사 데이터'를 포함해서 리턴
+    return {
+        "simulation_id": sim_id, 
+        "initial_state": market.get_market_state(),
+        "actual_history": data.turns_data # 정답지(Actual Line) 그리기 용도
+    }
+
+@app.post("/admin/generate_scenario")
+async def generate_scenario_endpoint(req: ScenarioRequest):
+    """
+    프론트엔드에서 주제를 받아 LLM에게 시나리오 작성을 요청합니다.
+    """
+    try:
+        # agent.py에 있는 함수를 호출
+        scenario_json = await generate_scenario_async(req.topic)
+        return scenario_json
+        
+    except Exception as e:
+        print(f"Endpoint Error: {str(e)}")
+        # 에러 발생 시 500 에러 반환
+        raise HTTPException(status_code=500, detail=f"Scenario generation failed: {str(e)}")

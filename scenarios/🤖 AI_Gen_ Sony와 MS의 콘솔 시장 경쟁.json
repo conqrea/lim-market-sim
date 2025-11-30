@@ -1,0 +1,563 @@
+{
+  "scenario_name": "콘솔 제국의 전쟁: 소니 vs MS",
+  "description": "2001년부터 시작된 소니와 마이크로소프트의 치열한 콘솔 시장 경쟁을 시뮬레이션합니다.",
+  "config": {
+    "currency": "USD",
+    "initial_capital": 5000000000,
+    "marketing_cost_base": 100000000,
+    "rd_cost_base": 200000000,
+    "companies": [
+      "Sony",
+      "Microsoft"
+    ]
+  },
+  "turns_data": [
+    {
+      "turn": 0,
+      "turn_description": "2001: MS, 초대 Xbox로 시장에 진입하며 PS2에 도전하다.",
+      "companies": {
+        "Sony": {
+          "persona": "[정체성]우리는 플레이스테이션 제국 소니입니다. [상황]PS2의 압도적 성공, 신규 경쟁자 등장. [지침]시장 지배력을 유지하고 독점작을 확보하라.",
+          "inputs": {
+            "price": 299,
+            "unit_cost": 250,
+            "marketing_spend": 150000000,
+            "rd_spend": 50000000,
+            "max_production": 10000000
+          },
+          "outputs": {
+            "actual_market_share": 0.85,
+            "units_sold": 8500000
+          }
+        },
+        "Microsoft": {
+          "persona": "[정체성]우리는 엑스박스 제국 마이크로소프트입니다. [상황]콘솔 시장 신규 진입, 막대한 자본 투입. [지침]공격적 마케팅으로 브랜드 인지도를 높여라.",
+          "inputs": {
+            "price": 299,
+            "unit_cost": 350,
+            "marketing_spend": 300000000,
+            "rd_spend": 100000000,
+            "max_production": 2000000
+          },
+          "outputs": {
+            "actual_market_share": 0.15,
+            "units_sold": 1500000
+          }
+        }
+      }
+    },
+    {
+      "turn": 1,
+      "turn_description": "2002: Xbox Live 서비스 출시, 온라인 게임의 시대를 열다.",
+      "companies": {
+        "Sony": {
+          "persona": "[정체성]우리는 플레이스테이션 제국 소니입니다. [상황]온라인 서비스 대응 미흡, 하드웨어 판매는 견고. [지침]온라인 인프라 투자를 시작하고 가격을 인하하라.",
+          "inputs": {
+            "price": 249,
+            "unit_cost": 210,
+            "marketing_spend": 120000000,
+            "rd_spend": 80000000,
+            "max_production": 12000000
+          },
+          "outputs": {
+            "actual_market_share": 0.82,
+            "units_sold": 9840000
+          }
+        },
+        "Microsoft": {
+          "persona": "[정체성]우리는 엑스박스 제국 마이크로소프트입니다. [상황]Xbox Live 성공적 런칭, 킬러 타이틀 필요. [지침]독점작 '헤일로' 마케팅에 모든 자원을 집중하라.",
+          "inputs": {
+            "price": 299,
+            "unit_cost": 320,
+            "marketing_spend": 250000000,
+            "rd_spend": 150000000,
+            "max_production": 3000000
+          },
+          "outputs": {
+            "actual_market_share": 0.18,
+            "units_sold": 2160000
+          }
+        }
+      }
+    },
+    {
+      "turn": 2,
+      "turn_description": "2004: '헤일로 2' 발매, Xbox 판매량을 견인하다.",
+      "companies": {
+        "Sony": {
+          "persona": "[정체성]우리는 플레이스테이션 제국 소니입니다. [상황]PS2 슬림 모델 출시, 막대한 게임 라이브러리 보유. [지침]차세대기 개발에 R&D 역량을 집중하라.",
+          "inputs": {
+            "price": 199,
+            "unit_cost": 150,
+            "marketing_spend": 100000000,
+            "rd_spend": 300000000,
+            "max_production": 15000000
+          },
+          "outputs": {
+            "actual_market_share": 0.78,
+            "units_sold": 11700000
+          }
+        },
+        "Microsoft": {
+          "persona": "[정체성]우리는 엑스박스 제국 마이크로소프트입니다. [상황]헤일로 2 대성공, 온라인 게이밍 시장 선점. [지침]차세대기 선행 출시로 시장을 선점하라.",
+          "inputs": {
+            "price": 249,
+            "unit_cost": 220,
+            "marketing_spend": 200000000,
+            "rd_spend": 400000000,
+            "max_production": 4000000
+          },
+          "outputs": {
+            "actual_market_share": 0.22,
+            "units_sold": 3300000
+          }
+        }
+      }
+    },
+    {
+      "turn": 3,
+      "turn_description": "2005: MS, Xbox 360을 선행 출시하며 차세대 경쟁의 포문을 열다.",
+      "companies": {
+        "Sony": {
+          "persona": "[정체성]우리는 플레이스테이션 제국 소니입니다. [상황]PS2 판매 지속, PS3 출시 준비 중. [지침]PS3의 기술적 우위를 강조하며 출시를 준비하라.",
+          "inputs": {
+            "price": 149,
+            "unit_cost": 120,
+            "marketing_spend": 50000000,
+            "rd_spend": 500000000,
+            "max_production": 10000000
+          },
+          "outputs": {
+            "actual_market_share": 0.9,
+            "units_sold": 9000000
+          }
+        },
+        "Microsoft": {
+          "persona": "[정체성]우리는 엑스박스 제국 마이크로소프트입니다. [상황]Xbox 360 선행 출시, 초기 시장 장악. [지침]초기 물량 공급을 안정시키고 런칭 타이틀을 홍보하라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 420,
+            "marketing_spend": 400000000,
+            "rd_spend": 100000000,
+            "max_production": 1500000
+          },
+          "outputs": {
+            "actual_market_share": 0.1,
+            "units_sold": 1000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 4,
+      "turn_description": "2006: 소니, 높은 가격의 PS3를 출시하며 고전하다.",
+      "companies": {
+        "Sony": {
+          "persona": "[정체성]우리는 플레이스테이션 제국 소니입니다. [상황]PS3 고가 정책으로 인한 판매 부진. [지침]블루레이 등 기술적 장점을 부각하고 손실을 감수하라.",
+          "inputs": {
+            "price": 599,
+            "unit_cost": 700,
+            "marketing_spend": 500000000,
+            "rd_spend": 100000000,
+            "max_production": 2000000
+          },
+          "outputs": {
+            "actual_market_share": 0.25,
+            "units_sold": 1500000
+          }
+        },
+        "Microsoft": {
+          "persona": "[정체성]우리는 엑스박스 제국 마이크로소프트입니다. [상황]경쟁사 고가 정책으로 반사이익, 시장 점유율 확대. [지침]가격 경쟁력을 유지하고 독점작 라인업을 강화하라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 350,
+            "marketing_spend": 300000000,
+            "rd_spend": 150000000,
+            "max_production": 5000000
+          },
+          "outputs": {
+            "actual_market_share": 0.75,
+            "units_sold": 4500000
+          }
+        }
+      }
+    },
+    {
+      "turn": 5,
+      "turn_description": "2007: Xbox 360, '레드링' 하드웨어 결함으로 대규모 리콜 사태 발생.",
+      "companies": {
+        "Sony": {
+          "persona": "[정체성]우리는 플레이스테이션 제국 소니입니다. [상황]경쟁사 리콜 사태로 반격의 기회 확보. [지침]PS3 가격을 인하하고 신뢰성을 강조하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 550,
+            "marketing_spend": 350000000,
+            "rd_spend": 120000000,
+            "max_production": 4000000
+          },
+          "outputs": {
+            "actual_market_share": 0.4,
+            "units_sold": 3200000
+          }
+        },
+        "Microsoft": {
+          "persona": "[정체성]우리는 엑스박스 제국 마이크로소프트입니다. [상황]레드링 사태로 인한 막대한 손실과 브랜드 신뢰도 하락. [지침]보증 기간을 연장하고 문제 해결에 총력을 기울여라.",
+          "inputs": {
+            "price": 349,
+            "unit_cost": 300,
+            "marketing_spend": 200000000,
+            "rd_spend": 100000000,
+            "max_production": 6000000,
+            "other_costs": 1000000000
+          },
+          "outputs": {
+            "actual_market_share": 0.6,
+            "units_sold": 4800000
+          }
+        }
+      }
+    },
+    {
+      "turn": 6,
+      "turn_description": "2009: 소니, PS3 슬림 모델과 가격 인하로 판매량 회복에 성공하다.",
+      "companies": {
+        "Sony": {
+          "persona": "[정체성]우리는 플레이스테이션 제국 소니입니다. [상황]슬림 모델 출시 성공, 판매량 급증. [지침]강력한 독점작 출시로 기세를 이어가라.",
+          "inputs": {
+            "price": 299,
+            "unit_cost": 280,
+            "marketing_spend": 300000000,
+            "rd_spend": 150000000,
+            "max_production": 8000000
+          },
+          "outputs": {
+            "actual_market_share": 0.55,
+            "units_sold": 6600000
+          }
+        },
+        "Microsoft": {
+          "persona": "[정체성]우리는 엑스박스 제국 마이크로소프트입니다. [상황]레드링 사태 극복, 경쟁사의 추격 거셈. [지침]새로운 혁신 '키넥트' 개발에 집중하라.",
+          "inputs": {
+            "price": 299,
+            "unit_cost": 250,
+            "marketing_spend": 250000000,
+            "rd_spend": 200000000,
+            "max_production": 6000000
+          },
+          "outputs": {
+            "actual_market_share": 0.45,
+            "units_sold": 5400000
+          }
+        }
+      }
+    },
+    {
+      "turn": 7,
+      "turn_description": "2010: MS '키넥트'와 소니 '무브', 모션 컨트롤 경쟁이 시작되다.",
+      "companies": {
+        "Sony": {
+          "persona": "[정체성]우리는 플레이스테이션 제국 소니입니다. [상황]PS 무브 출시, 시장 반응은 미미. [지침]핵심 게이머층을 위한 독점작 개발에 집중하라.",
+          "inputs": {
+            "price": 299,
+            "unit_cost": 270,
+            "marketing_spend": 280000000,
+            "rd_spend": 180000000,
+            "max_production": 8000000
+          },
+          "outputs": {
+            "actual_market_share": 0.52,
+            "units_sold": 6760000
+          }
+        },
+        "Microsoft": {
+          "persona": "[정체성]우리는 엑스박스 제국 마이크로소프트입니다. [상황]키넥트의 대중적 성공, 새로운 시장 개척. [지침]키넥트를 활용한 캐주얼 게임 라인업을 확대하라.",
+          "inputs": {
+            "price": 299,
+            "unit_cost": 240,
+            "marketing_spend": 350000000,
+            "rd_spend": 150000000,
+            "max_production": 7000000
+          },
+          "outputs": {
+            "actual_market_share": 0.48,
+            "units_sold": 6240000
+          }
+        }
+      }
+    },
+    {
+      "turn": 8,
+      "turn_description": "2013: PS4, 저렴한 가격과 게이머 친화적 정책으로 Xbox One에 압승하다.",
+      "companies": {
+        "Sony": {
+          "persona": "[정체성]우리는 플레이스테이션 제국 소니입니다. [상황]PS4 출시 대성공, 시장 주도권 탈환. [지침]초기 흥행을 유지하기 위해 생산량을 극대화하라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 350,
+            "marketing_spend": 600000000,
+            "rd_spend": 200000000,
+            "max_production": 5000000
+          },
+          "outputs": {
+            "actual_market_share": 0.7,
+            "units_sold": 3500000
+          }
+        },
+        "Microsoft": {
+          "persona": "[정체성]우리는 엑스박스 제국 마이크로소프트입니다. [상황]Xbox One의 고가 및 DRM 정책 실패, 초기 시장 상실. [지침]키넥트를 분리하고 가격을 인하하는 등 정책을 전면 수정하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 450,
+            "marketing_spend": 500000000,
+            "rd_spend": 250000000,
+            "max_production": 3000000
+          },
+          "outputs": {
+            "actual_market_share": 0.3,
+            "units_sold": 1500000
+          }
+        }
+      }
+    },
+    {
+      "turn": 9,
+      "turn_description": "2014: PS4, 압도적인 판매량으로 시장 지배력을 굳히다.",
+      "companies": {
+        "Sony": {
+          "persona": "[정체성]우리는 플레이스테이션 제국 소니입니다. [상황]독보적인 시장 1위, 독점작 흥행 지속. [지침]안정적인 수익 구조를 유지하고 VR 등 신기술을 연구하라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 340,
+            "marketing_spend": 400000000,
+            "rd_spend": 250000000,
+            "max_production": 12000000
+          },
+          "outputs": {
+            "actual_market_share": 0.68,
+            "units_sold": 10880000
+          }
+        },
+        "Microsoft": {
+          "persona": "[정체성]우리는 엑스박스 제국 마이크로소프트입니다. [상황]시장 2위 고착, 전략 수정 시급. [지침]경쟁력 있는 가격 정책과 게임 중심 메시지로 전환하라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 380,
+            "marketing_spend": 450000000,
+            "rd_spend": 300000000,
+            "max_production": 6000000
+          },
+          "outputs": {
+            "actual_market_share": 0.32,
+            "units_sold": 5120000
+          }
+        }
+      }
+    },
+    {
+      "turn": 10,
+      "turn_description": "2017: MS, '게임패스' 구독 서비스를 출시하며 게임의 패러다임을 바꾸다.",
+      "companies": {
+        "Sony": {
+          "persona": "[정체성]우리는 플레이스테이션 제국 소니입니다. [상황]강력한 하드웨어 PS4 Pro 출시, 구독 모델에는 소극적. [지침]고품질 독점작 판매 전략을 고수하라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 330,
+            "marketing_spend": 300000000,
+            "rd_spend": 300000000,
+            "max_production": 10000000
+          },
+          "outputs": {
+            "actual_market_share": 0.65,
+            "units_sold": 9750000
+          }
+        },
+        "Microsoft": {
+          "persona": "[정체성]우리는 엑스박스 제국 마이크로소프트입니다. [상황]게임패스 출시, 하드웨어 판매를 넘어선 생태계 구축 시작. [지침]게임패스 가입자 확보에 마케팅 역량을 집중하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 420,
+            "marketing_spend": 500000000,
+            "rd_spend": 400000000,
+            "max_production": 6000000
+          },
+          "outputs": {
+            "actual_market_share": 0.35,
+            "units_sold": 5250000
+          }
+        }
+      }
+    },
+    {
+      "turn": 11,
+      "turn_description": "2019: 차세대기 출시를 앞두고 양사 모두 R&D에 막대한 비용을 투자하다.",
+      "companies": {
+        "Sony": {
+          "persona": "[정체성]우리는 플레이스테이션 제국 소니입니다. [상황]PS4 세대 성공적 마무리, PS5 개발에 집중. [지침]차세대기의 혁신적인 기능을 강조하며 기대감을 높여라.",
+          "inputs": {
+            "price": 299,
+            "unit_cost": 250,
+            "marketing_spend": 200000000,
+            "rd_spend": 800000000,
+            "max_production": 8000000
+          },
+          "outputs": {
+            "actual_market_share": 0.62,
+            "units_sold": 7440000
+          }
+        },
+        "Microsoft": {
+          "persona": "[정체성]우리는 엑스박스 제국 마이크로소프트입니다. [상황]게임패스 성장세, 차세대기 라인업 준비. [지침]게임 스튜디오 인수를 통해 콘텐츠 라이브러리를 강화하라.",
+          "inputs": {
+            "price": 249,
+            "unit_cost": 220,
+            "marketing_spend": 300000000,
+            "rd_spend": 1000000000,
+            "max_production": 5000000
+          },
+          "outputs": {
+            "actual_market_share": 0.38,
+            "units_sold": 4560000
+          }
+        }
+      }
+    },
+    {
+      "turn": 12,
+      "turn_description": "2020: PS5와 Xbox Series X/S 동시 출시, 팬데믹으로 인한 공급난 발생.",
+      "companies": {
+        "Sony": {
+          "persona": "[정체성]우리는 플레이스테이션 제국 소니입니다. [상황]PS5에 대한 높은 수요, 심각한 공급 부족. [지침]제한된 물량을 효율적으로 배분하고 생산 안정화에 주력하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 460,
+            "marketing_spend": 700000000,
+            "rd_spend": 300000000,
+            "max_production": 4000000
+          },
+          "outputs": {
+            "actual_market_share": 0.58,
+            "units_sold": 2320000
+          }
+        },
+        "Microsoft": {
+          "persona": "[정체성]우리는 엑스박스 제국 마이크로소프트입니다. [상황]두 가지 모델(X/S) 출시 전략, 공급난은 여전. [지침]게임패스를 차세대기의 핵심 가치로 홍보하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 450,
+            "marketing_spend": 600000000,
+            "rd_spend": 300000000,
+            "max_production": 3000000
+          },
+          "outputs": {
+            "actual_market_share": 0.42,
+            "units_sold": 1680000
+          }
+        }
+      }
+    },
+    {
+      "turn": 13,
+      "turn_description": "2021: 공급망 문제가 지속되며 양사 모두 수요를 따라가지 못하다.",
+      "companies": {
+        "Sony": {
+          "persona": "[정체성]우리는 플레이스테이션 제국 소니입니다. [상황]공급 부족에도 브랜드 충성도로 판매 우위 유지. [지침]독점작 출시를 통해 하드웨어 수요를 계속 창출하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 450,
+            "marketing_spend": 500000000,
+            "rd_spend": 350000000,
+            "max_production": 8000000
+          },
+          "outputs": {
+            "actual_market_share": 0.56,
+            "units_sold": 7280000
+          }
+        },
+        "Microsoft": {
+          "persona": "[정체성]우리는 엑스박스 제국 마이크로소프트입니다. [상황]게임패스 가입자 수 급증, 하드웨어 판매 열세 만회. [지침]클라우드 게이밍 서비스를 확장하여 접근성을 높여라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 440,
+            "marketing_spend": 550000000,
+            "rd_spend": 500000000,
+            "max_production": 6000000
+          },
+          "outputs": {
+            "actual_market_share": 0.44,
+            "units_sold": 5720000
+          }
+        }
+      }
+    },
+    {
+      "turn": 14,
+      "turn_description": "2022: MS, 액티비전 블리자드 인수를 발표하며 게임 산업을 뒤흔들다.",
+      "companies": {
+        "Sony": {
+          "persona": "[정체성]우리는 플레이스테이션 제국 소니입니다. [상황]경쟁사의 초대형 M&A로 인한 위기감 고조. [지침]번지 등 유력 스튜디오 인수로 대응하고 구독 서비스를 개편하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 440,
+            "marketing_spend": 600000000,
+            "rd_spend": 400000000,
+            "max_production": 12000000,
+            "other_costs": 3600000000
+          },
+          "outputs": {
+            "actual_market_share": 0.54,
+            "units_sold": 9720000
+          }
+        },
+        "Microsoft": {
+          "persona": "[정체성]우리는 엑스박스 제국 마이크로소프트입니다. [상황]블리자드 인수로 막강한 IP 확보, 콘텐츠 제국 구축. [지침]인수 절차를 마무리하고 독점 콘텐츠의 영향력을 극대화하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 430,
+            "marketing_spend": 700000000,
+            "rd_spend": 400000000,
+            "max_production": 9000000,
+            "other_costs": 68700000000
+          },
+          "outputs": {
+            "actual_market_share": 0.46,
+            "units_sold": 8280000
+          }
+        }
+      }
+    },
+    {
+      "turn": 15,
+      "turn_description": "2023: 하드웨어 공급 안정화, 본격적인 차세대 콘솔 경쟁이 시작되다.",
+      "companies": {
+        "Sony": {
+          "persona": "[정체성]우리는 플레이스테이션 제국 소니입니다. [상황]PS5 공급 정상화, 개편된 PS Plus 서비스로 대응. [지침]블록버스터 독점작 출시로 하드웨어 판매를 견인하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 420,
+            "marketing_spend": 500000000,
+            "rd_spend": 450000000,
+            "max_production": 18000000
+          },
+          "outputs": {
+            "actual_market_share": 0.55,
+            "units_sold": 14850000
+          }
+        },
+        "Microsoft": {
+          "persona": "[정체성]우리는 엑스박스 제국 마이크로소프트입니다. [상황]공급 안정, 게임패스 데이원 출시 전략 강화. [지침]인수한 스튜디오의 신작으로 게임패스 가치를 증명하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 410,
+            "marketing_spend": 600000000,
+            "rd_spend": 600000000,
+            "max_production": 14000000
+          },
+          "outputs": {
+            "actual_market_share": 0.45,
+            "units_sold": 12150000
+          }
+        }
+      }
+    }
+  ]
+}

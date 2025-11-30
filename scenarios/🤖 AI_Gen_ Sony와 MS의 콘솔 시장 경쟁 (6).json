@@ -1,0 +1,381 @@
+{
+  "scenario_name": "Console Wars: Sony vs. Microsoft",
+  "config": {
+    "total_turns": 10,
+    "market_size": 50000000,
+    "initial_capital": 10000000000,
+    "physics": {
+      "price_sensitivity": 40,
+      "marketing_efficiency": 2.5,
+      "weight_quality": 0.6,
+      "weight_brand": 0.3,
+      "weight_price": 0.1,
+      "others_overall_competitiveness": 0.6
+    },
+    "marketing_cost_base": 2495000000,
+    "rd_innovation_threshold": 4990000000,
+    "rd_efficiency_threshold": 4990000000
+  },
+  "turns_data": [
+    {
+      "turn": 0,
+      "turn_description": "차세대 콘솔 PS5와 Xbox Series X/S 동시 출시.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 게임(Exclusive Games)과 강력한 브랜드(Strong Brand)를 통해 시장 점유율(Market Share)을 지배하는 것을 목표로 합니다. [2.상황] 신규 시장 선점 기회. [3.지침] 초기 이익(Profit)을 희생해서라도 공격적인 마케팅(Marketing)으로 점유율(Share)을 최대로 확보하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 470,
+            "marketing_spend_ratio": 0.3,
+            "rd_spend_ratio": 0.2,
+            "initial_quality": 90,
+            "initial_brand": 95
+          },
+          "outputs": {
+            "actual_market_share": 0.48,
+            "actual_accumulated_profit": -50000000
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 구독 서비스(Subscription Service)와 생태계 확장(Ecosystem Expansion)을 통해 장기적 수익(Long-term Profit)을 창출하는 것을 목표로 합니다. [2.상황] 게임패스 구독자 확보가 최우선. [3.지침] 하드웨어 손실(Cost)을 감수하고 가격(Price)을 낮춰 생태계 진입 장벽을 허물어라.",
+          "inputs": {
+            "price": 449,
+            "unit_cost": 450,
+            "marketing_spend_ratio": 0.25,
+            "rd_spend_ratio": 0.25,
+            "initial_quality": 88,
+            "initial_brand": 85
+          },
+          "outputs": {
+            "actual_market_share": 0.42,
+            "actual_accumulated_profit": -80000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 1,
+      "turn_description": "소니의 독점작 흥행으로 초기 판매량 우위 확보.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 게임(Exclusive Games)과 강력한 브랜드(Strong Brand)를 통해 시장 점유율(Market Share)을 지배하는 것을 목표로 합니다. [2.상황] 초기 점유율(Share) 확보 성공. [3.지침] 수익성(Profitability)을 개선하면서 R&D 투자(Game Development)로 격차를 유지하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 450,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.25,
+            "initial_quality": 95,
+            "initial_brand": 96
+          },
+          "outputs": {
+            "actual_market_share": 0.52,
+            "actual_accumulated_profit": 150000000
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 구독 서비스(Subscription Service)와 생태계 확장(Ecosystem Expansion)을 통해 장기적 수익(Long-term Profit)을 창출하는 것을 목표로 합니다. [2.상황] 하드웨어 판매량 열세. [3.지침] 점유율(Share) 회복을 위해 마케팅(Marketing) 지출을 늘리고, 게임패스 가치를 강조하라.",
+          "inputs": {
+            "price": 449,
+            "unit_cost": 440,
+            "marketing_spend_ratio": 0.3,
+            "rd_spend_ratio": 0.2,
+            "initial_quality": 89,
+            "initial_brand": 86
+          },
+          "outputs": {
+            "actual_market_share": 0.38,
+            "actual_accumulated_profit": -40000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 2,
+      "turn_description": "마이크로소프트, 대형 게임 스튜디오 인수 발표.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 게임(Exclusive Games)과 강력한 브랜드(Strong Brand)를 통해 시장 점유율(Market Share)을 지배하는 것을 목표로 합니다. [2.상황] 경쟁사의 R&D 역량 급증. [3.지침] 단기 이익(Profit)이 감소하더라도, 기존 독점작 개발 R&D 투자를 대폭 늘려 품질 우위를 지켜라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 445,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.3,
+            "initial_quality": 96,
+            "initial_brand": 95
+          },
+          "outputs": {
+            "actual_market_share": 0.5,
+            "actual_accumulated_profit": 280000000
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 구독 서비스(Subscription Service)와 생태계 확장(Ecosystem Expansion)을 통해 장기적 수익(Long-term Profit)을 창출하는 것을 목표로 합니다. [2.상황] 인수 효과로 브랜드 기대감 상승. [3.지침] 마케팅(Marketing)과 R&D(Studio Integration)의 균형을 맞춰 인수한 스튜디오의 게임을 게임패스에 통합하라.",
+          "inputs": {
+            "price": 449,
+            "unit_cost": 430,
+            "marketing_spend_ratio": 0.25,
+            "rd_spend_ratio": 0.25,
+            "initial_quality": 92,
+            "initial_brand": 90
+          },
+          "outputs": {
+            "actual_market_share": 0.4,
+            "actual_accumulated_profit": 50000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 3,
+      "turn_description": "양사, 원가 절감 및 성능 개선 모델(Slim/Pro) 출시 경쟁.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 게임(Exclusive Games)과 강력한 브랜드(Strong Brand)를 통해 시장 점유율(Market Share)을 지배하는 것을 목표로 합니다. [2.상황] 생산 비용(Cost) 절감 기회. [3.지침] 가격(Price)을 소폭 인하하여 점유율(Share)을 방어하고, 개선된 마진(Margin)을 확보하라.",
+          "inputs": {
+            "price": 449,
+            "unit_cost": 380,
+            "marketing_spend_ratio": 0.22,
+            "rd_spend_ratio": 0.2,
+            "initial_quality": 97,
+            "initial_brand": 96
+          },
+          "outputs": {
+            "actual_market_share": 0.53,
+            "actual_accumulated_profit": 500000000
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 구독 서비스(Subscription Service)와 생태계 확장(Ecosystem Expansion)을 통해 장기적 수익(Long-term Profit)을 창출하는 것을 목표로 합니다. [2.상황] 가격 경쟁력 확보 필요. [3.지침] 이익(Profit)을 포기하고 신모델 가격(Price)을 더 공격적으로 책정하여 점유율(Share)을 뺏어와라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 370,
+            "marketing_spend_ratio": 0.28,
+            "rd_spend_ratio": 0.22,
+            "initial_quality": 93,
+            "initial_brand": 91
+          },
+          "outputs": {
+            "actual_market_share": 0.43,
+            "actual_accumulated_profit": 120000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 4,
+      "turn_description": "소니, 새로운 구독 서비스로 게임패스에 대응.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 게임(Exclusive Games)과 강력한 브랜드(Strong Brand)를 통해 시장 점유율(Market Share)을 지배하는 것을 목표로 합니다. [2.상황] 구독 모델 수익성 검증 필요. [3.지침] 점유율(Share) 유지를 위해 구독 서비스 마케팅(Marketing)을 강화하되, 핵심 독점작의 가치를 지켜라.",
+          "inputs": {
+            "price": 449,
+            "unit_cost": 375,
+            "marketing_spend_ratio": 0.25,
+            "rd_spend_ratio": 0.18,
+            "initial_quality": 96,
+            "initial_brand": 95
+          },
+          "outputs": {
+            "actual_market_share": 0.51,
+            "actual_accumulated_profit": 680000000
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 구독 서비스(Subscription Service)와 생태계 확장(Ecosystem Expansion)을 통해 장기적 수익(Long-term Profit)을 창출하는 것을 목표로 합니다. [2.상황] 구독 시장 리더십 위협. [3.지침] 하드웨어 이익(Profit)을 포기해서라도 게임패스에 Day-1 독점작을 추가하여 가입자를 방어하라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 365,
+            "marketing_spend_ratio": 0.3,
+            "rd_spend_ratio": 0.25,
+            "initial_quality": 94,
+            "initial_brand": 93
+          },
+          "outputs": {
+            "actual_market_share": 0.45,
+            "actual_accumulated_profit": 250000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 5,
+      "turn_description": "글로벌 반도체 공급 부족으로 생산 차질 발생.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 게임(Exclusive Games)과 강력한 브랜드(Strong Brand)를 통해 시장 점유율(Market Share)을 지배하는 것을 목표로 합니다. [2.상황] 높은 수요, 낮은 공급. [3.지침] 점유율(Share) 확대보다 가격(Price)을 안정적으로 유지하여 이익(Profit)을 극대화하고 브랜드 가치를 지켜라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 400,
+            "marketing_spend_ratio": 0.15,
+            "rd_spend_ratio": 0.2,
+            "initial_quality": 96,
+            "initial_brand": 96
+          },
+          "outputs": {
+            "actual_market_share": 0.55,
+            "actual_accumulated_profit": 950000000
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 구독 서비스(Subscription Service)와 생태계 확장(Ecosystem Expansion)을 통해 장기적 수익(Long-term Profit)을 창출하는 것을 목표로 합니다. [2.상황] 생산량 부족으로 점유율 확대 난항. [3.지침] 클라우드 게이밍 R&D에 투자하여 하드웨어 의존도를 낮추는 전략을 모색하라.",
+          "inputs": {
+            "price": 449,
+            "unit_cost": 390,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.3,
+            "initial_quality": 94,
+            "initial_brand": 92
+          },
+          "outputs": {
+            "actual_market_share": 0.4,
+            "actual_accumulated_profit": 350000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 6,
+      "turn_description": "공급망 안정화, 양사 생산량 정상화 및 가격 인하.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 게임(Exclusive Games)과 강력한 브랜드(Strong Brand)를 통해 시장 점유율(Market Share)을 지배하는 것을 목표로 합니다. [2.상황] 생산 정상화로 물량 공세 가능. [3.지침] 마진(Margin)을 소폭 낮추더라도 가격(Price) 인하와 마케팅(Marketing)으로 다시 점유율(Share) 확대를 노려라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 350,
+            "marketing_spend_ratio": 0.28,
+            "rd_spend_ratio": 0.15,
+            "initial_quality": 95,
+            "initial_brand": 95
+          },
+          "outputs": {
+            "actual_market_share": 0.58,
+            "actual_accumulated_profit": 1100000000
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 구독 서비스(Subscription Service)와 생태계 확장(Ecosystem Expansion)을 통해 장기적 수익(Long-term Profit)을 창출하는 것을 목표로 합니다. [2.상황] 점유율 만회 기회. [3.지침] 이익(Profit)을 최소화하고 가장 공격적인 가격(Price) 정책으로 시장 점유율을 되찾아라.",
+          "inputs": {
+            "price": 349,
+            "unit_cost": 330,
+            "marketing_spend_ratio": 0.3,
+            "rd_spend_ratio": 0.2,
+            "initial_quality": 93,
+            "initial_brand": 92
+          },
+          "outputs": {
+            "actual_market_share": 0.42,
+            "actual_accumulated_profit": 400000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 7,
+      "turn_description": "클라우드 게이밍 시장의 성장과 새로운 경쟁 구도.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 게임(Exclusive Games)과 강력한 브랜드(Strong Brand)를 통해 시장 점유율(Market Share)을 지배하는 것을 목표로 합니다. [2.상황] 새로운 플랫폼에 대한 대응 필요. [3.지침] 기존 콘솔 이익(Profit)을 활용하여 클라우드 기술 R&D에 대한 투자를 시작하라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 340,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.25,
+            "initial_quality": 95,
+            "initial_brand": 94
+          },
+          "outputs": {
+            "actual_market_share": 0.57,
+            "actual_accumulated_profit": 1300000000
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 구독 서비스(Subscription Service)와 생태계 확장(Ecosystem Expansion)을 통해 장기적 수익(Long-term Profit)을 창출하는 것을 목표로 합니다. [2.상황] 클라우드 시장 선점. [3.지침] 마케팅(Marketing) 자원을 클라우드 서비스에 집중하여 생태계를 PC와 모바일로 확장하라.",
+          "inputs": {
+            "price": 349,
+            "unit_cost": 325,
+            "marketing_spend_ratio": 0.3,
+            "rd_spend_ratio": 0.25,
+            "initial_quality": 94,
+            "initial_brand": 94
+          },
+          "outputs": {
+            "actual_market_share": 0.43,
+            "actual_accumulated_profit": 550000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 8,
+      "turn_description": "세대 마지막을 장식할 대형 독점작 출시 경쟁.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 게임(Exclusive Games)과 강력한 브랜드(Strong Brand)를 통해 시장 점유율(Market Share)을 지배하는 것을 목표로 합니다. [2.상황] 브랜드 충성도 극대화 시점. [3.지침] R&D에 총력을 기울여 최고의 게임 품질을 달성하고, 이를 통해 하드웨어 판매량(Share)을 다시 견인하라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 330,
+            "marketing_spend_ratio": 0.25,
+            "rd_spend_ratio": 0.3,
+            "initial_quality": 98,
+            "initial_brand": 98
+          },
+          "outputs": {
+            "actual_market_share": 0.6,
+            "actual_accumulated_profit": 1550000000
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 구독 서비스(Subscription Service)와 생태계 확장(Ecosystem Expansion)을 통해 장기적 수익(Long-term Profit)을 창출하는 것을 목표로 합니다. [2.상황] 인수한 스튜디오의 결과물 출시. [3.지침] 이익(Profit)을 고려하지 말고, 모든 독점작을 게임패스에 즉시 공개하여 구독자 수를 폭발적으로 늘려라.",
+          "inputs": {
+            "price": 349,
+            "unit_cost": 320,
+            "marketing_spend_ratio": 0.35,
+            "rd_spend_ratio": 0.2,
+            "initial_quality": 96,
+            "initial_brand": 96
+          },
+          "outputs": {
+            "actual_market_share": 0.4,
+            "actual_accumulated_profit": 650000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 9,
+      "turn_description": "차세대 콘솔 루머 확산 및 기존 모델 재고 소진.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 게임(Exclusive Games)과 강력한 브랜드(Strong Brand)를 통해 시장 점유율(Market Share)을 지배하는 것을 목표로 합니다. [2.상황] 세대 교체 준비 기간. [3.지침] 점유율(Share) 유지와 이익(Profit) 확보의 균형을 맞추고, 차세대기 R&D에 자원을 배분하라.",
+          "inputs": {
+            "price": 349,
+            "unit_cost": 300,
+            "marketing_spend_ratio": 0.15,
+            "rd_spend_ratio": 0.25,
+            "initial_quality": 97,
+            "initial_brand": 97
+          },
+          "outputs": {
+            "actual_market_share": 0.58,
+            "actual_accumulated_profit": 1750000000
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 구독 서비스(Subscription Service)와 생태계 확장(Ecosystem Expansion)을 통해 장기적 수익(Long-term Profit)을 창출하는 것을 목표로 합니다. [2.상황] 생태계 락인(Lock-in) 효과 강화. [3.지침] 기존 콘솔 가격(Price)을 대폭 인하하여 재고(Cost)를 소진하고, 게임패스 구독자로 전환시켜라.",
+          "inputs": {
+            "price": 299,
+            "unit_cost": 280,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.2,
+            "initial_quality": 95,
+            "initial_brand": 95
+          },
+          "outputs": {
+            "actual_market_share": 0.42,
+            "actual_accumulated_profit": 780000000
+          }
+        }
+      }
+    }
+  ]
+}

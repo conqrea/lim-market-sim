@@ -1,0 +1,274 @@
+{
+  "scenario_name": "Console Wars: The Next Generation",
+  "description": "A simulation of the fierce competition between Sony's PlayStation and Microsoft's Xbox in the next-generation console market, focusing on strategies around exclusive content, ecosystem services, and price competition.",
+  "config": {
+    "total_turns": 10,
+    "market_size": 10000000,
+    "initial_capital": 5000000000,
+    "physics": {
+      "price_sensitivity": 40,
+      "marketing_efficiency": 2.5,
+      "weight_quality": 0.4,
+      "weight_brand": 0.3,
+      "weight_price": 0.3,
+      "others_overall_competitiveness": 0.3
+    },
+    "marketing_cost_base": 100000000,
+    "rd_innovation_threshold": 500000000,
+    "rd_efficiency_threshold": 500000000
+  },
+  "turns_data": [
+    {
+      "turn": 0,
+      "turn_description": "The next-generation console market begins with the simultaneous launch of both platforms.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 대작 게임 포트폴리오를 기반으로 **콘텐츠 품질(High Quality)**과 **강력한 브랜드(High Brand)**를 추구하는 엔터테인먼트 제국입니다. [2.상황] 신규 콘솔 출시 초기, 높은 기대감과 충성도 높은 팬층 보유. [3.지침] **초기 이익(Profit)**을 다소 희생하더라도, 압도적인 **마케팅(Marketing)**과 **R&D 혁신(Innovation)** 투자로 초기 시장의 주도권을 확보하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 430,
+            "marketing_spend_ratio": 0.25,
+            "rd_spend_ratio": 0.15,
+            "initial_quality": 85,
+            "initial_brand": 80
+          },
+          "outputs": {
+            "actual_market_share": 0,
+            "actual_accumulated_profit": 0
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 '게임 패스'를 중심으로 한 **생태계 확장(Ecosystem Growth)**과 **가격 경쟁력(Price Competitiveness)**을 통해 시장을 지배하는 플랫폼 기업입니다. [2.상황] '게임 패스'의 높은 가치 제안으로 시장의 판도를 바꿀 기회. [3.지침] **단위당 이익(Unit Profit)** 손실을 감수하고서라도 경쟁력 있는 **가격(Price)**을 책정하여 **시장 점유율(Market Share)**을 최우선으로 확보하라.",
+          "inputs": {
+            "price": 479,
+            "unit_cost": 420,
+            "marketing_spend_ratio": 0.3,
+            "rd_spend_ratio": 0.1,
+            "initial_quality": 80,
+            "initial_brand": 75
+          },
+          "outputs": {
+            "actual_market_share": 0,
+            "actual_accumulated_profit": 0
+          }
+        }
+      }
+    },
+    {
+      "turn": 1,
+      "turn_description": "Initial market share results are in, and both companies adjust their strategies based on early sales data.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 대작 게임 포트폴리오를 기반으로 **콘텐츠 품질(High Quality)**과 **강력한 브랜드(High Brand)**를 추구하는 엔터테인먼트 제국입니다. [2.상황] 예상대로 높은 **브랜드(Brand)** 충성도 덕분에 안정적인 **점유율(Share)**로 출발. [3.지침] 현재의 **이익률(Profit Margin)**을 유지하면서, 독점 타이틀 개발을 위한 **R&D 혁신(Innovation)** 투자를 지속하여 **품질(Quality)** 우위를 굳혀라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 428,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.18
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 '게임 패스'를 중심으로 한 **생태계 확장(Ecosystem Growth)**과 **가격 경쟁력(Price Competitiveness)**을 통해 시장을 지배하는 플랫폼 기업입니다. [2.상황] 가격 정책 덕분에 **점유율(Share)** 확보에 성공했으나, 하드웨어 **이익(Profit)**이 거의 없음. [3.지침] **원가 절감(Cost Reduction)**을 위한 R&D에 집중하여 **이익률(Margin)**을 개선하고, 확보된 **점유율(Share)**을 기반으로 서비스 수익을 창출하라.",
+          "inputs": {
+            "price": 479,
+            "unit_cost": 415,
+            "marketing_spend_ratio": 0.25,
+            "rd_spend_ratio": 0.15
+          }
+        }
+      }
+    },
+    {
+      "turn": 2,
+      "turn_description": "A major exclusive title is released, impacting brand perception and quality metrics significantly.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 대작 게임 포트폴리오를 기반으로 **콘텐츠 품질(High Quality)**과 **강력한 브랜드(High Brand)**를 추구하는 엔터테인먼트 제국입니다. [2.상황] 독점작의 성공으로 **품질(Quality)**과 **브랜드(Brand)** 이미지가 급상승하며 **점유율(Share)**이 확대됨. [3.지침] 이 기세를 몰아 **마케팅(Marketing)** 비용을 증액하여 격차를 벌리고, 안정적인 **이익(Profit)**을 확보하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 425,
+            "marketing_spend_ratio": 0.28,
+            "rd_spend_ratio": 0.15
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 '게임 패스'를 중심으로 한 **생태계 확장(Ecosystem Growth)**과 **가격 경쟁력(Price Competitiveness)**을 통해 시장을 지배하는 플랫폼 기업입니다. [2.상황] 경쟁사의 독점작 공세로 **점유율(Share)** 성장이 정체됨. [3.지침] **이익(Profit)**을 희생해서라도 **가격(Price)**을 소폭 인하하고, '게임 패스'의 가치를 알리는 **마케팅(Marketing)**을 강화하여 점유율 하락을 방어하라.",
+          "inputs": {
+            "price": 469,
+            "unit_cost": 410,
+            "marketing_spend_ratio": 0.3,
+            "rd_spend_ratio": 0.12
+          }
+        }
+      }
+    },
+    {
+      "turn": 3,
+      "turn_description": "Microsoft responds by acquiring a major game studio, signaling a long-term content strategy.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 대작 게임 포트폴리오를 기반으로 **콘텐츠 품질(High Quality)**과 **강력한 브랜드(High Brand)**를 추구하는 엔터테인먼트 제국입니다. [2.상황] 경쟁사의 스튜디오 인수로 장기적인 **콘텐츠 경쟁력(Content Competitiveness)**에 위협 발생. [3.지침] 단기 **점유율(Share)** 경쟁에 매몰되지 말고, 내부 스튜디오의 **R&D 혁신(Innovation)** 투자를 늘려 **품질(Quality)**의 초격차를 유지하는 데 집중하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 422,
+            "marketing_spend_ratio": 0.22,
+            "rd_spend_ratio": 0.2
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 '게임 패스'를 중심으로 한 **생태계 확장(Ecosystem Growth)**과 **가격 경쟁력(Price Competitiveness)**을 통해 시장을 지배하는 플랫폼 기업입니다. [2.상황] 스튜디오 인수로 미래 **품질(Quality)**에 대한 기대감이 높아짐. [3.지침] **원가 절감(Cost Reduction)** R&D와 **마케팅(Marketing)**의 균형을 유지하며, 안정적인 **점유율(Share)**을 바탕으로 생태계 수익을 극대화하라.",
+          "inputs": {
+            "price": 469,
+            "unit_cost": 405,
+            "marketing_spend_ratio": 0.25,
+            "rd_spend_ratio": 0.15
+          }
+        }
+      }
+    },
+    {
+      "turn": 4,
+      "turn_description": "The market enters a stable growth phase, with focus shifting towards cost optimization and profitability.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 대작 게임 포트폴리오를 기반으로 **콘텐츠 품질(High Quality)**과 **강력한 브랜드(High Brand)**를 추구하는 엔터테인먼트 제국입니다. [2.상황] 높은 **이익률(Profit Margin)** 덕분에 재무 구조가 매우 안정적임. [3.지침] **R&D 효율(Efficiency)** 투자를 통해 **단위 원가(Unit Cost)**를 낮추고, 이를 통해 확보된 재원으로 **이익(Profit)** 극대화와 차세대 기술 선행 연구를 병행하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 415,
+            "marketing_spend_ratio": 0.18,
+            "rd_spend_ratio": 0.18
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 '게임 패스'를 중심으로 한 **생태계 확장(Ecosystem Growth)**과 **가격 경쟁력(Price Competitiveness)**을 통해 시장을 지배하는 플랫폼 기업입니다. [2.상황] **점유율(Share)**은 만족스럽지만 하드웨어 **수익성(Profitability)**이 여전히 낮음. [3.지침] **마케팅(Marketing)** 비용을 줄이는 대신 **원가 절감(Cost Reduction)** R&D에 집중하여, 하드웨어 사업의 **이익(Profit)** 구조를 시급히 개선하라.",
+          "inputs": {
+            "price": 469,
+            "unit_cost": 395,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.2
+          }
+        }
+      }
+    },
+    {
+      "turn": 5,
+      "turn_description": "Rumors of a 'Pro' or 'Slim' version circulate, prompting preemptive R&D investments.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 대작 게임 포트폴리오를 기반으로 **콘텐츠 품질(High Quality)**과 **강력한 브랜드(High Brand)**를 추구하는 엔터테인먼트 제국입니다. [2.상황] 시장 지배력을 바탕으로 미드-사이클 리프레시 모델을 준비할 여력이 충분함. [3.지침] **R&D 혁신(Innovation)**에 대규모 투자를 단행하여 차세대 모델의 기술적 우위를 확보하라. 이로 인한 단기 **이익(Profit)** 감소는 감수한다.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 410,
+            "marketing_spend_ratio": 0.15,
+            "rd_spend_ratio": 0.25
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 '게임 패스'를 중심으로 한 **생태계 확장(Ecosystem Growth)**과 **가격 경쟁력(Price Competitiveness)**을 통해 시장을 지배하는 플랫폼 기업입니다. [2.상황] 경쟁사의 고급 모델 출시에 대응해야 하는 상황. [3.지침] 고급 모델 경쟁보다는, 기존 모델의 **원가(Cost)**를 추가로 절감하여 **가격(Price)**을 더 낮출 준비를 하라. **점유율(Share)** 방어가 최우선이다.",
+          "inputs": {
+            "price": 459,
+            "unit_cost": 385,
+            "marketing_spend_ratio": 0.22,
+            "rd_spend_ratio": 0.18
+          }
+        }
+      }
+    },
+    {
+      "turn": 6,
+      "turn_description": "Sony launches a 'Pro' version at a premium price, targeting core gamers.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 대작 게임 포트폴리오를 기반으로 **콘텐츠 품질(High Quality)**과 **강력한 브랜드(High Brand)**를 추구하는 엔터테인먼트 제국입니다. [2.상황] 'Pro' 모델 출시로 평균 판매 단가(ASP)와 **이익률(Profit Margin)**이 상승함. [3.지침] **고품질(High Quality)**과 **고수익(High Profit)** 전략을 유지하며, 일반 모델의 **가격(Price)**은 그대로 두어 시장을 양분하는 전략을 구사하라.",
+          "inputs": {
+            "price": 549,
+            "unit_cost": 450,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.2
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 '게임 패스'를 중심으로 한 **생태계 확장(Ecosystem Growth)**과 **가격 경쟁력(Price Competitiveness)**을 통해 시장을 지배하는 플랫폼 기업입니다. [2.상황] 경쟁사의 프리미엄 전략으로 인해 가격에 민감한 시장 segment를 공략할 기회 발생. [3.지침] 기존 모델의 **가격(Price)**을 공격적으로 인하하여 **시장 점유율(Market Share)**을 최대로 끌어올려라. **이익(Profit)**은 '게임 패스' 구독자로 만회한다.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 375,
+            "marketing_spend_ratio": 0.28,
+            "rd_spend_ratio": 0.15
+          }
+        }
+      }
+    },
+    {
+      "turn": 7,
+      "turn_description": "The market becomes saturated, and both companies focus on expanding their user base to late adopters.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 대작 게임 포트폴리오를 기반으로 **콘텐츠 품질(High Quality)**과 **강력한 브랜드(High Brand)**를 추구하는 엔터테인먼트 제국입니다. [2.상황] 'Pro' 모델의 성공으로 **누적 이익(Accumulated Profit)**이 최고조에 달함. [3.지침] 일반 모델의 **원가(Cost)**를 낮추는 데 성공했으므로, **가격(Price)**을 인하하여 후발 주자 시장을 공략하고 **점유율(Share)**을 방어하라.",
+          "inputs": {
+            "price": 449,
+            "unit_cost": 380,
+            "marketing_spend_ratio": 0.18,
+            "rd_spend_ratio": 0.15
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 '게임 패스'를 중심으로 한 **생태계 확장(Ecosystem Growth)**과 **가격 경쟁력(Price Competitiveness)**을 통해 시장을 지배하는 플랫폼 기업입니다. [2.상황] 지속적인 가격 인하 정책으로 **점유율(Share)**에서 근소한 우위를 차지함. [3.지침] 현재의 **가격(Price)** 경쟁력을 유지하면서, **마케팅(Marketing)** 예산을 '게임 패스' 신규 콘텐츠 홍보에 집중하여 생태계를 더욱 강화하라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 370,
+            "marketing_spend_ratio": 0.25,
+            "rd_spend_ratio": 0.12
+          }
+        }
+      }
+    },
+    {
+      "turn": 8,
+      "turn_description": "As the console generation nears its end, a final major price drop occurs to clear inventory.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 대작 게임 포트폴리오를 기반으로 **콘텐츠 품질(High Quality)**과 **강력한 브랜드(High Brand)**를 추구하는 엔터테인먼트 제국입니다. [2.상황] **이익(Profit)**은 충분히 확보했으며, 이제 차세대기를 위한 잠재 고객 확보가 중요해짐. [3.지침] **이익률(Margin)**을 포기하고 대규모 **가격(Price)** 인하를 단행하여, 경쟁사의 **점유율(Share)**을 빼앗고 브랜드 충성도를 극대화하라.",
+          "inputs": {
+            "price": 349,
+            "unit_cost": 320,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.1
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 '게임 패스'를 중심으로 한 **생태계 확장(Ecosystem Growth)**과 **가격 경쟁력(Price Competitiveness)**을 통해 시장을 지배하는 플랫폼 기업입니다. [2.상황] 경쟁사의 공격적인 가격 정책으로 **점유율(Share)** 우위가 위협받고 있음. [3.지침] **원가(Cost)** 이하의 출혈 판매를 감수해서라도 **점유율(Share)** 1위 자리를 지켜라. 하드웨어 손실은 장기적인 생태계 **이익(Profit)**으로 상쇄한다.",
+          "inputs": {
+            "price": 329,
+            "unit_cost": 310,
+            "marketing_spend_ratio": 0.22,
+            "rd_spend_ratio": 0.1
+          }
+        }
+      }
+    },
+    {
+      "turn": 9,
+      "turn_description": "The final turn of the generation focuses on summarizing performance and investing for the future.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 대작 게임 포트폴리오를 기반으로 **콘텐츠 품질(High Quality)**과 **강력한 브랜드(High Brand)**를 추구하는 엔터테인먼트 제국입니다. [2.상황] 세대 전체적으로 높은 **이익(Profit)**과 강력한 **브랜드(Brand)**를 구축하는 데 성공함. [3.지침] **마케팅(Marketing)** 비용을 최소화하고, 이번 세대에서 벌어들인 **이익(Profit)**을 차세대 콘솔 개발을 위한 **R&D(R&D)**에 집중 투자하라.",
+          "inputs": {
+            "price": 299,
+            "unit_cost": 280,
+            "marketing_spend_ratio": 0.1,
+            "rd_spend_ratio": 0.3
+          }
+        },
+        "Microsoft": {
+          "persona": "[1.정체성] 우리는 '게임 패스'를 중심으로 한 **생태계 확장(Ecosystem Growth)**과 **가격 경쟁력(Price Competitiveness)**을 통해 시장을 지배하는 플랫폼 기업입니다. [2.상황] **점유율(Share)** 목표는 달성했으나, 하드웨어 사업의 **누적 이익(Accumulated Profit)**은 저조함. [3.지침] **가격(Price)**은 현상 유지. 확보된 거대 사용자 기반을 바탕으로 차세대 서비스를 기획하는 **R&D(R&D)**에 모든 역량을 집중하라.",
+          "inputs": {
+            "price": 299,
+            "unit_cost": 285,
+            "marketing_spend_ratio": 0.1,
+            "rd_spend_ratio": 0.3
+          }
+        }
+      }
+    }
+  ]
+}

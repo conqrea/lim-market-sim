@@ -1,0 +1,346 @@
+{
+  "scenario_name": "Console Wars: Sony vs. MS",
+  "description": "A 10-turn simulation of the fierce competition between Sony's PlayStation and Microsoft's Xbox in the console gaming market.",
+  "config": {
+    "total_turns": 10,
+    "market_size": 100000000,
+    "initial_capital": 5000000000,
+    "physics": {
+      "price_sensitivity": 25,
+      "marketing_efficiency": 1.8,
+      "weight_quality": 0.4,
+      "weight_brand": 0.4,
+      "weight_price": 0.2,
+      "others_overall_competitiveness": 0.6
+    },
+    "marketing_cost_base": 50000000,
+    "rd_innovation_threshold": 500000000,
+    "rd_efficiency_threshold": 400000000
+  },
+  "turns_data": [
+    {
+      "turn": 0,
+      "turn_description": "차세대 콘솔 동시 출시.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 콘텐츠와 브랜드로 시장을 지배하는 엔터테인먼트 제국입니다. [2.상황] 신규 콘솔 출시, 초기 시장 선점 중요. [3.지침] 이익을 포기하고 점유율을 방어하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 450,
+            "marketing_spend_ratio": 0.4,
+            "rd_spend_ratio": 0.1,
+            "initial_quality": 85,
+            "initial_brand": 80
+          },
+          "outputs": {
+            "actual_market_share": 0,
+            "actual_accumulated_profit": 0
+          }
+        },
+        "MS": {
+          "persona": "[1.정체성] 우리는 막강한 자본과 생태계로 시장 판도를 바꾸는 기술 기업입니다. [2.상황] 신규 콘솔 출시, 강력한 경쟁자 존재. [3.지침] 이익을 포기하고 점유율을 확보하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 460,
+            "marketing_spend_ratio": 0.5,
+            "rd_spend_ratio": 0.1,
+            "initial_quality": 85,
+            "initial_brand": 70
+          },
+          "outputs": {
+            "actual_market_share": 0,
+            "actual_accumulated_profit": 0
+          }
+        }
+      }
+    },
+    {
+      "turn": 1,
+      "turn_description": "독점 타이틀 경쟁 심화.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 콘텐츠와 브랜드로 시장을 지배하는 엔터테인먼트 제국입니다. [2.상황] 독점작 흥행, 브랜드 가치 상승. [3.지침] 마진을 유지하며 R&D에 투자하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 440,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.2
+          },
+          "outputs": {
+            "actual_market_share": 0,
+            "actual_accumulated_profit": 0
+          }
+        },
+        "MS": {
+          "persona": "[1.정체성] 우리는 막강한 자본과 생태계로 시장 판도를 바꾸는 기술 기업입니다. [2.상황] 경쟁사 독점작 강세, 대응 필요. [3.지침] 이익을 포기하고 점유율을 방어하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 455,
+            "marketing_spend_ratio": 0.3,
+            "rd_spend_ratio": 0.2
+          },
+          "outputs": {
+            "actual_market_share": 0,
+            "actual_accumulated_profit": 0
+          }
+        }
+      }
+    },
+    {
+      "turn": 2,
+      "turn_description": "MS, 공격적인 가격 인하 단행.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 콘텐츠와 브랜드로 시장을 지배하는 엔터테인먼트 제국입니다. [2.상황] 경쟁사 가격 인하, 점유율 압박. [3.지침] 이익을 포기하고 점유율을 방어하라.",
+          "inputs": {
+            "price": 449,
+            "unit_cost": 420,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.1
+          },
+          "outputs": {
+            "actual_market_share": 0,
+            "actual_accumulated_profit": 0
+          }
+        },
+        "MS": {
+          "persona": "[1.정체성] 우리는 막강한 자본과 생태계로 시장 판도를 바꾸는 기술 기업입니다. [2.상황] 가격 인하로 점유율 상승 모멘텀. [3.지침] 이익을 포기하고 점유율을 확보하라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 410,
+            "marketing_spend_ratio": 0.3,
+            "rd_spend_ratio": 0.1
+          },
+          "outputs": {
+            "actual_market_share": 0,
+            "actual_accumulated_profit": 0
+          }
+        }
+      }
+    },
+    {
+      "turn": 3,
+      "turn_description": "중간 세대 모델(Pro/Slim) 출시.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 콘텐츠와 브랜드로 시장을 지배하는 엔터테인먼트 제국입니다. [2.상황] Pro 모델 출시, 프리미엄 시장 공략. [3.지침] 마진을 유지하며 R&D에 투자하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 430,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.3
+          },
+          "outputs": {
+            "actual_market_share": 0,
+            "actual_accumulated_profit": 0
+          }
+        },
+        "MS": {
+          "persona": "[1.정체성] 우리는 막강한 자본과 생태계로 시장 판도를 바꾸는 기술 기업입니다. [2.상황] Slim 모델 출시, 가격 경쟁력 강화. [3.지침] 이익을 포기하고 점유율을 확보하라.",
+          "inputs": {
+            "price": 349,
+            "unit_cost": 320,
+            "marketing_spend_ratio": 0.3,
+            "rd_spend_ratio": 0.2
+          },
+          "outputs": {
+            "actual_market_share": 0,
+            "actual_accumulated_profit": 0
+          }
+        }
+      }
+    },
+    {
+      "turn": 4,
+      "turn_description": "구독 서비스(Game Pass) 확장.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 콘텐츠와 브랜드로 시장을 지배하는 엔터테인먼트 제국입니다. [2.상황] 구독 서비스 경쟁 심화, 대응 필요. [3.지침] 이익을 포기하고 점유율을 방어하라.",
+          "inputs": {
+            "price": 449,
+            "unit_cost": 410,
+            "marketing_spend_ratio": 0.3,
+            "rd_spend_ratio": 0.2
+          },
+          "outputs": {
+            "actual_market_share": 0,
+            "actual_accumulated_profit": 0
+          }
+        },
+        "MS": {
+          "persona": "[1.정체성] 우리는 막강한 자본과 생태계로 시장 판도를 바꾸는 기술 기업입니다. [2.상황] Game Pass 가입자 급증, 생태계 강화. [3.지침] 마진을 유지하며 R&D에 투자하라.",
+          "inputs": {
+            "price": 349,
+            "unit_cost": 315,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.3
+          },
+          "outputs": {
+            "actual_market_share": 0,
+            "actual_accumulated_profit": 0
+          }
+        }
+      }
+    },
+    {
+      "turn": 5,
+      "turn_description": "MS, 대형 게임 스튜디오 인수 발표.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 콘텐츠와 브랜드로 시장을 지배하는 엔터테인먼트 제국입니다. [2.상황] 경쟁사 스튜디오 인수로 독점작 위기. [3.지침] 마진을 유지하며 R&D에 투자하라.",
+          "inputs": {
+            "price": 449,
+            "unit_cost": 400,
+            "marketing_spend_ratio": 0.1,
+            "rd_spend_ratio": 0.4
+          },
+          "outputs": {
+            "actual_market_share": 0,
+            "actual_accumulated_profit": 0
+          }
+        },
+        "MS": {
+          "persona": "[1.정체성] 우리는 막강한 자본과 생태계로 시장 판도를 바꾸는 기술 기업입니다. [2.상황] 스튜디오 인수로 콘텐츠 파워 강화. [3.지침] 이익을 포기하고 점유율을 확보하라.",
+          "inputs": {
+            "price": 349,
+            "unit_cost": 310,
+            "marketing_spend_ratio": 0.3,
+            "rd_spend_ratio": 0.3
+          },
+          "outputs": {
+            "actual_market_share": 0,
+            "actual_accumulated_profit": 0
+          }
+        }
+      }
+    },
+    {
+      "turn": 6,
+      "turn_description": "글로벌 반도체 공급망 위기.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 콘텐츠와 브랜드로 시장을 지배하는 엔터테인먼트 제국입니다. [2.상황] 공급망 문제, 생산 차질 발생. [3.지침] 마진을 유지하며 R&D에 투자하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 460,
+            "marketing_spend_ratio": 0.1,
+            "rd_spend_ratio": 0.3
+          },
+          "outputs": {
+            "actual_market_share": 0,
+            "actual_accumulated_profit": 0
+          }
+        },
+        "MS": {
+          "persona": "[1.정체성] 우리는 막강한 자본과 생태계로 시장 판도를 바꾸는 기술 기업입니다. [2.상황] 공급망 위기, 생산량 감소. [3.지침] 마진을 유지하며 R&D에 투자하라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 380,
+            "marketing_spend_ratio": 0.1,
+            "rd_spend_ratio": 0.3
+          },
+          "outputs": {
+            "actual_market_share": 0,
+            "actual_accumulated_profit": 0
+          }
+        }
+      }
+    },
+    {
+      "turn": 7,
+      "turn_description": "Sony, 차세대 VR 헤드셋 출시.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 콘텐츠와 브랜드로 시장을 지배하는 엔터테인먼트 제국입니다. [2.상황] 신규 VR 기기 출시, 생태계 확장. [3.지침] 마진을 유지하며 R&D에 투자하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 450,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.4
+          },
+          "outputs": {
+            "actual_market_share": 0,
+            "actual_accumulated_profit": 0
+          }
+        },
+        "MS": {
+          "persona": "[1.정체성] 우리는 막강한 자본과 생태계로 시장 판도를 바꾸는 기술 기업입니다. [2.상황] VR 시장 미진입, 주변기기 경쟁력 약화. [3.지침] 이익을 포기하고 점유율을 방어하라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 370,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.3
+          },
+          "outputs": {
+            "actual_market_share": 0,
+            "actual_accumulated_profit": 0
+          }
+        }
+      }
+    },
+    {
+      "turn": 8,
+      "turn_description": "클라우드 게이밍 시장 본격화.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 콘텐츠와 브랜드로 시장을 지배하는 엔터테인먼트 제국입니다. [2.상황] 클라우드 서비스 투자 확대 필요. [3.지침] 이익을 포기하고 점유율을 방어하라.",
+          "inputs": {
+            "price": 499,
+            "unit_cost": 440,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.4
+          },
+          "outputs": {
+            "actual_market_share": 0,
+            "actual_accumulated_profit": 0
+          }
+        },
+        "MS": {
+          "persona": "[1.정체성] 우리는 막강한 자본과 생태계로 시장 판도를 바꾸는 기술 기업입니다. [2.상황] 클라우드 인프라 우위, 시장 선점. [3.지침] 마진을 유지하며 R&D에 투자하라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 360,
+            "marketing_spend_ratio": 0.1,
+            "rd_spend_ratio": 0.5
+          },
+          "outputs": {
+            "actual_market_share": 0,
+            "actual_accumulated_profit": 0
+          }
+        }
+      }
+    },
+    {
+      "turn": 9,
+      "turn_description": "차세대 콘솔 개발 루머 확산.",
+      "companies": {
+        "Sony": {
+          "persona": "[1.정체성] 우리는 독점 콘텐츠와 브랜드로 시장을 지배하는 엔터테인먼트 제국입니다. [2.상황] 현 세대기 황혼기, R&D 집중. [3.지침] 마진을 유지하며 R&D에 투자하라.",
+          "inputs": {
+            "price": 399,
+            "unit_cost": 350,
+            "marketing_spend_ratio": 0.1,
+            "rd_spend_ratio": 0.6
+          },
+          "outputs": {
+            "actual_market_share": 0,
+            "actual_accumulated_profit": 0
+          }
+        },
+        "MS": {
+          "persona": "[1.정체성] 우리는 막강한 자본과 생태계로 시장 판도를 바꾸는 기술 기업입니다. [2.상황] 차세대기 개발, 자본 투입 확대. [3.지침] 마진을 유지하며 R&D에 투자하라.",
+          "inputs": {
+            "price": 299,
+            "unit_cost": 270,
+            "marketing_spend_ratio": 0.1,
+            "rd_spend_ratio": 0.6
+          },
+          "outputs": {
+            "actual_market_share": 0,
+            "actual_accumulated_profit": 0
+          }
+        }
+      }
+    }
+  ]
+}
