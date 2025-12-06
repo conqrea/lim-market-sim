@@ -54,18 +54,32 @@ class MarketSimulator:
         initial_rd_budget = initial_capital * config.get("initial_rd_budget_ratio", 0.01)
         
         initial_configs = config.get("initial_configs", {})
-        total_initial_share = sum(cfg.get("market_share", 0) for cfg in initial_configs.values())
-        
-        if total_initial_share > 1.0:
-             total_initial_share = 1.0
-        others_initial_share = 1.0 - total_initial_share
+
+        # 1) 원시 합계 계산
+        raw_total_share = sum(cfg.get("market_share", 0.0) for cfg in initial_configs.values())
+
+        # 2) 합이 1.0을 넘으면 회사들끼리 비율로 나눠서 1.0에 맞게 정규화
+        #    합이 1.0 이하이면 그대로 사용
+        if raw_total_share > 1.0:
+            normalized_shares = {
+                name: (cfg.get("market_share", 0.0) / raw_total_share)
+                for name, cfg in initial_configs.items()
+            }
+            total_initial_share = 1.0
+        else:
+            normalized_shares = {
+                name: cfg.get("market_share", 0.0)
+                for name, cfg in initial_configs.items()
+            }
+            total_initial_share = raw_total_share
+
+        # 3) Others(더미 경쟁자)는 남은 몫을 가져감 (음수 방지)
+        others_initial_share = max(0.0, 1.0 - total_initial_share)
 
         # AI 기업 초기화
         for name in self.ai_company_names:
             cfg = initial_configs.get(name, {})
-            share = cfg.get("market_share", 0)
-            if total_initial_share > 1.0 and total_initial_share > 0:
-                 share = share / total_initial_share
+            share = normalized_shares.get(name, 0.0)
 
             # [수정] 원가(unit_cost) 기본값을 10000이 아니라 자본금 비례로 작게 설정
             default_cost = initial_capital * 0.0000001 if initial_capital > 0 else 100

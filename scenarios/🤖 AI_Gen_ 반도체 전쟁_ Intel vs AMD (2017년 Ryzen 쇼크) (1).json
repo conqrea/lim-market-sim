@@ -1,0 +1,390 @@
+{
+  "scenario_name": "반도체 전쟁: Intel vs AMD (2017년 Ryzen 쇼크)",
+  "description": "2017년 AMD의 Ryzen 출시로 시작된 인텔의 독점 체제 붕괴와 CPU 시장의 경쟁 심화 과정을 시뮬레이션합니다.",
+  "company_profiles": {
+    "Intel": {
+      "identity": "우리는 압도적인 **시장 점유율(High Share)**과 **높은 이익률(High Profit)**을 바탕으로 시장을 지배하는 기업이다. 기술 리더십과 브랜드가 핵심 자산이다."
+    },
+    "AMD": {
+      "identity": "우리는 **R&D 혁신(Innovation)**과 **가격 경쟁력(Price)**을 무기로 **시장 점유율(Share)**을 되찾아오는 도전자다. 단기 **이익(Profit)**을 희생하더라도 성장을 우선한다."
+    }
+  },
+  "config": {
+    "total_turns": 10,
+    "market_size": 5000000,
+    "initial_capital": 50000000000,
+    "physics": {
+      "price_sensitivity": 40,
+      "marketing_efficiency": 1.5,
+      "weight_quality": 0.6,
+      "weight_brand": 0.1,
+      "weight_price": 0.3,
+      "others_overall_competitiveness": 0.5
+    },
+    "marketing_cost_base": 175000000,
+    "rd_innovation_threshold": 350000000,
+    "rd_efficiency_threshold": 350000000
+  },
+  "turns_data": [
+    {
+      "turn": 0,
+      "turn_description": "AMD, 'Ryzen' 출시. 멀티코어 성능으로 시장에 충격을 주다.",
+      "companies": {
+        "Intel": {
+          "historical_directive": "[상황] 독점적 지위 유지. [지침] 기존 **가격(Price) 정책 유지**, **이익(Profit) 극대화**.",
+          "inputs": {
+            "price": 350,
+            "unit_cost": 150,
+            "marketing_spend_ratio": 0.1,
+            "rd_spend_ratio": 0.15,
+            "initial_quality": 95,
+            "initial_brand": 98
+          },
+          "outputs": {
+            "actual_market_share": 0.82,
+            "actual_accumulated_profit": 5000000000
+          }
+        },
+        "AMD": {
+          "historical_directive": "[상황] 혁신적 신제품 출시. [지침] **이익(Profit) 희생**, 공격적인 **저가 정책(Low Price)**으로 **점유율(Share) 확보**.",
+          "inputs": {
+            "price": 300,
+            "unit_cost": 180,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.25,
+            "initial_quality": 92,
+            "initial_brand": 70
+          },
+          "outputs": {
+            "actual_market_share": 0.18,
+            "actual_accumulated_profit": 500000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 1,
+      "turn_description": "Intel, 가격 인하에 소극적. AMD 점유율 지속 상승.",
+      "companies": {
+        "Intel": {
+          "historical_directive": "[상황] **점유율(Share)** 소폭 하락. [지침] **브랜드(Brand) 마케팅 강화**, **가격(Price) 방어**.",
+          "inputs": {
+            "price": 340,
+            "unit_cost": 145,
+            "marketing_spend_ratio": 0.12,
+            "rd_spend_ratio": 0.15,
+            "initial_quality": 95,
+            "initial_brand": 97
+          },
+          "outputs": {
+            "actual_market_share": 0.78,
+            "actual_accumulated_profit": 5850000000
+          }
+        },
+        "AMD": {
+          "historical_directive": "[상황] 시장 반응 긍정적. [지침] **생산량(Volume) 증대**, **R&D(Innovation) 투자**로 격차 유지.",
+          "inputs": {
+            "price": 290,
+            "unit_cost": 175,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.28,
+            "initial_quality": 93,
+            "initial_brand": 75
+          },
+          "outputs": {
+            "actual_market_share": 0.22,
+            "actual_accumulated_profit": 650000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 2,
+      "turn_description": "Intel, 코어 수 경쟁 시작 및 주력 제품 가격 인하 단행.",
+      "companies": {
+        "Intel": {
+          "historical_directive": "[상황] **점유율(Share)** 하락 가속. [지침] **이익(Profit) 일부 희생**, 주력 제품 **가격(Price) 인하**로 **점유율(Share) 방어**.",
+          "inputs": {
+            "price": 310,
+            "unit_cost": 140,
+            "marketing_spend_ratio": 0.15,
+            "rd_spend_ratio": 0.18,
+            "initial_quality": 96,
+            "initial_brand": 95
+          },
+          "outputs": {
+            "actual_market_share": 0.73,
+            "actual_accumulated_profit": 6500000000
+          }
+        },
+        "AMD": {
+          "historical_directive": "[상황] 경쟁 심화. [지침] **가격 경쟁력(Price) 유지**, **수익성(Profitability) 관리** 시작.",
+          "inputs": {
+            "price": 280,
+            "unit_cost": 170,
+            "marketing_spend_ratio": 0.18,
+            "rd_spend_ratio": 0.3,
+            "initial_quality": 94,
+            "initial_brand": 80
+          },
+          "outputs": {
+            "actual_market_share": 0.27,
+            "actual_accumulated_profit": 820000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 3,
+      "turn_description": "Intel, 10nm 공정 지연 발표. 기술 리더십에 균열.",
+      "companies": {
+        "Intel": {
+          "historical_directive": "[상황] 기술 로드맵 차질. [지침] **마케팅(Marketing) 비용 증액**, **단기 이익(Profit) 희생**하여 **브랜드 이미지(Brand) 방어**.",
+          "inputs": {
+            "price": 300,
+            "unit_cost": 140,
+            "marketing_spend_ratio": 0.18,
+            "rd_spend_ratio": 0.2,
+            "initial_quality": 94,
+            "initial_brand": 92
+          },
+          "outputs": {
+            "actual_market_share": 0.68,
+            "actual_accumulated_profit": 7100000000
+          }
+        },
+        "AMD": {
+          "historical_directive": "[상황] 반사 이익 기회. [지침] 차세대 제품 **R&D(Innovation) 가속화**, **기술 우위(Quality) 확보**에 집중.",
+          "inputs": {
+            "price": 275,
+            "unit_cost": 165,
+            "marketing_spend_ratio": 0.18,
+            "rd_spend_ratio": 0.32,
+            "initial_quality": 96,
+            "initial_brand": 84
+          },
+          "outputs": {
+            "actual_market_share": 0.32,
+            "actual_accumulated_profit": 1050000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 4,
+      "turn_description": "AMD, 2세대 Ryzen 출시로 공정 우위 확보. 서버 시장 진출 가속.",
+      "companies": {
+        "Intel": {
+          "historical_directive": "[상황] 기술적 열세 직면. [지침] **점유율(Share) 방어**를 최우선, **가격(Price) 경쟁** 불가피.",
+          "inputs": {
+            "price": 280,
+            "unit_cost": 135,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.22,
+            "initial_quality": 93,
+            "initial_brand": 90
+          },
+          "outputs": {
+            "actual_market_share": 0.62,
+            "actual_accumulated_profit": 7550000000
+          }
+        },
+        "AMD": {
+          "historical_directive": "[상황] 모멘텀 확보. [지침] **점유율(Share) 확대**와 **이익(Profit) 개선**의 **균형(Balance)** 모색.",
+          "inputs": {
+            "price": 280,
+            "unit_cost": 160,
+            "marketing_spend_ratio": 0.15,
+            "rd_spend_ratio": 0.3,
+            "initial_quality": 98,
+            "initial_brand": 88
+          },
+          "outputs": {
+            "actual_market_share": 0.38,
+            "actual_accumulated_profit": 1350000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 5,
+      "turn_description": "위기감 고조된 Intel, CEO 교체 및 대규모 조직 개편.",
+      "companies": {
+        "Intel": {
+          "historical_directive": "[상황] 내부 위기. [지침] **R&D(Innovation) 투자 대폭 확대**, 장기적 **기술 로드맵(Quality) 재정비**.",
+          "inputs": {
+            "price": 270,
+            "unit_cost": 130,
+            "marketing_spend_ratio": 0.18,
+            "rd_spend_ratio": 0.3,
+            "initial_quality": 94,
+            "initial_brand": 88
+          },
+          "outputs": {
+            "actual_market_share": 0.58,
+            "actual_accumulated_profit": 7900000000
+          }
+        },
+        "AMD": {
+          "historical_directive": null,
+          "inputs": {
+            "price": 285,
+            "unit_cost": 155,
+            "marketing_spend_ratio": 0.15,
+            "rd_spend_ratio": 0.28,
+            "initial_quality": 98,
+            "initial_brand": 90
+          },
+          "outputs": {
+            "actual_market_share": 0.42,
+            "actual_accumulated_profit": 1700000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 6,
+      "turn_description": "하이엔드 데스크톱(HEDT) 시장에서 두 회사 간 성능 경쟁 격화.",
+      "companies": {
+        "Intel": {
+          "historical_directive": "[상황] HEDT 시장 위협. [지침] **이익률(Profit Margin) 희생**하더라도 **최고 성능(Quality) 타이틀 방어**.",
+          "inputs": {
+            "price": 400,
+            "unit_cost": 200,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.3,
+            "initial_quality": 97,
+            "initial_brand": 89
+          },
+          "outputs": {
+            "actual_market_share": 0.56,
+            "actual_accumulated_profit": 8400000000
+          }
+        },
+        "AMD": {
+          "historical_directive": "[상황] 수익성 높은 시장 공략. [지침] **마케팅(Marketing) 집중**, **브랜드 인지도(Brand) 강화**.",
+          "inputs": {
+            "price": 380,
+            "unit_cost": 190,
+            "marketing_spend_ratio": 0.2,
+            "rd_spend_ratio": 0.25,
+            "initial_quality": 99,
+            "initial_brand": 92
+          },
+          "outputs": {
+            "actual_market_share": 0.44,
+            "actual_accumulated_profit": 2100000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 7,
+      "turn_description": "글로벌 반도체 공급 부족 사태 발생. 생산 능력(Capacity)이 핵심 변수로 부상.",
+      "companies": {
+        "Intel": {
+          "historical_directive": "[상황] 자체 팹(IDM) 강점 부각. [지침] **안정적 공급(Volume)**을 통한 **점유율(Share) 회복** 시도.",
+          "inputs": {
+            "price": 300,
+            "unit_cost": 140,
+            "marketing_spend_ratio": 0.15,
+            "rd_spend_ratio": 0.28,
+            "initial_quality": 97,
+            "initial_brand": 90
+          },
+          "outputs": {
+            "actual_market_share": 0.59,
+            "actual_accumulated_profit": 9000000000
+          }
+        },
+        "AMD": {
+          "historical_directive": "[상황] 파운드리 의존도 리스크. [지침] **수익성(Profit) 높은 제품**에 **생산(Volume) 집중**.",
+          "inputs": {
+            "price": 320,
+            "unit_cost": 170,
+            "marketing_spend_ratio": 0.15,
+            "rd_spend_ratio": 0.25,
+            "initial_quality": 99,
+            "initial_brand": 93
+          },
+          "outputs": {
+            "actual_market_share": 0.41,
+            "actual_accumulated_profit": 2450000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 8,
+      "turn_description": "Intel, 새로운 '코어' 아키텍처 발표. AMD는 'Zen 3'로 응수.",
+      "companies": {
+        "Intel": {
+          "historical_directive": "[상황] 기술 반격 시작. [지침] **신제품 R&D(Innovation)**와 **마케팅(Marketing)**의 **균형(Balance)** 유지.",
+          "inputs": {
+            "price": 330,
+            "unit_cost": 150,
+            "marketing_spend_ratio": 0.18,
+            "rd_spend_ratio": 0.3,
+            "initial_quality": 98,
+            "initial_brand": 92
+          },
+          "outputs": {
+            "actual_market_share": 0.57,
+            "actual_accumulated_profit": 9600000000
+          }
+        },
+        "AMD": {
+          "historical_directive": "[상황] 기술 리더십 유지. [지침] **안정적 이익(Profit)**과 **미래 R&D(Innovation) 투자**의 **균형(Balance)**.",
+          "inputs": {
+            "price": 340,
+            "unit_cost": 175,
+            "marketing_spend_ratio": 0.15,
+            "rd_spend_ratio": 0.28,
+            "initial_quality": 100,
+            "initial_brand": 95
+          },
+          "outputs": {
+            "actual_market_share": 0.43,
+            "actual_accumulated_profit": 2850000000
+          }
+        }
+      }
+    },
+    {
+      "turn": 9,
+      "turn_description": "시장이 새로운 경쟁 구도에 적응. 점유율 변동폭 감소.",
+      "companies": {
+        "Intel": {
+          "historical_directive": "[상황] 점유율 하락 방어 성공. [지침] **수익성(Profitability) 회복**에 집중.",
+          "inputs": {
+            "price": 340,
+            "unit_cost": 155,
+            "marketing_spend_ratio": 0.15,
+            "rd_spend_ratio": 0.25,
+            "initial_quality": 98,
+            "initial_brand": 93
+          },
+          "outputs": {
+            "actual_market_share": 0.55,
+            "actual_accumulated_profit": 10200000000
+          }
+        },
+        "AMD": {
+          "historical_directive": "[상황] 시장의 주요 플레이어로 안착. [지침] **지속 가능한 성장**과 **이익(Profit) 극대화**.",
+          "inputs": {
+            "price": 350,
+            "unit_cost": 180,
+            "marketing_spend_ratio": 0.12,
+            "rd_spend_ratio": 0.25,
+            "initial_quality": 100,
+            "initial_brand": 96
+          },
+          "outputs": {
+            "actual_market_share": 0.45,
+            "actual_accumulated_profit": 3300000000
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1024,6 +1024,56 @@ function App() {
         🤖 AI 전략 워게임 (Integrated Platform)
       </h1>
 
+      {/* --- Global Status / Error Banner --- */}
+      {isLoading && (
+        <div
+          style={{
+            marginTop: '10px',
+            padding: '8px 12px',
+            borderRadius: '6px',
+            border: '1px solid #b3e0ff',
+            backgroundColor: '#e9f7ff',
+            fontSize: '0.9em',
+            color: '#005082',
+          }}
+        >
+          ⏳ 서버와 통신 중입니다… (시뮬레이션/튜닝/시나리오 생성 등)
+        </div>
+      )}
+
+      {error && (
+        <div
+          style={{
+            marginTop: '10px',
+            padding: '8px 12px',
+            borderRadius: '6px',
+            border: '1px solid #ffb3b3',
+            backgroundColor: '#ffe6e6',
+            fontSize: '0.9em',
+            color: '#a30000',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '8px',
+          }}
+        >
+          <span>⚠ {error}</span>
+          <button
+            onClick={() => setError(null)}
+            style={{
+              border: 'none',
+              background: 'transparent',
+              color: '#a30000',
+              cursor: 'pointer',
+              textDecoration: 'underline',
+              fontSize: '0.85em',
+            }}
+          >
+            닫기
+          </button>
+        </div>
+      )}
+
       {/* --- 2. Tab Navigation --- */}
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px', gap: '10px' }}>
           <button 
