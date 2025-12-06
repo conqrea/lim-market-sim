@@ -77,31 +77,49 @@ def call_mock_llm_api(prompt: str) -> str:
     return json.dumps(response)
 
 # (JSON 추출 함수)
-def extract_and_load_json(text: str) -> dict:
+def extract_and_load_json(text: str):
     """
-    LLM 응답 텍스트에서 JSON 객체만 정밀하게 추출하여 파싱합니다.
-    Markdown 코드 블록(```json), 앞뒤 공백, 사족 등을 모두 무시합니다.
+    LLM 응답 텍스트에서 JSON 배열 또는 객체를 추출해서 파싱합니다.
+    ```json ... ``` 코드블록이 있으면 그 안을 우선 사용합니다.
     """
+    # 0. 우선 전체를 한 번 정리
+    raw = text.strip()
+
+    # 1. ```json ... ``` 코드 블록 내부만 추출 (있으면)
+    code_block = re.search(r"```json(.*?)```", raw, re.DOTALL | re.IGNORECASE)
+    if code_block:
+        candidate = code_block.group(1).strip()
+    else:
+        candidate = raw
+
+    # 2. 앞쪽 잡소리(설명 텍스트) 제거: 가장 먼저 나오는 '[' 또는 '{' 기준으로 자르기
+    first_brace = candidate.find('{')
+    first_bracket = candidate.find('[')
+
+    if first_brace == -1 and first_bracket == -1:
+        print(f"JSON 파싱 오류: 중괄호/대괄호를 찾을 수 없습니다. (Text: {candidate[:80]}...)")
+        return None
+
+    if first_bracket != -1 and (first_bracket < first_brace or first_brace == -1):
+        # 배열이 먼저 나오는 경우: [ ... ] 전체를 노림
+        start = first_bracket
+        end = candidate.rfind(']')
+    else:
+        # 객체가 먼저 나오는 경우: { ... } 전체를 노림
+        start = first_brace
+        end = candidate.rfind('}')
+
+    if end == -1 or end <= start:
+        print(f"JSON 파싱 오류: 닫는 괄호를 찾지 못했습니다. (Text: {candidate[:80]}...)")
+        return None
+
+    json_str = candidate[start:end+1]
+
     try:
-        # 1. 텍스트 내에서 가장 바깥쪽 중괄호 '{}'의 위치를 찾습니다.
-        start_index = text.find('{')
-        end_index = text.rfind('}')
-
-        # 중괄호가 없으면 파싱 불가
-        if start_index == -1 or end_index == -1:
-            print(f"JSON 파싱 오류: 중괄호를 찾을 수 없습니다. (Text: {text[:50]}...)")
-            return None
-
-        # 2. 순수한 JSON 문자열만 잘라냅니다.
-        json_str = text[start_index : end_index + 1]
-
-        # 3. 파싱 시도
         return json.loads(json_str)
-
     except json.JSONDecodeError as e:
         print(f"JSON 파싱 오류: {e}")
-        # 디버깅을 위해 문제의 텍스트 일부를 출력
-        print(f"추출된 텍스트(일부): {text[:200]}...") 
+        print(f"추출된 텍스트(일부): {json_str[:200]}...")
         return None
 
 class AIAgent:
@@ -429,6 +447,8 @@ SCENARIO_DESIGNER_SYSTEM_PROMPT = """
 ### 2. 분량 및 구조
 * **총 10턴(Turns)**으로 구성하십시오.
 * `turn_description`: 1문장 요약.
+* 시나리오에서 시장의 판도를 가장 크게 바꾸는 턴을 **핵심 턴**이라 규정합니다.
+* **핵심 턴**은 반드시 전체 턴(10턴)의 중앙(4~5턴)이어야 합니다.
 
 ### 3. 경제 데이터 (Realistic Data)
 * `unit_cost`: 판매가(`price`) 대비 마진(10~30%)을 고려하여 **반드시 정수(Integer)**로 기입.

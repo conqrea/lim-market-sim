@@ -263,6 +263,8 @@ function App() {
   const [genTopic, setGenTopic] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
 
+  const [isStrategyLocked, setIsStrategyLocked] = useState(false);
+
   // [App.js 핸들러 함수 추가]
   const handleGenerateScenario = async () => {
       if (!genTopic) return alert("생성할 시나리오의 주제를 입력해주세요.\n(예: 전기차 전쟁 - 테슬라 vs BYD)");
@@ -656,6 +658,7 @@ function App() {
       setChoiceOptions(null); 
       setSelectedDecisions({});
       setIsLoading(false); 
+      setIsStrategyLocked(false);
 
     } catch (err) {
       console.error("Turn Execution Error:", err);
@@ -663,6 +666,7 @@ function App() {
       setIsAutoRun(false); 
       setIsLooping(false); 
       setIsLoading(false);
+      setIsStrategyLocked(false);
     }
 
   }, [simulationId, isLoading, isWaitingForChoice, companyNames, selectedDecisions]);
@@ -686,7 +690,8 @@ function App() {
   const handleGetOneTurnChoices = async () => {
       if (isLoading || isLooping) return;
       setIsLoading(true);
-      try { await handleGetChoices(); } catch (err) { console.error("1턴 로딩 실패:", err); }
+      setIsStrategyLocked(true);
+      try { await handleGetChoices(); } catch (err) { console.error("1턴 로딩 실패:", err); setIsStrategyLocked(false);}
       setIsLoading(false);
   };
 
@@ -915,6 +920,37 @@ function App() {
           setError("개입 적용 실패(422 등): " + err.message);
       }
       setIsLoading(false);
+  };
+
+  // --- [Track C] 3-1. 실시간 페르소나 개입 (현재 타임라인에서 수정) ---
+  const handleLivePersonaUpdate = async () => {
+      if (!simulationId) {
+          alert("시뮬레이션이 없습니다. 먼저 시뮬레이션을 시작하세요.");
+          return;
+      }
+      if (!targetCompanyForEdit || !currentPersona) return;
+
+      setIsLoading(true);
+      try {
+          const res = await api.updatePersona(simulationId, targetCompanyForEdit, currentPersona);
+          console.log("Persona Live-Updated:", res);
+
+          // 개입 로그/출처 갱신 (가장 최신 개입이 우선)
+          setInterventionLog({
+              turn: currentTurn,
+              company: targetCompanyForEdit,
+              old: originalPersona,
+              new: currentPersona
+          });
+          setPersonaSourceTurn(`Turn ${currentTurn} (Intervention)`);
+
+          alert(`✅ ${targetCompanyForEdit} 전략이 현재 시점에 업데이트되었습니다.`);
+      } catch (err) {
+          console.error(err);
+          alert("페르소나 업데이트 중 오류가 발생했습니다: " + err.message);
+      } finally {
+          setIsLoading(false);
+      }
   };
 
   // [UI Helper] 회사 선택 시 기존 페르소나 표시용
@@ -1411,21 +1447,26 @@ function App() {
                     <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
                         <select 
                             onChange={(e) => setTargetCompanyForEdit(e.target.value)} 
-                            value={targetCompanyForEdit} 
-                            disabled={labMode === 'simulation'} // 시뮬레이션 중에는 수정 불가 (단순화)
+                            value={targetCompanyForEdit}
+                            disabled={isStrategyLocked}
                             style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc', minWidth: '200px' }}
                         >
                             <option value="">-- 개입할 회사 선택 --</option>
                             {companyNames.map(name => (<option key={name} value={name}>{name}</option>))}
                         </select>
                         
-                        {targetCompanyForEdit && labMode === 'playback' && (
+                        {targetCompanyForEdit && (
                             <button 
-                                onClick={handleApplyIntervention} 
-                                disabled={isLoading || !currentPersona}
-                                style={{ padding: '8px 20px', backgroundColor: '#d63384', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
+                              onClick={labMode === 'playback' ? handleApplyIntervention : handleLivePersonaUpdate}
+                              disabled={isLoading || !currentPersona || isStrategyLocked}
+                              style={{ padding: '8px 20px', 
+                                backgroundColor: (isLoading || !currentPersona || isStrategyLocked)  ? '#cccccc' : '#d63384', 
+                                border: 'none', borderRadius: '4px', cursor: (isLoading || !currentPersona || isStrategyLocked) ? 'not-allowed' : 'pointer', 
+                                fontWeight: 'bold',  opacity: (isLoading || !currentPersona || isStrategyLocked) ? 0.7 : 1 }}
                             >
-                                ⚡ 이 시점에서 개입하기 (Change History)
+                              {labMode === 'playback'
+                                ? "⚡ 이 시점에서 개입하기 (Change History)"
+                                : "⚡ 현재 시점 전략 업데이트 (Live Persona)"}
                             </button>
                         )}
                     </div>
@@ -1466,7 +1507,7 @@ function App() {
                                 <textarea 
                                     value={currentPersona} 
                                     onChange={(e) => setCurrentPersona(e.target.value)}
-                                    disabled={labMode === 'simulation'} // 시뮬레이션 중에는 수정 불가
+                                    disabled={isStrategyLocked}
                                     placeholder="기존 전략 뒤에 새로운 지시사항을 추가하세요..."
                                     style={{ width: '100%', height: '100px', padding: '10px', borderRadius: '4px', border: '1px solid #ffdeeb', fontSize: '0.9em', fontFamily: 'sans-serif' }} 
                                 />
